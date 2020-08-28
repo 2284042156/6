@@ -1,7 +1,7 @@
 <template>
   <div class="left-menu">
       <el-menu
-      default-active="2"
+      :default-active="this.$route.path"
       router
       class="el-menu-vertical-demo"
       @open="handleOpen"

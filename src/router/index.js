@@ -21,6 +21,9 @@ Vue.use(VueRouter)
       path: '/home',
       name: 'home',
       component: Home,
+      redirect:{
+        name:'homemange'
+      },
       children:[
         { // 账号添加
           path: 'columnmange', // 相对地址,自定带上父级地址
