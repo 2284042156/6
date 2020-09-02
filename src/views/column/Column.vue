@@ -13,14 +13,12 @@
       <p>栏目列表</p>
     </div>
     <div class="mange">
-  
       <el-table
         :data="tableData"
         row-key="id"
         default-expand-all
         :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       >
-
         <el-table-column prop="columnName" label="栏目" width="500">
         </el-table-column>
         <el-table-column align="center" label="显示" width="180">
@@ -96,7 +94,7 @@
           > -->
           <el-upload
             class="avatar-uploader"
-            action="https://192.168.31.180:8081/upload/uploadImage"
+            action="http://liuwanr.cn:8080/msdw/upload"
             :show-file-list="false"
             :on-success="handleAvatarSuccessadd"
             :before-upload="beforeAvatarUpload"
@@ -125,7 +123,7 @@
         <el-form-item label="详情样式" :label-width="formLabelWidth">
           <el-radio-group v-model="addform.styleType">
             <el-radio label="0">
-              <img src="../../assets/images/btn_pic_3.png" alt="" />
+              <img src="../../assets/images/12.png" alt="" />
               <span>视频详情</span>
             </el-radio>
             <el-radio label="1">
@@ -143,14 +141,14 @@
           :label-width="formLabelWidth"
           prop="parentId"
         >
-          <div class="block">
-            <el-cascader
-              v-model="addform.parentId"
-              :props="{ checkStrictly: true }"
-              :options="options"
-              @change="handleChange"
-            ></el-cascader>
-          </div>
+                <el-cascader
+            :change-on-select="true"
+            :props="defaultParams"
+            :options="options"
+            v-model="addform.parentId"
+            @change="handleChange"
+            :clearable="true"
+          ></el-cascader>
         </el-form-item>
         <el-form-item label="打开方式" :label-width="formLabelWidth">
           <el-radio-group v-model="addform.openMethod">
@@ -174,18 +172,7 @@
           <el-input v-model="editform.columnName" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="栏目banner" :label-width="formLabelWidth">
-          <!-- <img id="preview" :src="editform.bgImgUrl" width="250px" height="60px" />
-          <a href="javascript:;" class="file gradient">
-            <input
-              id="pop_file"
-              type="file"
-              accept=".jpg,.jpeg,.png"
-              v-on:change="uploadFile($event)"
-              name="fileTrans"
-              ref="file"
-              value=""
-            />选择文件</a
-          > -->
+   
           <el-upload
             class="avatar-uploader"
             action="https://192.168.31.180:8081/upload/uploadImage"
@@ -217,7 +204,7 @@
         <el-form-item label="详情样式" :label-width="formLabelWidth">
           <el-radio-group v-model="editform.styleType">
             <el-radio label="0">
-              <img src="../../assets/images/btn_pic_3.png" alt="" />
+              <img src="../../assets/images/12.png" alt="" />
               <span>视频详情</span>
             </el-radio>
             <el-radio label="1">
@@ -231,14 +218,22 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="设置上级" :label-width="formLabelWidth">
-          <div class="block">
+          <!-- <div class="block">
             <el-cascader
               v-model="editform.parentId"
               :props="{ checkStrictly: true }"
               :options="options"
               @change="handleChange"
             ></el-cascader>
-          </div>
+          </div> -->
+          <el-cascader
+            :change-on-select="true"
+            :props="defaultParams"
+            :options="options"
+            v-model="editform.parentId"
+            @change="handleChange"
+            :clearable="true"
+          ></el-cascader>
         </el-form-item>
         <el-form-item label="打开方式" :label-width="formLabelWidth">
           <el-radio-group v-model="editform.openMethod">
@@ -252,7 +247,6 @@
         <el-button type="primary" @click="editForm()">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -262,7 +256,7 @@ import { editColumn } from "@/apis/request.js";
 import { addColumn } from "@/apis/request.js";
 import { deleteColumn } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
-import Sortable from 'sortablejs';
+import Sortable from "sortablejs";
 // import vuedraggable from 'vuedraggable';
 // import axios from 'axios'
 export default {
@@ -270,26 +264,13 @@ export default {
     return {
       editid: 1,
       deleteid: 1,
-      options: [
-        {
-          value: "ziyuan",
-          label: "资源",
-          children: [
-            {
-              value: "axure",
-              label: "Axure Components",
-            },
-            {
-              value: "sketch",
-              label: "Sketch Templates",
-            },
-            {
-              value: "jiaohu",
-              label: "组件交互文档",
-            },
-          ],
-        },
-      ],
+      options: [],
+      selectedOptions: [],
+      defaultParams: {
+        label: "columnName",
+        value: "id",
+        children: "children",
+      },
       tableData: [
         {
           id: 1,
@@ -388,31 +369,31 @@ export default {
       this.addform.bgImgUrl = res.imgUrl;
       console.log(this.addform.bgImgUrl);
     },
-  rowDrop() {
-      const tbody = document.querySelector('.el-table__body-wrapper tbody')
-      const _this = this
+    rowDrop() {
+      const tbody = document.querySelector(".el-table__body-wrapper tbody");
+      const _this = this;
       Sortable.create(tbody, {
         onEnd({ newIndex, oldIndex }) {
-          const currRow = _this.tableData.splice(oldIndex, 1)[0]
-          _this.tableData.splice(newIndex, 0, currRow)
-        }
-      })
+          const currRow = _this.tableData.splice(oldIndex, 1)[0];
+          _this.tableData.splice(newIndex, 0, currRow);
+        },
+      });
     },
-  
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
 
-      if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
-      }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
-    },
+    // beforeAvatarUpload(file) {
+    //   const isJPG = file.type === "image/jpeg";
+    //   const isLt2M = file.size / 1024 / 1024 < 2;
+
+    //   if (!isJPG) {
+    //     this.$message.error("上传头像图片只能是 JPG 格式!");
+    //   }
+    //   if (!isLt2M) {
+    //     this.$message.error("上传头像图片大小不能超过 2MB!");
+    //   }
+    //   return isJPG && isLt2M;
+    // },
     handleChange(value) {
-      console.log(value);
+      console.log(value,0);
     },
 
     handlehidden(index, row) {
@@ -565,28 +546,24 @@ export default {
       }, 1000);
     },
 
-
+    getTreeData(data) {
+      // 循环遍历json数据
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].children.length < 1) {
+          // children若为空数组，则将children设为undefined
+          data[i].children = undefined;
+        } else {
+          // children若不为空数组，则继续 递归调用 本方法
+          this.getTreeData(data[i].children);
+        }
+      }
+      return data;
+    },
     common() {
       allColumn().then((res) => {
-        console.log(res);
+        console.log(res,666);
         this.tableData = res;
-        this.options = res.map((item) => {
-          item.label = item.columnName;
-          item.value = item.id;
-          if (item.children.length > 0) {
-            item.children = item.children.map((item) => {
-              if (item.children.length == 0) {
-                delete item.children;
-              }
-              item.label = item.columnName;
-              item.value = item.id;
-              return item;
-            });
-          } else {
-            delete item.children;
-          }
-          return item;
-        });
+        this.options = this.getTreeData(res);
         this.options.push({
           value: 0,
           label: "无",
@@ -596,8 +573,7 @@ export default {
   },
   mounted() {
     this.common();
-    this.rowDrop()
-
+    this.rowDrop();
   },
 };
 </script>

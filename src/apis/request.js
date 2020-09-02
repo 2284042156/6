@@ -1,5 +1,5 @@
 import axios from 'axios';
-axios.defaults.baseURL='https://192.168.31.180:8081';
+axios.defaults.baseURL='http://liuwanr.cn:8080/msdw';
 export function allColumn(){
     return axios.get('/column/column'
     ).then(res=>{

@@ -76,7 +76,13 @@ export default {
   data() {
     return {
       imageUrl: "0.jpg",
-      form: { bgImgUrl:"",title: "", createTime: "", description: "", textContent: null },
+      form: {
+        bgImgUrl: "",
+        title: "",
+        createTime: "",
+        description: "",
+        textContent: null,
+      },
       formLabelWidth: "90px",
       editorOption: {},
       test: "",
@@ -88,29 +94,28 @@ export default {
     change(val) {
       console.log(val);
     },
-       handleAvatarSuccess(res) {
+    handleAvatarSuccess(res) {
       this.form.bgImgUrl = res.imgUrl;
       console.log(this.editform.bgImgUrl);
     },
 
     edit() {
-        var form={...this.$store.state.editid,...this.form};
-         var date= moment(form.createTime).format('YYYY-MM-DD'); 
-         form.createTime=date;
-         var arr=[]
-         arr.push(form);
-         console.log(arr)
-        editArticle( arr ).then(res=>{
-            console.log(res)
-              getColumnarticle( this.$store.state.columnid).then((res) => {
-        this.$store.state.article = res;
+      var form = { ...this.$store.state.editid, ...this.form };
+      var date = moment(form.createTime).format("YYYY-MM-DD");
+      form.createTime = date;
+      var arr = [];
+      arr.push(form);
+      console.log(arr);
+      editArticle(arr).then((res) => {
+        console.log(res);
+        getColumnarticle(this.$store.state.columnid).then((res) => {
+          this.$store.state.article = res;
+        });
       });
-        })
-
     },
-    cancel(){
-        this.$router.push("/home/contentmange");
-    }
+    cancel() {
+      this.$router.push("/home/contentmange");
+    },
   },
 };
 </script>

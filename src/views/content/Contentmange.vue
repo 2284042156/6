@@ -10,7 +10,15 @@
     </div>
     <el-container>
       <el-aside width="210px">
-        <Child :dataList="listData"></Child>
+        <el-menu
+          :default-active="0"
+          unique-opened
+          class="el-menu-vertical-demo"
+          @open="handleOpen"
+          @close="handleClose"
+        >
+          <Child :dataList="listData"></Child>
+        </el-menu>
       </el-aside>
       <el-main>
         <el-table
@@ -83,12 +91,15 @@ import { allColumn } from "@/apis/request.js";
 import { deleteArticle } from "@/apis/request.js";
 import { editArticle } from "@/apis/request.js";
 import { getColumnarticle } from "@/apis/request.js";
+import { returnColumn } from "@/apis/request.js";
 import moment from "moment";
 //  import { keepOreder } from "@/apis/request.js";
 export default {
   data() {
     return {
       deleteid: 0,
+      id: 0,
+      styleType: 0,
       value1: 0,
       listData: [
         {
@@ -152,6 +163,7 @@ export default {
   },
   components: {
     Child,
+    // Ue
   },
 
   methods: {
@@ -223,6 +235,29 @@ export default {
         console.log(res);
       });
     },
+    handleOpen(key) {
+      this.$store.state.columnid = key;
+
+      returnColumn(key).then((res) => {
+        this.$store.state.styleType = res[0].styleType;
+        console.log(this.$store.state.styleType, 1);
+      });
+      getColumnarticle(key).then((res) => {
+        console.log(res, 1);
+        this.$store.state.article = res;
+      });
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+      returnColumn(key).then((res) => {
+        this.$store.state.styleType = res[0].styleType;
+      });
+      this.$store.state.columnid = key;
+      getColumnarticle(key).then((res) => {
+        this.$store.state.article = res;
+      });
+    },
+
   },
   computed: {
     tablelist() {
@@ -236,8 +271,13 @@ export default {
   mounted() {
     allColumn().then((res) => {
       this.listData = res;
-      // console.log(res);
+      this.styleType = res[0].styleType;
+     
+      getColumnarticle(res[0].id).then((res) => {
+        this.$store.state.article = res;
+      });
     });
+
   },
 };
 </script>
