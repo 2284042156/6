@@ -32,9 +32,10 @@ export default {
   methods: {
     getColumnmessage(id) {
       this.id = id;
-      this.$store.state.columnid = id;
+        this.$store.state.columnid = id;
           returnColumn(id).then(res=>{
          this.$store.state.styleType=res[0].styleType;
+         console.log( this.$store.state.styleType,"66")
       })
 
       getColumnarticle(id).then((res) => {

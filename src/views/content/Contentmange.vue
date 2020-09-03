@@ -191,6 +191,7 @@ export default {
     handleEdit(index, row) {
       console.log(index, row);
       this.$store.state.editid = row;
+      console.log(row);
       this.$router.push("/home/editphoto");
     },
     handleDelete(index, row) {
@@ -226,21 +227,16 @@ export default {
         });
     },
     keepOrder() {
-      //     keepOreder(this.tableData).then(res=>{
-      //   console.log(res);
-
-      // })
-      console.log(this.tablelist);
       editArticle(this.tablelist).then((res) => {
         console.log(res);
       });
     },
     handleOpen(key) {
       this.$store.state.columnid = key;
-
+      console.log(  this.$store.state.columnid )
       returnColumn(key).then((res) => {
         this.$store.state.styleType = res[0].styleType;
-        console.log(this.$store.state.styleType, 1);
+        console.log(this.$store.state.styleType, "a");
       });
       getColumnarticle(key).then((res) => {
         console.log(res, 1);
@@ -249,15 +245,14 @@ export default {
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
+      this.$store.state.columnid = key;
       returnColumn(key).then((res) => {
         this.$store.state.styleType = res[0].styleType;
       });
-      this.$store.state.columnid = key;
       getColumnarticle(key).then((res) => {
         this.$store.state.article = res;
       });
     },
-
   },
   computed: {
     tablelist() {
@@ -271,13 +266,13 @@ export default {
   mounted() {
     allColumn().then((res) => {
       this.listData = res;
-      this.styleType = res[0].styleType;
-     
+      this.$store.state.styleType = res[0].styleType;
+      console.log(res,66666)
       getColumnarticle(res[0].id).then((res) => {
         this.$store.state.article = res;
+        console.log(res,0)
       });
     });
-
   },
 };
 </script>

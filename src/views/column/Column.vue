@@ -80,18 +80,7 @@
           :label-width="formLabelWidth"
           prop="bgImgUrl"
         >
-          <!-- <img id="preview" :src="editform.bgImgUrl" width="250px" height="60px" />
-          <a href="javascript:;" class="file gradient">
-            <input
-              id="pop_file"
-              type="file"
-              accept=".jpg,.jpeg,.png"
-              v-on:change="uploadFile($event)"
-              name="fileTrans"
-              ref="file"
-              value=""
-            />选择文件</a
-          > -->
+
           <el-upload
             class="avatar-uploader"
             action="http://liuwanr.cn:8080/msdw/upload"
@@ -218,14 +207,6 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="设置上级" :label-width="formLabelWidth">
-          <!-- <div class="block">
-            <el-cascader
-              v-model="editform.parentId"
-              :props="{ checkStrictly: true }"
-              :options="options"
-              @change="handleChange"
-            ></el-cascader>
-          </div> -->
           <el-cascader
             :change-on-select="true"
             :props="defaultParams"

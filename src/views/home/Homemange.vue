@@ -9,7 +9,9 @@
         <el-button size="mini" type="primary" @click="submit()" v-show="a"
           >保存</el-button
         >
-        <el-button size="mini" type="primary" v-show="a">取消</el-button>
+        <el-button size="mini" type="primary" @click="remove()" v-show="a"
+          >取消</el-button
+        >
       </div>
     </div>
     <div class="contain">
@@ -189,9 +191,7 @@
         <el-table-column label="视频图片" width="120" align="center">
           <template slot-scope="scope">
             <div class="demo-image__placeholder">
-              <div class="block">
-                <el-image :src="scope.row.imageUrl"></el-image>
-              </div>
+              <el-image :src="scope.row.imageUrl"></el-image>
             </div>
           </template>
         </el-table-column>
@@ -282,7 +282,7 @@
     </el-dialog>
     <el-dialog title="添加项目" :visible.sync="dialogcarousel" width="60%">
       <el-form :model="homeForm.addcarousel" :rules="rules" ref="addcarousel">
-        <el-form-item label="栏目图片" :label-width="formLabelWidth">
+        <el-form-item label="文件选择" :label-width="formLabelWidth">
           <el-upload
             class="avatar-uploader"
             action="http://127.0.0.1:3000/product/upload"
@@ -290,11 +290,20 @@
             :on-success="handlecarousel"
             :before-upload="beforeAvatarUpload"
           >
-            <img
+            <!-- <img
               v-if="homeForm.addcarousel.imageUrl"
               :src="homeForm.addcarousel.imageUrl"
               class="avatar"
-            />
+            /> -->
+                <video
+                v-if="homeForm.addcarousel.imageUrl"
+                v-bind:src="homeForm.addcarousel.imageUrl"
+                class="avatar video-avatar"
+                controls="controls"
+              >
+                您的浏览器不支持视频播放
+              </video>
+          
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -763,6 +772,10 @@ export default {
     fun() {
       this.a = true;
     },
+    remove() {
+      this.a = false;
+      this.changeCount = 0;
+    },
     submitForm(formName) {
       const that = this;
       this.$refs[formName].validate((valid) => {
@@ -844,17 +857,18 @@ export default {
       }
     },
     beforeAvatarUpload(file) {
-      console.log(file);
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      console.log(file,66);
+      const isJPG = file.type ==="image/jpeg" || "image/jpg" || "image/png"||"video/mp4"|| "video/ogg"||"video/flv"||"video/flv"||"video/avi"|| "video/wmv"||"video/rmvb"|| "video/mov"
+
+      const isLt1M = file.size / 1024 / 1024 < 100;
 
       if (!isJPG) {
-        this.$message.error("上传头像图片只能是 JPG 格式!");
+        this.$message.error("文件格式错误!");
       }
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+      if (!isLt1M) {
+        this.$message.error("文件大小不能超过100MB!");
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt1M;
     },
     handleClick(tab, event) {
       console.log(tab, event);
@@ -883,12 +897,11 @@ export default {
           ],
         });
       }
-      if(this.activeName == "second"){
-        this.homeForm.frinedlinkmange.push(    {
-            index: 1,
-            title: "",
-           
-          },)
+      if (this.activeName == "second") {
+        this.homeForm.frinedlinkmange.push({
+          index: 1,
+          title: "",
+        });
       }
     },
   },

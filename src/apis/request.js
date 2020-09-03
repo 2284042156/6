@@ -65,6 +65,6 @@ export function addArticle(parms){
         parms
     }
     ).then(res=>{
-        return res.data.data
+        return res.data
     });
 }
