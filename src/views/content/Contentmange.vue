@@ -191,8 +191,9 @@ export default {
     handleEdit(index, row) {
       console.log(index, row);
       this.$store.state.editid = row;
-      console.log(row);
+      // console.log(row);
       this.$router.push("/home/editphoto");
+      console.log( this.$store.state.editid,6 )
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -233,7 +234,7 @@ export default {
     },
     handleOpen(key) {
       this.$store.state.columnid = key;
-      console.log(  this.$store.state.columnid )
+      console.log(this.$store.state.columnid);
       returnColumn(key).then((res) => {
         this.$store.state.styleType = res[0].styleType;
         console.log(this.$store.state.styleType, "a");
@@ -267,10 +268,11 @@ export default {
     allColumn().then((res) => {
       this.listData = res;
       this.$store.state.styleType = res[0].styleType;
-      console.log(res,66666)
+      this.$store.state.columnid = res[0].id;
+      console.log(res, 66666);
       getColumnarticle(res[0].id).then((res) => {
         this.$store.state.article = res;
-        console.log(res,0)
+        console.log(res, 0);
       });
     });
   },

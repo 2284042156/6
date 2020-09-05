@@ -83,7 +83,7 @@
 
           <el-upload
             class="avatar-uploader"
-            action="http://liuwanr.cn:8080/msdw/upload"
+            :action="joggle"
             :show-file-list="false"
             :on-success="handleAvatarSuccessadd"
             :before-upload="beforeAvatarUpload"
@@ -99,11 +99,11 @@
         </el-form-item>
         <el-form-item label="展示类型" :label-width="formLabelWidth">
           <el-radio-group v-model="addform.showType">
-            <el-radio label="0">
+            <el-radio :label="0">
               <img src="../../assets/images/btn_pic_1.png" alt="" />
               <span>图片列表</span>
             </el-radio>
-            <el-radio label="1">
+            <el-radio :label="1">
               <img src="../../assets/images/btn_pic_2.png" alt="" />
               <span>新闻列表</span>
             </el-radio>
@@ -111,15 +111,15 @@
         </el-form-item>
         <el-form-item label="详情样式" :label-width="formLabelWidth">
           <el-radio-group v-model="addform.styleType">
-            <el-radio label="0">
+            <el-radio :label="0">
               <img src="../../assets/images/12.png" alt="" />
               <span>视频详情</span>
             </el-radio>
-            <el-radio label="1">
+            <el-radio :label="1">
               <img src="../../assets/images/btn_pic_4.png" alt="" />
               <span>富文本</span>
             </el-radio>
-            <el-radio label="2">
+            <el-radio :label="2">
               <img src="../../assets/images/icon_link.png" alt="" />
               <span>链接</span>
             </el-radio>
@@ -141,8 +141,8 @@
         </el-form-item>
         <el-form-item label="打开方式" :label-width="formLabelWidth">
           <el-radio-group v-model="addform.openMethod">
-            <el-radio label="0">当前窗口</el-radio>
-            <el-radio label="1">新窗口</el-radio>
+            <el-radio :label="0">当前窗口</el-radio>
+            <el-radio :label="1">新窗口</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -164,7 +164,7 @@
    
           <el-upload
             class="avatar-uploader"
-            action="https://192.168.31.180:8081/upload/uploadImage"
+            :action="joggle"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
@@ -180,11 +180,11 @@
         </el-form-item>
         <el-form-item label="展示类型" :label-width="formLabelWidth">
           <el-radio-group v-model="editform.showType">
-            <el-radio label="0">
+            <el-radio :label="0">
               <img src="../../assets/images/btn_pic_1.png" alt="" />
               <span>图片列表</span>
             </el-radio>
-            <el-radio label="1">
+            <el-radio :label="1">
               <img src="../../assets/images/btn_pic_2.png" alt="" />
               <span>新闻列表</span>
             </el-radio>
@@ -192,15 +192,15 @@
         </el-form-item>
         <el-form-item label="详情样式" :label-width="formLabelWidth">
           <el-radio-group v-model="editform.styleType">
-            <el-radio label="0">
+            <el-radio :label="0">
               <img src="../../assets/images/12.png" alt="" />
               <span>视频详情</span>
             </el-radio>
-            <el-radio label="1">
+            <el-radio :label="1">
               <img src="../../assets/images/btn_pic_4.png" alt="" />
               <span>富文本</span>
             </el-radio>
-            <el-radio label="2">
+            <el-radio :label="2">
               <img src="../../assets/images/icon_link.png" alt="" />
               <span>链接</span>
             </el-radio>
@@ -218,8 +218,8 @@
         </el-form-item>
         <el-form-item label="打开方式" :label-width="formLabelWidth">
           <el-radio-group v-model="editform.openMethod">
-            <el-radio label="0">当前窗口</el-radio>
-            <el-radio label="1">新窗口</el-radio>
+            <el-radio :label="0">当前窗口</el-radio>
+            <el-radio :label="1">新窗口</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -237,12 +237,14 @@ import { editColumn } from "@/apis/request.js";
 import { addColumn } from "@/apis/request.js";
 import { deleteColumn } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
+import { joggle } from "@/apis/request.js";
 import Sortable from "sortablejs";
 // import vuedraggable from 'vuedraggable';
 // import axios from 'axios'
 export default {
   data() {
     return {
+      joggle,
       editid: 1,
       deleteid: 1,
       options: [],
@@ -318,9 +320,9 @@ export default {
       editform: {
         columnName: "",
         bgImgUrl: null,
-        showType: "0",
-        styleType: "0",
-        openMethod: "0",
+        showType: 0,
+        styleType: 0,
+        openMethod: 0,
         parentId: [],
       },
       dialogaddFormVisible: false,
@@ -343,11 +345,12 @@ export default {
   // },
   methods: {
     handleAvatarSuccess(res) {
-      this.editform.bgImgUrl = res.imgUrl;
+      this.editform.bgImgUrl = res.data.fileUrl;
       console.log(this.editform.bgImgUrl);
     },
     handleAvatarSuccessadd(res) {
-      this.addform.bgImgUrl = res.imgUrl;
+      // this.addform.bgImgUrl = res.imgUrl;
+      this.addform.bgImgUrl =  res.data.fileUrl;
       console.log(this.addform.bgImgUrl);
     },
     rowDrop() {
@@ -364,6 +367,7 @@ export default {
     // beforeAvatarUpload(file) {
     //   const isJPG = file.type === "image/jpeg";
     //   const isLt2M = file.size / 1024 / 1024 < 2;
+    //   console.log(file,"ply")
 
     //   if (!isJPG) {
     //     this.$message.error("上传头像图片只能是 JPG 格式!");
@@ -409,9 +413,9 @@ export default {
       returnColumn(row.id).then((res) => {
         this.editform.columnName = res[0].columnName;
         this.editform.bgImgUrl = res[0].bgImgUrl;
-        this.editform.showType = JSON.stringify(res[0].showType);
-        this.editform.styleType = JSON.stringify(res[0].styleType);
-        this.editform.openMethod = JSON.stringify(res[0].openMethod);
+        this.editform.showType = res[0].showType;
+        this.editform.styleType = res[0].styleType;
+        this.editform.openMethod = res[0].openMethod;
         console.log(this.editform);
       });
       console.log(index, row);
@@ -543,18 +547,20 @@ export default {
     common() {
       allColumn().then((res) => {
         console.log(res,666);
-        this.tableData = res;
+         
+        this.tableData = JSON.parse(JSON.stringify(res))  ;
         this.options = this.getTreeData(res);
         this.options.push({
-          value: 0,
-          label: "无",
+          id: 0,
+          columnName: "无",
         });
+        console.log(this.options)
       });
     },
   },
   mounted() {
     this.common();
-    this.rowDrop();
+    // this.rowDrop();
   },
 };
 </script>

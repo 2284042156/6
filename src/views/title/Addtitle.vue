@@ -12,7 +12,7 @@
           <el-form-item label="封面图" :label-width="formLabelWidth">
             <el-upload
               class="avatar-uploader"
-              action="http://liuwanr.cn:8080/msdw/aliyun/uploadFiles"
+              :action="joggle"
               :show-file-list="false"
               :on-success="handlePhotoSuccess"
               :before-upload="beforeAvatarUpload"
@@ -79,7 +79,7 @@
           <el-form-item label="封面图" :label-width="formLabelWidth">
             <el-upload
               class="avatar-uploader"
-              action="http://liuwanr.cn:8080/msdw/aliyun/uploadFiles"
+              :action="joggle"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
@@ -115,7 +115,7 @@
           <el-form-item label="视频" :label-width="formLabelWidth">
             <el-upload
               class="avatar-uploader"
-              action="http://liuwanr.cn:8080/msdw/aliyun/uploadFiles"
+              :action="joggle"
               v-bind:data="{ FoldPath: '上传目录', SecretKey: '安全验证' }"
               v-bind:on-progress="uploadVideoProcess"
               v-bind:on-success="handleVideoSuccess"
@@ -169,7 +169,7 @@
           <el-form-item label="封面图" :label-width="formLabelWidth">
             <el-upload
               class="avatar-uploader"
-              action="http://liuwanr.cn:8080/msdw/aliyun/uploadFiles"
+              :action="joggle"
               :show-file-list="false"
               :on-success="handleLinkSuccess"
               :before-upload="beforeAvatarUpload"
@@ -213,7 +213,7 @@
               :change-on-select="true"
               :props="defaultParams"
               :options="options"
-              v-model="linkForm.linkColumnId"
+              v-model="value"
               @change="handleChange"
               :clearable="true"
             ></el-cascader>
@@ -263,12 +263,14 @@ import { allColumn } from "@/apis/request.js";
 import moment from "moment";
 import { getColumnarticle } from "@/apis/request.js";
 import { addArticle } from "@/apis/request.js";
+import { joggle } from "@/apis/request.js";
 export default {
   components: {
     quillEditor,
   },
   data() {
     return {
+      joggle,
       defaultParams: {
         label: "columnName",
         value: "id",
@@ -382,10 +384,11 @@ export default {
       },
       linkForm: {
         bgImgUrl: "",
-        createTime: "",
-        linkType: 2,
+        createTime: "2020-08-20",
+        linkType: 0,
         linkUrl: "",
-        linkColumnId: [],
+        linkColumnId:0,
+        columnId:"",
         title: "",
         linkArticleId: "",
       },
@@ -398,6 +401,7 @@ export default {
     handleChange(value) {
       let index = value.length - 1;
       let id = value[index];
+     this.linkForm.linkColumnId=value[index];
       getColumnarticle(id).then((res) => {
         this.option = res.map((res) => {
           return {
@@ -472,7 +476,7 @@ export default {
       this.isShowUploadVideo = true;
       this.videoFlag = false;
       this.videoUploadPercent = 0;
-      this.videoForm.videoUrl = res.fileUrl;
+      this.videoForm.videoUrl = res.data.fileUrl;
     },
     change(val) {
       console.log(val);
@@ -482,16 +486,15 @@ export default {
     },
     handlePhotoSuccess(res) {
       // this.photoForm.bgImgUrl = res.imgUrl;
-      this.photoForm.bgImgUrl = res.fileUrl;
+      this.photoForm.bgImgUrl = res.data.fileUrl;
     },
     handleAvatarSuccess(res) {
       // this.videoForm.bgImgUrl = res.imgUrl;
-      this.videoForm.bgImgUrl = res.fileUrl;
+      this.videoForm.bgImgUrl = res.data.fileUrl;
     },
     handleLinkSuccess(res) {
       // this.linkForm.bgImgUrl = res.imgUrl;
-      this.linkForm.bgImgUrl = res.fileUrl;
-      console.log(res, 66);
+      this.linkForm.bgImgUrl = res.data.fileUrl;
     },
 
     photoAdd() {
@@ -519,25 +522,31 @@ export default {
       });
     },
     linkAdd() {
-      var index = this.linkForm.linkColumnId.length - 1;
-      this.linkForm.linkColumnId = this.linkForm.linkColumnId[index];
       var form = { ...this.linkForm };
       var date = moment(form.createTime).format("YYYY-MM-DD");
       form.createTime = date;
       form.columnId = this.$store.state.columnid;
-      console.log(form);
-      addArticle(form).then((res) => {
+      addArticle(
+        form
+      ).then((res) => {
         console.log(res);
         getColumnarticle(this.$store.state.columnid).then((res) => {
           this.$store.state.article = res;
         });
       });
+      
     },
     cancel() {
       this.$router.push("/home/contentmange");
     },
   },
   mounted() {
+      var date =new Date();
+       date = moment(date).format("YYYY-MM-DD");
+        this.linkForm.createTime=date;
+        this.photoForm.createTime=date;
+        this.videoForm.createTime=date;
+        
     this.common();
   },
 };

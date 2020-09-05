@@ -14,7 +14,7 @@
           <el-form-item label="封面图" :label-width="formLabelWidth">
             <el-upload
               class="avatar-uploader"
-              action="http://127.0.0.1:3000/product/upload"
+              :action="joggle"
               :show-file-list="false"
               :on-success="handlePhotoSuccess"
               :before-upload="beforeAvatarUpload"
@@ -83,7 +83,7 @@
           <el-form-item label="封面图" :label-width="formLabelWidth">
             <el-upload
               class="avatar-uploader"
-              action="http://127.0.0.1:3000/product/upload"
+              :action="joggle"
               :show-file-list="false"
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
@@ -119,7 +119,7 @@
           <el-form-item label="视频" :label-width="formLabelWidth">
             <el-upload
               class="avatar-uploader"
-              action="http://127.0.0.1:3000/product/upload"
+              :action="joggle"
               v-bind:data="{ FoldPath: '上传目录', SecretKey: '安全验证' }"
               v-bind:on-progress="uploadVideoProcess"
               v-bind:on-success="handleVideoSuccess"
@@ -173,7 +173,7 @@
           <el-form-item label="封面图" :label-width="formLabelWidth">
             <el-upload
               class="avatar-uploader"
-              action="http://127.0.0.1:3000/product/upload"
+              :action="joggle"
               :show-file-list="false"
               :on-success="handleLinkSuccess"
               :before-upload="beforeAvatarUpload"
@@ -265,6 +265,7 @@ import { editArticle } from "@/apis/request.js";
 import { quillEditor } from "vue-quill-editor";
 import { allColumn } from "@/apis/request.js";
 import moment from "moment";
+import { joggle } from "@/apis/request.js";
 import { getColumnarticle } from "@/apis/request.js";
 export default {
   components: {
@@ -272,6 +273,7 @@ export default {
   },
   data() {
     return {
+      joggle,
       defaultParams: {
         label: "columnName",
         value: "id",
@@ -385,10 +387,10 @@ export default {
       },
       linkForm: {
         bgImgUrl: "",
-        createTime: "",
-        linkType: 2,
+        createTime: "2020-08-20",
+        linkType: 0,
         linkUrl: "",
-        linkColumnId: [],
+        linkColumnId: 0,
         title: "",
         linkArticleId: "",
       },
@@ -401,6 +403,7 @@ export default {
     handleChange(value) {
       let index = value.length - 1;
       let id = value[index];
+      this.linkForm.linkColumnId = value[index];
       getColumnarticle(id).then((res) => {
         this.option = res.map((res) => {
           return {
@@ -414,6 +417,17 @@ export default {
     common() {
       allColumn().then((res) => {
         this.options = this.getTreeData(res);
+        if( this.linkForm.linkColumnId){
+       getColumnarticle(this.linkForm.linkColumnId).then((res) => {
+        this.option = res.map((res) => {
+          return {
+            value: res.id,
+            label: res.title,
+          };
+        });
+        console.log(res, 0);
+      });
+        }
       });
     },
     getTreeData(data) {
@@ -462,8 +476,7 @@ export default {
       this.isShowUploadVideo = true;
       this.videoFlag = false;
       this.videoUploadPercent = 0;
-      this.videoForm.videoUrl =
-        "http://127.0.0.1:3000/upload/product/" + res.fileName;
+      this.videoForm.videoUrl = res.data.fileUrl;
     },
     change(val) {
       console.log(val);
@@ -472,20 +485,14 @@ export default {
       console.log(this.$refs.text.value);
     },
     handlePhotoSuccess(res) {
-      // this.photoForm.bgImgUrl = res.imgUrl;
-      this.photoForm.bgImgUrl =
-        "http://127.0.0.1:3000/upload/product/" + res.fileName;
+      this.photoForm.bgImgUrl = res.data.fileUrl;
     },
     handleAvatarSuccess(res) {
-      // this.videoForm.bgImgUrl = res.imgUrl;
-      this.videoForm.bgImgUrl =
-        "http://127.0.0.1:3000/upload/product/" + res.fileName;
+      this.videoForm.bgImgUrl = res.data.fileUrl;
       console.log(res);
     },
     handleLinkSuccess(res) {
-      // this.linkForm.bgImgUrl = res.imgUrl;
-      this.linkForm.bgImgUrl =
-        "http://127.0.0.1:3000/upload/product/" + res.fileName;
+      this.linkForm.bgImgUrl = res.data.fileUrl;
     },
 
     photoEdit() {
@@ -537,6 +544,32 @@ export default {
     },
   },
   mounted() {
+    if(this.$store.state.styleType == 1){
+        this.photoForm.bgImgUrl= this.$store.state.editid.bgImgUrl;
+        this.photoForm.title=this.$store.state.editid.title;
+        this.photoForm.createTime=this.$store.state.editid.createTime;
+        this.photoForm.description=this.$store.state.editid.description;
+        this.photoForm.textContent=this.$store.state.editid.textContent;
+    }
+       if(this.$store.state.styleType == 0){
+        this.videoForm.bgImgUrl= this.$store.state.editid.bgImgUrl;
+        this.videoForm.title=this.$store.state.editid.title;
+        this.videoForm.videoUrl=this.$store.state.editid.videoUrl;
+        this.videoForm.createTime=this.$store.state.editid.createTime;
+        this.videoForm.description=this.$store.state.editid.description;
+        this.videoForm.textContent=this.$store.state.editid.textContent;
+    }
+       if(this.$store.state.styleType == 2){
+        this.linkForm.bgImgUrl= this.$store.state.editid.bgImgUrl;
+        this.linkForm.title=this.$store.state.editid.title;
+        this.linkForm.createTime=this.$store.state.editid.createTime;
+        this.linkForm.description=this.$store.state.editid.description;
+        this.linkForm.linkType=this.$store.state.editid.linkType;
+        this.linkForm.linkUrl=this.$store.state.editid.linkUrl;
+        this.linkForm.linkColumnId=this.$store.state.editid.linkColumnId;
+        this.linkForm.linkArticleId=this.$store.state.editid.linkArticleId
+        console.log(this.$store.state.editid.linkColumnId)
+    }
     this.common();
   },
 };

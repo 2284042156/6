@@ -16,15 +16,19 @@
     </div>
     <div class="contain">
       <div class="front" style="height:180px;width:100%" v-if="!a">
-        <el-image style="width: 100%; height:180px" :src="url"> </el-image>
+        <el-image
+          style="width: 100%; height:180px"
+          :src="homeFormfirst.bannerurl"
+        >
+        </el-image>
       </div>
       <el-upload
         v-else
         class="avatar-uploader front"
-        action="http://127.0.0.1:3000/product/upload"
+        :action="joggle"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload"
+        :before-upload="beforebannerAvatarUpload"
       >
         <img
           v-if="homeForm.bannerurl"
@@ -38,7 +42,7 @@
       </el-upload>
       <div class="carousel front">
         <div class="left">
-          <div class="input_video">
+          <div class="input_video" v-show="isshowvideo">
             <video-player
               class="video-player vjs-custom-skin"
               ref="videoPlayer"
@@ -46,11 +50,12 @@
               :options="playerOptions"
             ></video-player>
           </div>
+          <img :src="homeFormfirst.tableData.url" alt="" v-show="isshowimage">
         </div>
         <div class="right ">
-          <h3>四川大学</h3>
+          <h3>{{homeFormfirst.tableData.title }}</h3>
           <p>
-            四川大学大学巴适得板哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻呵呵呵呵呵呵哈哈哈红红火火恍恍惚惚红红火火恍恍惚惚红红火火恍恍惚惚哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊呵呵呵呵呵呵呵呵细细想想哦哦哦哦哦哦哦哦哦哦哦哦哦哦哦哦
+           {{homeFormfirst.tableData.description}}
           </p>
         </div>
         <div class="back" v-show="a" @click="changecarousel()">
@@ -59,7 +64,7 @@
       </div>
       <div class="category">
         <h3 class="front">
-          标题
+          {{ homeFormfirst.titleone }}
           <div class="back" v-show="a" @click="changetitle()">
             <p>点击我更改标题</p>
           </div>
@@ -69,7 +74,7 @@
             <img src="3.jpg" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
-            <div class="back" v-show="a">
+            <div class="back" v-show="a" @click="changelink()">
               <p>点击我更改banner</p>
             </div>
           </div>
@@ -77,7 +82,7 @@
             <img src="3.jpg" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
-            <div class="back" v-show="a">
+            <div class="back" v-show="a" @click="changelink()">
               <p>点击我更改banner</p>
             </div>
           </div>
@@ -85,7 +90,7 @@
             <img src="3.jpg" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
-            <div class="back" v-show="a">
+            <div class="back" v-show="a" @click="changelink()">
               <p>点击我更改banner</p>
             </div>
           </div>
@@ -95,7 +100,7 @@
             <img src="3.jpg" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
-            <div class="back" v-show="a">
+            <div class="back" v-show="a" @click="changelink()">
               <p>点击我更改banner</p>
             </div>
           </div>
@@ -103,7 +108,7 @@
             <img src="3.jpg" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
-            <div class="back" v-show="a">
+            <div class="back" v-show="a" @click="changelink()">
               <p>点击我更改banner</p>
             </div>
           </div>
@@ -111,7 +116,7 @@
             <img src="3.jpg" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
-            <div class="back" v-show="a">
+            <div class="back" v-show="a" @click="changelink()">
               <p>点击我更改banner</p>
             </div>
           </div>
@@ -119,52 +124,58 @@
       </div>
       <div class="article">
         <h3 class="front">
-          标题
+          {{ homeFormfirst.titletwo }}
           <div class="back" v-show="a" @click="changearticle()">
             <p>点击更改标题</p>
           </div>
         </h3>
         <div class="articlelink">
           <h3 class="front">
-            站内文章栏目链接
-            <div class="back" v-show="a" @click="changelink()">
+            {{ homeFormfirst.linkcolumn }}
+            <div class="back" v-show="a" @click="changecolumn()">
               <p>点击更改栏目链接</p>
             </div>
           </h3>
           <h3 class="front">
-            站内文章栏目链接
-            <div class="back" v-show="a">
+            {{ homeFormfirst.linkcolumntwo }}
+            <div class="back" v-show="a" @click="changecolumntwo()">
               <p>点击更改栏目链接</p>
             </div>
           </h3>
         </div>
         <div class="articledetails">
-          <img src="2.jpg" alt="" />
+          <img :src="homeFormfirst.linkcolumnarticletop.bgImgUrl" alt="" />
           <div>
-            1
+            <p>
+              {{ homeFormfirst.linkcolumnarticletop.title }} <br />
+              {{ homeFormfirst.linkcolumnarticletop.textContent }}
+            </p>
           </div>
         </div>
         <div class="articledetailsitem">
+          <div
+            v-for="value in homeFormfirst.linkcolumnarticlebottom"
+            :key="value.id"
+          >
+            <img :src="value.bgImgUrl" alt="" />
+            <p>{{ value.title }}</p>
+            <p class="time">{{ value.createTime }}</p>
+          </div>
+          <!-- <div>
+            <img src="2.jpg" alt="" />
+            <p>标题1</p>
+            <p>标题1</p>
+          </div>
           <div>
             <img src="2.jpg" alt="" />
             <p>标题1</p>
-            <p class="time">标题1</p>
+            <p>标题1</p>
           </div>
           <div>
             <img src="2.jpg" alt="" />
             <p>标题1</p>
             <p>标题1</p>
-          </div>
-          <div>
-            <img src="2.jpg" alt="" />
-            <p>标题1</p>
-            <p>标题1</p>
-          </div>
-          <div>
-            <img src="2.jpg" alt="" />
-            <p>标题1</p>
-            <p>标题1</p>
-          </div>
+          </div> -->
         </div>
       </div>
 
@@ -186,12 +197,12 @@
         align="center"
       >
         <el-table-column label="编号" width="60" align="center">
-          <template slot-scope="scope">{{ scope.row.index }}</template>
+          <template slot-scope="scope">{{ scope.row.sort }}</template>
         </el-table-column>
         <el-table-column label="视频图片" width="120" align="center">
           <template slot-scope="scope">
             <div class="demo-image__placeholder">
-              <el-image :src="scope.row.imageUrl"></el-image>
+              <el-image :src="scope.row.url"></el-image>
             </div>
           </template>
         </el-table-column>
@@ -224,7 +235,12 @@
               @click="handleDelete(scope.$index, scope.row)"
               >删除</el-button
             >
-            &emsp;<el-switch v-model="scope.row.value1"> </el-switch>
+            &emsp;<el-switch
+              :active-value="0"
+              :inactive-value="1"
+              v-model="scope.row.isOpen"
+            >
+            </el-switch>
           </template>
         </el-table-column>
       </el-table>
@@ -243,7 +259,7 @@
         <el-form-item label="栏目图片" :label-width="formLabelWidth">
           <el-upload
             class="avatar-uploader"
-            action="http://127.0.0.1:3000/product/upload"
+            :action="joggle"
             :show-file-list="false"
             :on-success="handlecarousel"
             :before-upload="beforeAvatarUpload"
@@ -285,25 +301,24 @@
         <el-form-item label="文件选择" :label-width="formLabelWidth">
           <el-upload
             class="avatar-uploader"
-            action="http://127.0.0.1:3000/product/upload"
+            :action="joggle"
+            v-bind:data="{ FoldPath: '上传目录', SecretKey: '安全验证' }"
             :show-file-list="false"
             :on-success="handlecarousel"
             :before-upload="beforeAvatarUpload"
           >
-            <!-- <img
-              v-if="homeForm.addcarousel.imageUrl"
-              :src="homeForm.addcarousel.imageUrl"
+            <img
+              v-if="imageshow"
+              :src="homeForm.addcarousel.url"
               class="avatar"
-            /> -->
-                <video
-                v-if="homeForm.addcarousel.imageUrl"
-                v-bind:src="homeForm.addcarousel.imageUrl"
-                class="avatar video-avatar"
-                controls="controls"
-              >
-                您的浏览器不支持视频播放
-              </video>
-          
+            />
+
+            <video
+              class="avatar"
+              controls="controls"
+              v-else-if="videoshow"
+              :src="homeForm.addcarousel.url"
+            ></video>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -319,9 +334,13 @@
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="content" label="内容" :label-width="formLabelWidth">
+        <el-form-item
+          prop="description"
+          label="内容"
+          :label-width="formLabelWidth"
+        >
           <el-input
-            v-model="homeForm.addcarousel.content"
+            v-model="homeForm.addcarousel.description"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -419,6 +438,56 @@
         >
       </div>
     </el-dialog>
+    <el-dialog title="链接栏目" :visible.sync="dialoglinkcolumn" width="60%">
+      <el-form :model="homeForm" :rules="rules" ref="linkcolumn">
+        <el-form-item
+          prop="linkcolumn"
+          label="站内链接"
+          :label-width="formLabelWidth"
+        >
+          <el-cascader
+            :change-on-select="true"
+            :props="defaultParams"
+            :options="options"
+            v-model="homeForm.linkcolumn"
+            @change="handleChange"
+            :clearable="true"
+          ></el-cascader>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialoglinkcolumn = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('linkcolumn')"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
+    <el-dialog title="链接栏目" :visible.sync="dialoglinkcolumntwo" width="60%">
+      <el-form :model="homeForm" :rules="rules" ref="linkcolumntwo">
+        <el-form-item
+          prop="linkcolumntwo"
+          label="站内链接"
+          :label-width="formLabelWidth"
+        >
+          <el-cascader
+            :change-on-select="true"
+            :props="defaultParams"
+            :options="options"
+            v-model="homeForm.linkcolumntwo"
+            @change="handleChange"
+            :clearable="true"
+          ></el-cascader>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialoglinkcolumntwo = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('linkcolumntwo')"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
     <el-dialog
       title="友情链接管理"
       :visible.sync="dialogfriendlink"
@@ -435,7 +504,7 @@
             align="center"
           >
             <el-table-column label="编号" width="60" align="center">
-              <template slot-scope="scope">{{ scope.row.index }}</template>
+              <template slot-scope="scope">{{ scope.row.id }}</template>
             </el-table-column>
             <el-table-column label="标题" width="180" align="center">
               <template slot-scope="scope">
@@ -447,12 +516,12 @@
             </el-table-column>
             <el-table-column label="分类" width="200" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.class" placeholder="请选择分类">
+                <el-select v-model="scope.row.classifyId" placeholder="请选择分类">
                   <el-option
                     v-for="item in scope.row.options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    :key="item.id"
+                    :label="item.classifyName"
+                    :value="item.id"
                   >
                   </el-option>
                 </el-select>
@@ -461,7 +530,7 @@
             <el-table-column label="网址" width="200" align="center">
               <template slot-scope="scope">
                 <el-input
-                  v-model="scope.row.adress"
+                  v-model="scope.row.linkUrl"
                   placeholder="请输入网址"
                 ></el-input>
               </template>
@@ -482,12 +551,12 @@
             align="center"
           >
             <el-table-column label="编号" width="60" align="center">
-              <template slot-scope="scope">{{ scope.row.index }}</template>
+              <template slot-scope="scope">{{ scope.row.id }}</template>
             </el-table-column>
             <el-table-column label="分类" width="420" align="center">
               <template slot-scope="scope">
                 <el-input
-                  v-model="scope.row.title"
+                  v-model="scope.row.classifyName"
                   placeholder="请输入网址"
                 ></el-input>
               </template>
@@ -519,17 +588,105 @@
 </template>
 
 <script>
+import { joggle } from "@/apis/request.js";
+import { getHomebanner } from "@/apis/request.js";
+import { getHomecolumn } from "@/apis/request.js";
+import { postHomebanner } from "@/apis/request.js";
+import { getHomecarouse } from "@/apis/request.js";
+import { addHomecarouse } from "@/apis/request.js";
+import { getHomeheadline } from "@/apis/request.js";
+import { allColumn } from "@/apis/request.js";
+import { getColumnarticle } from "@/apis/request.js";
+import { getHomeclassify } from "@/apis/request.js";
+import { getHomefriendlink } from "@/apis/request.js";
+import { returnColumn } from "@/apis/request.js";
 export default {
   data() {
     return {
+      joggle,
       index: 0,
       form: {
         name: "",
       },
+      defaultParams: {
+        label: "columnName",
+        value: "id",
+        children: "children",
+      },
+      options: [
+        {
+          value: "zhinan",
+          label: "指南",
+          children: [
+            {
+              value: "shejiyuanze",
+              label: "设计原则",
+              children: [
+                {
+                  value: "yizhi",
+                  label: "一致",
+                },
+                {
+                  value: "fankui",
+                  label: "反馈",
+                },
+                {
+                  value: "xiaolv",
+                  label: "效率",
+                },
+                {
+                  value: "kekong",
+                  label: "可控",
+                },
+              ],
+            },
+            {
+              value: "daohang",
+              label: "导航",
+              children: [
+                {
+                  value: "cexiangdaohang",
+                  label: "侧向导航",
+                },
+                {
+                  value: "dingbudaohang",
+                  label: "顶部导航",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          value: "ziyuan",
+          label: "资源",
+          children: [
+            {
+              value: "axure",
+              label: "Axure Components",
+            },
+            {
+              value: "sketch",
+              label: "Sketch Templates",
+            },
+            {
+              value: "jiaohu",
+              label: "组件交互文档",
+            },
+          ],
+        },
+      ],
+      addhomeForm: {
+        bgImgId: 2,
+        carouselIds: "1,2,3,4",
+        headline1Id: 1,
+        linkIds: "1,2,3,4",
+        headline2Id: 2,
+        columnIds: "1,2,3,4",
+        friendshipLinkIds: "1,2,3,4",
+      },
       activeName: "first",
       homeForm: {
-        bannerurl:
-          "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
+        bannerurl: "",
         tableData: [
           {
             index: 1,
@@ -670,13 +827,14 @@ export default {
             },
           ],
         },
+        linkcolumn: 0,
+        linkcolumntwo: 0,
+        columnarticletop: {},
+        columnarticlebottom: {},
         addcarousel: {
-          index: 1,
-          imageUrl:
-            "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
+          url: "",
           title: "",
-          content: "",
-          value1: true,
+          description: "",
         },
         editcarousel: {
           imageUrl:
@@ -685,6 +843,169 @@ export default {
           content: "",
         },
       },
+      homeFormfirst: {
+        bannerurl: "",
+        tableData: [
+          {
+            index: 1,
+            title: "四川大学1",
+            value1: true,
+            imageUrl:
+              "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+          },
+          {
+            index: 2,
+            title: "四川大学2",
+            value1: true,
+            imageUrl:
+              "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
+          },
+          {
+            index: 3,
+            title: "四川大学3",
+            value1: true,
+            imageUrl: "",
+          },
+        ],
+        frinedlinktableData: [
+          {
+            index: 1,
+            title: "四川大学",
+            class: "",
+            value: true,
+            address: "https://123",
+            options: [
+              {
+                value: "选项1",
+                label: "黄金糕",
+              },
+              {
+                value: "选项2",
+                label: "双皮奶",
+              },
+            ],
+          },
+          {
+            index: 1,
+            title: "四川大学",
+            class: "",
+            value: true,
+            address: "https://123",
+            options: [
+              {
+                value: "选项1",
+                label: "黄金糕",
+              },
+              {
+                value: "选项2",
+                label: "双皮奶",
+              },
+            ],
+          },
+        ],
+        frinedlinkmange: [
+          {
+            index: 1,
+            title: "四川大学",
+            value: true,
+          },
+          {
+            index: 1,
+            title: "四川大学",
+            value: true,
+          },
+        ],
+        titleone: "",
+        titletwo: "",
+        linkcolumn: "",
+        linkcolumntwo: "",
+        formlink: {
+          title: "",
+          linkclass: "",
+          out: "",
+          in: [],
+          options: [
+            {
+              value: "zhinan",
+              label: "指南",
+              children: [
+                {
+                  value: "shejiyuanze",
+                  label: "设计原则",
+                  children: [
+                    {
+                      value: "yizhi",
+                      label: "一致",
+                    },
+                    {
+                      value: "fankui",
+                      label: "反馈",
+                    },
+                    {
+                      value: "xiaolv",
+                      label: "效率",
+                    },
+                    {
+                      value: "kekong",
+                      label: "可控",
+                    },
+                  ],
+                },
+                {
+                  value: "daohang",
+                  label: "导航",
+                  children: [
+                    {
+                      value: "cexiangdaohang",
+                      label: "侧向导航",
+                    },
+                    {
+                      value: "dingbudaohang",
+                      label: "顶部导航",
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              value: "ziyuan",
+              label: "资源",
+              children: [
+                {
+                  value: "axure",
+                  label: "Axure Components",
+                },
+                {
+                  value: "sketch",
+                  label: "Sketch Templates",
+                },
+                {
+                  value: "jiaohu",
+                  label: "组件交互文档",
+                },
+              ],
+            },
+          ],
+        },
+        addcarousel: {
+          url: "",
+          title: "",
+          description: "",
+        },
+        editcarousel: {
+          imageUrl:
+            "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
+          title: "",
+          content: "",
+        },
+        linkcolumnarticletop: {},
+        linkcolumnarticlebottom: [],
+      },
+
+      imageshow: false,
+      videoshow: false,
+      isshowimage:false,
+      isshowvideo:false,
       dialogFormVisible: false,
       dialogcarousel: false,
       dialogeditcarousel: false,
@@ -692,12 +1013,13 @@ export default {
       dialogtitletwo: false,
       dialoglink: false,
       dialogfriendlink: false,
+      dialoglinkcolumn: false,
+      dialoglinkcolumntwo: false,
       formLabelWidth: "90px",
       a: false,
       changeCount: 0, // 判断表单数据是否改变过
       isPopup: false, // 判断提交事件不再弹出离开提示
-      url:
-        "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
+      url: "1.jpeg",
       playerOptions: {
         playbackRates: [0.5, 1.0, 1.5, 2.0], //可选择的播放速度
         autoplay: false, //如果true,浏览器准备好时开始回放。
@@ -731,6 +1053,9 @@ export default {
         titletwo: [
           { required: true, message: "请输入标题名称", trigger: "blur" },
         ],
+        linkcolumn: [
+          { required: true, message: "请输入站内连接栏目", trigger: "blur" },
+        ],
         linkclass: [
           {
             required: true,
@@ -738,7 +1063,9 @@ export default {
             trigger: "change",
           },
         ],
-        content: [{ required: true, message: "请输入内容", trigger: "blur" }],
+        description: [
+          { required: true, message: "请输入内容", trigger: "blur" },
+        ],
         in: [{ required: true, message: "请选择站内链接", trigger: "change" }],
         out: [{ required: true, message: "请选择站外链接", trigger: "blur" }],
       },
@@ -746,6 +1073,25 @@ export default {
     //  console.log(that.homeForm)
   },
   methods: {
+    getTreeData(data) {
+      // 循环遍历json数据
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].children.length < 1) {
+          // children若为空数组，则将children设为undefined
+          data[i].children = undefined;
+        } else {
+          // children若不为空数组，则继续 递归调用 本方法
+          this.getTreeData(data[i].children);
+        }
+      }
+      return data;
+    },
+    common() {
+      allColumn().then((res) => {
+        this.options = this.getTreeData(res);
+        console.log(this.options);
+      });
+    },
     editCarousel() {
       this.dialogeditcarousel = false;
       this.homeForm.tableData[this.index] = {
@@ -754,21 +1100,7 @@ export default {
       };
       this.homeForm.tableData.splice(1, 0);
     },
-    Carouseltrue() {
-      if (this.homeForm.tableData.length == 5)
-        this.$message({
-          showClose: true,
-          message: "警告！最多加五个轮播图",
-          type: "warning",
-        });
-      else {
-        var index = this.homeForm.tableData.length + 1;
-        var obj = JSON.parse(JSON.stringify(this.homeForm.addcarousel));
-        obj.index = index;
-        this.homeForm.tableData.push(obj);
-      }
-      this.dialogcarousel = false;
-    },
+
     fun() {
       this.a = true;
     },
@@ -776,11 +1108,19 @@ export default {
       this.a = false;
       this.changeCount = 0;
     },
+    changecolumn() {
+      this.dialoglinkcolumn = true;
+    },
+    changecolumntwo() {
+      this.dialoglinkcolumntwo = true;
+    },
     submitForm(formName) {
       const that = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert("submit!");
+          // if(formName=="titleone"){
+
+          // }
           that.dialoglink = false;
           that.dialogtitleone = false;
           that.dialogtitletwo = false;
@@ -845,30 +1185,66 @@ export default {
       console.log();
     },
     handleAvatarSuccess(data) {
-      if (data.success) {
-        this.homeForm.bannerurl =
-          "http://127.0.0.1:3000/upload/product/" + data.fileName;
-      }
+      this.homeForm.bannerurl = data.data.fileUrl;
+      postHomebanner({
+        imgUrl: data.data.fileUrl,
+      }).then((res) => {
+        console.log(res, 6666);
+        this.addhomeForm.bgImgId = res.id;
+      });
     },
     handlecarousel(data) {
-      if (data.success) {
-        this.homeForm.addcarousel.imageUrl =
-          "http://127.0.0.1:3000/upload/product/" + data.fileName;
-      }
+      this.homeForm.addcarousel.url = data.data.fileUrl;
+      console.log(this.homeForm.addcarousel.url, 0);
     },
-    beforeAvatarUpload(file) {
-      console.log(file,66);
-      const isJPG = file.type ==="image/jpeg" || "image/jpg" || "image/png"||"video/mp4"|| "video/ogg"||"video/flv"||"video/flv"||"video/avi"|| "video/wmv"||"video/rmvb"|| "video/mov"
-
-      const isLt1M = file.size / 1024 / 1024 < 100;
+    Carouseltrue() {
+      if (this.homeForm.tableData.length == 5)
+        this.$message({
+          showClose: true,
+          message: "警告！最多加五个轮播图",
+          type: "warning",
+        });
+      else {
+        addHomecarouse(this.homeForm.addcarousel).then((res) => {
+          this.homeForm.tableData.push(res);
+          this.addhomeForm.carouselIds.push(res.id);
+          console.log(this.addhomeForm.carouselIds.join(","));
+        });
+      }
+      this.dialogcarousel = false;
+    },
+    beforebannerAvatarUpload(file) {
+      const isJPG = file.type.indexOf("image") > -1;
+      const isLt10M = file.size / 1024 / 1024 < 10;
 
       if (!isJPG) {
         this.$message.error("文件格式错误!");
       }
-      if (!isLt1M) {
+      if (!isLt10M) {
+        this.$message.error("文件大小不能超过10MB!");
+      }
+      return isJPG && isLt10M;
+    },
+    beforeAvatarUpload(file) {
+      console.log(file, 66);
+      const isJPG =
+        file.type.indexOf("image") > -1 || file.type.indexOf("video") > -1;
+      // console.log(isJPG)
+      const isLt100M = file.size / 1024 / 1024 < 100;
+      if (file.type.indexOf("image") > -1) {
+        this.imageshow = true;
+        this.videoshow = false;
+      } else if (file.type.indexOf("video") > -1) {
+        this.videoshow = true;
+        this.imageshow = false;
+      }
+
+      if (!isJPG) {
+        this.$message.error("文件格式错误!");
+      } else if (!isLt100M) {
         this.$message.error("文件大小不能超过100MB!");
       }
-      return isJPG && isLt1M;
+      return isJPG && isLt100M;
     },
     handleClick(tab, event) {
       console.log(tab, event);
@@ -916,14 +1292,7 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    if (this.changeCount && !this.isPopup) {
-      // this.$confirm("数据尚未保存,确定要离开吗？")
-      //   .then(() => {
-      //     next();
-      //   })
-      //   .catch(() => {
-      //     next(false);
-      //   });
+    if (this.changeCount > 10 && !this.isPopup) {
       this.$confirm("你有内容正在编辑确定离开当前界面吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -939,6 +1308,82 @@ export default {
     } else {
       next();
     }
+  },
+  mounted() {
+    this.common();
+    getHomecolumn().then((res) => {
+      this.addhomeForm.bgImgId = res[0].bgImgId;
+      this.addhomeForm.carouselIds = res[0].carouselIds.split(",");
+      this.addhomeForm.columnIds = res[0].columnIds;
+      console.log(this.addhomeForm.columnIds, 8);
+      this.addhomeForm.headline1Id = res[0].headline1Id;
+      getHomebanner(res[0].bgImgId).then((res) => {
+        this.homeForm.bannerurl = res[0].imgUrl;
+        this.homeFormfirst.bannerurl = res[0].imgUrl;
+        this.url = res[0].imgUrl;
+      });
+      getHomecarouse(res[0].carouselIds).then((res) => {
+        this.homeFormfirst.tableData = res[0];
+        this.homeForm.tableData = res;
+        if( this.homeFormfirst.tableData.url.indexOf('jpeg')>-1||this.homeFormfirst.tableData.url.indexOf('jpg')>-1||
+        this.homeFormfirst.tableData.url.indexOf('png')>-1
+        ){
+            this.isshowimage=true;
+            this.isshowvideo=false;
+        }
+         if( this.homeFormfirst.tableData.url.indexOf('mp4')>-1||this.homeFormfirst.tableData.url.indexOf('ogg')>-1||
+        this.homeFormfirst.tableData.url.indexOf('avi')>-1|| this.homeFormfirst.tableData.url.indexOf('wmv')>-1
+        ){
+            this.isshowimage=false;
+            this.isshowvideo=true;
+        }
+        console.log(     this.homeForm.tableData  ,9);
+      });
+      getHomeheadline(res[0].headline1Id).then((res) => {
+        this.homeForm.titleone = res[0].title;
+        this.homeFormfirst.titleone = res[0].title;
+      });
+      getHomeheadline(res[0].headline2Id).then((res) => {
+        this.homeForm.titletwo = res[0].title;
+        this.homeFormfirst.titletwo = res[0].title;
+      });
+      returnColumn(res[0].columnIds).then((res) => {
+        this.homeForm.linkcolumn = res[0].id;
+        this.homeForm.linkcolumntwo = res[1].id;
+        this.homeFormfirst.linkcolumn = res[0].columnName;
+        this.homeFormfirst.linkcolumntwo = res[1].columnName;
+      });
+      if (res[0].columnIds.length >= 1) {
+        getColumnarticle(res[0].columnIds.split(",")[0]).then((res) => {
+          if (res) {
+            this.homeFormfirst.linkcolumnarticletop = res[0];
+            this.homeFormfirst.linkcolumnarticlebottom = res.splice(1, 4);
+          }
+        });
+      }
+      if (res[0].columnIds.length >= 2) {
+        getColumnarticle(res[0].columnIds.split(",")[1]).then((res) => {
+          console.log(res, 6);
+        });
+      }
+            getHomeclassify().then((res) => {
+             this.homeForm.frinedlinkmange=res;
+              // this.homeForm.frinedlinktableData
+                 getHomefriendlink().then(res=>{
+               this.homeForm.frinedlinktableData=res.map(res=>{
+                res.options=JSON.parse(JSON.stringify(this.homeForm.frinedlinkmange));
+                res.options.push({
+                  id:0,
+                  classifyName:"无"
+                });
+                return res
+             })
+    
+           console.log(res)
+            });
+            
+            })
+    });
   },
 };
 </script>
@@ -980,6 +1425,10 @@ export default {
       .left {
         width: 57%;
         height: 316px;
+        img{
+          width: 100%;
+          height: 100%;
+        }
       }
       .right {
         width: 400px;
@@ -1057,6 +1506,20 @@ export default {
       div {
         background: #e6e6e6;
         width: 400px;
+        p {
+          text-align: left;
+          width: 400px;
+          display: -webkit-box;
+          overflow: hidden;
+          white-space: normal !important;
+          text-overflow: ellipsis;
+          word-wrap: break-word;
+          -webkit-line-clamp: 11;
+          -webkit-box-orient: vertical;
+          color: #333;
+          font-size: 16px;
+          line-height: 20px;
+        }
       }
     }
     .articledetailsitem {
@@ -1179,27 +1642,7 @@ export default {
       font-size: 26px;
     }
   }
-  .file {
-    position: relative;
-    display: inline-block;
-    background: skyblue;
-    padding: 4px 20px;
-    overflow: hidden;
-    text-decoration: none;
-    text-indent: 0;
-    line-height: 20px;
-    border-radius: 20px;
-    color: #fff;
-    font-size: 13px;
-    margin-left: 18px;
-  }
-  .file input {
-    position: absolute;
-    font-size: 100px;
-    left: 0;
-    top: 0;
-    opacity: 0;
-  }
+
   .el-dialog {
     .avatar-uploader .el-upload {
       border: 1px dashed #d9d9d9;
@@ -1220,9 +1663,13 @@ export default {
       text-align: center;
     }
     .avatar {
-      width: 178px;
-      height: 178px;
+      width: 300px;
+      height: 170px;
       display: block;
+    }
+    .avatar-uploader-icon {
+      width: 300px;
+      height: 170px;
     }
   }
 }
