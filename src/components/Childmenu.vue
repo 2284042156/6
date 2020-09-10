@@ -37,9 +37,9 @@ export default {
          this.$store.state.styleType=res[0].styleType;
          console.log( this.$store.state.styleType,"66")
       })
-
-      getColumnarticle(id).then((res) => {
-        this.$store.state.article = res;
+      getColumnarticle(id,1).then((res) => {
+        this.$store.state.article = res.list;
+         this.$store.state.total=res.total
       });
       console.log(id);
     },

@@ -50,12 +50,12 @@
               :options="playerOptions"
             ></video-player>
           </div>
-          <img :src="homeFormfirst.tableData.url" alt="" v-show="isshowimage">
+          <img :src="homeFormfirst.tableData.url" alt="" v-show="isshowimage" />
         </div>
         <div class="right ">
-          <h3>{{homeFormfirst.tableData.title }}</h3>
+          <h3>{{ homeFormfirst.tableData.title }}</h3>
           <p>
-           {{homeFormfirst.tableData.description}}
+            {{ homeFormfirst.tableData.description }}
           </p>
         </div>
         <div class="back" v-show="a" @click="changecarousel()">
@@ -71,7 +71,7 @@
         </h3>
         <div class="box1">
           <div class="front">
-            <img src="3.jpg" alt="" />
+            <img src="../../assets/images/2.png" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
             <div class="back" v-show="a" @click="changelink()">
@@ -79,7 +79,7 @@
             </div>
           </div>
           <div class="front">
-            <img src="3.jpg" alt="" />
+            <img src="../../assets/images/2.png" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
             <div class="back" v-show="a" @click="changelink()">
@@ -87,7 +87,7 @@
             </div>
           </div>
           <div class="front">
-            <img src="3.jpg" alt="" />
+            <img src="../../assets/images/2.png" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
             <div class="back" v-show="a" @click="changelink()">
@@ -97,7 +97,7 @@
         </div>
         <div class="box2">
           <div class="front">
-            <img src="3.jpg" alt="" />
+            <img src="../../assets/images/2.png" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
             <div class="back" v-show="a" @click="changelink()">
@@ -105,7 +105,7 @@
             </div>
           </div>
           <div class="front">
-            <img src="3.jpg" alt="" />
+            <img src="../../assets/images/2.png" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
             <div class="back" v-show="a" @click="changelink()">
@@ -113,7 +113,7 @@
             </div>
           </div>
           <div class="front">
-            <img src="3.jpg" alt="" />
+            <img src="../../assets/images/2.png" alt="" />
             <p>虚拟仿真</p>
             <p>biubiu</p>
             <div class="back" v-show="a" @click="changelink()">
@@ -146,10 +146,10 @@
         <div class="articledetails">
           <img :src="homeFormfirst.linkcolumnarticletop.bgImgUrl" alt="" />
           <div>
-            <p>
-              {{ homeFormfirst.linkcolumnarticletop.title }} <br />
-              {{ homeFormfirst.linkcolumnarticletop.textContent }}
+            <span>{{ homeFormfirst.linkcolumnarticletop.title }}</span>
+            <p v-html="homeFormfirst.linkcolumnarticletop.textContent ">
             </p>
+            <span class="timebottom">{{homeFormfirst.linkcolumnarticletop.createTime}}</span>
           </div>
         </div>
         <div class="articledetailsitem">
@@ -161,24 +161,8 @@
             <p>{{ value.title }}</p>
             <p class="time">{{ value.createTime }}</p>
           </div>
-          <!-- <div>
-            <img src="2.jpg" alt="" />
-            <p>标题1</p>
-            <p>标题1</p>
-          </div>
-          <div>
-            <img src="2.jpg" alt="" />
-            <p>标题1</p>
-            <p>标题1</p>
-          </div>
-          <div>
-            <img src="2.jpg" alt="" />
-            <p>标题1</p>
-            <p>标题1</p>
-          </div> -->
         </div>
       </div>
-
       <div class="bottom front">
         友情链接
         <div class="back" v-show="a" @click="changefriendlink()">
@@ -402,19 +386,20 @@
           prop="linkclass"
         >
           <el-radio-group v-model="homeForm.formlink.linkclass">
-            <el-radio label="站内链接"></el-radio>
-            <el-radio label="站外链接"></el-radio>
+            <el-radio :label="0">站内链接</el-radio>
+            <el-radio :label="1">站外链接</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
           prop="in"
           label="站内链接"
           :label-width="formLabelWidth"
-          v-if="homeForm.formlink.linkclass == '站内链接'"
+          v-if="homeForm.formlink.linkclass == 0"
         >
           <el-cascader
+            :props="defaultParams"
             v-model="homeForm.formlink.in"
-            :options="homeForm.formlink.options"
+            :options="options"
             @change="handleChange"
           ></el-cascader>
         </el-form-item>
@@ -422,7 +407,7 @@
           prop="out"
           label="站外链接"
           :label-width="formLabelWidth"
-          v-if="homeForm.formlink.linkclass == '站外链接'"
+          v-if="homeForm.formlink.linkclass == 1"
         >
           <el-input
             v-model="homeForm.formlink.out"
@@ -516,7 +501,10 @@
             </el-table-column>
             <el-table-column label="分类" width="200" align="center">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.classifyId" placeholder="请选择分类">
+                <el-select
+                  v-model="scope.row.classifyId"
+                  placeholder="请选择分类"
+                >
                   <el-option
                     v-for="item in scope.row.options"
                     :key="item.id"
@@ -579,9 +567,7 @@
       </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogfriendlink = false">取 消</el-button>
-        <el-button type="primary" @click="dialogfriendlink = false"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="linkclassify()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -596,9 +582,11 @@ import { getHomecarouse } from "@/apis/request.js";
 import { addHomecarouse } from "@/apis/request.js";
 import { getHomeheadline } from "@/apis/request.js";
 import { allColumn } from "@/apis/request.js";
+import { addHomeheadline } from "@/apis/request.js";
 import { getColumnarticle } from "@/apis/request.js";
 import { getHomeclassify } from "@/apis/request.js";
 import { getHomefriendlink } from "@/apis/request.js";
+import { addHomeclassify } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
 export default {
   data() {
@@ -917,8 +905,8 @@ export default {
         ],
         titleone: "",
         titletwo: "",
-        linkcolumn: "",
-        linkcolumntwo: "",
+        linkcolumn: [],
+        linkcolumntwo: [],
         formlink: {
           title: "",
           linkclass: "",
@@ -1001,11 +989,10 @@ export default {
         linkcolumnarticletop: {},
         linkcolumnarticlebottom: [],
       },
-
       imageshow: false,
       videoshow: false,
-      isshowimage:false,
-      isshowvideo:false,
+      isshowimage: false,
+      isshowvideo: false,
       dialogFormVisible: false,
       dialogcarousel: false,
       dialogeditcarousel: false,
@@ -1100,7 +1087,6 @@ export default {
       };
       this.homeForm.tableData.splice(1, 0);
     },
-
     fun() {
       this.a = true;
     },
@@ -1118,12 +1104,25 @@ export default {
       const that = this;
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // if(formName=="titleone"){
-
-          // }
+          if (formName == "titleone") {
+            addHomeheadline({
+              title: that.homeForm.titleone,
+            }).then((res) => {
+              this.addhomeForm.headline1Id = res.id;
+            });
+          }
+          if (formName == "titletwo") {
+            addHomeheadline({
+              title: that.homeForm.titletwo,
+            }).then((res) => {
+              this.addhomeForm.headline2Id = res.id;
+            });
+          }
           that.dialoglink = false;
           that.dialogtitleone = false;
           that.dialogtitletwo = false;
+          that.dialoglinkcolumn = false;
+          that.dialoglinkcolumntwo = false;
         } else {
           console.log("error submit!!");
           return false;
@@ -1181,8 +1180,7 @@ export default {
       this.dialogfriendlink = true;
     },
     handleChange(value) {
-      console.log(value, 6666);
-      console.log();
+      console.log(value);
     },
     handleAvatarSuccess(data) {
       this.homeForm.bannerurl = data.data.fileUrl;
@@ -1275,9 +1273,23 @@ export default {
       }
       if (this.activeName == "second") {
         this.homeForm.frinedlinkmange.push({
-          index: 1,
-          title: "",
+          id: 1,
+          classifyName: "00",
         });
+      }
+    },
+    linkclassify() {
+      let that = this;
+      if (this.activeName == "second") {
+        if (this.homeForm.frinedlinkmange.length > 0) {
+          var index = this.homeForm.frinedlinkmange.length - 1;
+          console.log(that.homeForm.frinedlinkmange[index]);
+          addHomeclassify({
+            classifyName: that.homeForm.frinedlinkmange[index],
+          }).then((res) => {
+            console.log(res);
+          });
+        }
       }
     },
   },
@@ -1315,29 +1327,39 @@ export default {
       this.addhomeForm.bgImgId = res[0].bgImgId;
       this.addhomeForm.carouselIds = res[0].carouselIds.split(",");
       this.addhomeForm.columnIds = res[0].columnIds;
-      console.log(this.addhomeForm.columnIds, 8);
       this.addhomeForm.headline1Id = res[0].headline1Id;
+      var m = [];
+      m.push(Number(res[0].columnIds[0]));
+      var n = [];
+      n.push(Number(res[0].columnIds[2]));
+      this.homeForm.linkcolumn = m;
+      this.homeForm.linkcolumntwo = n;
       getHomebanner(res[0].bgImgId).then((res) => {
         this.homeForm.bannerurl = res[0].imgUrl;
         this.homeFormfirst.bannerurl = res[0].imgUrl;
-        this.url = res[0].imgUrl;
       });
       getHomecarouse(res[0].carouselIds).then((res) => {
         this.homeFormfirst.tableData = res[0];
         this.homeForm.tableData = res;
-        if( this.homeFormfirst.tableData.url.indexOf('jpeg')>-1||this.homeFormfirst.tableData.url.indexOf('jpg')>-1||
-        this.homeFormfirst.tableData.url.indexOf('png')>-1
-        ){
-            this.isshowimage=true;
-            this.isshowvideo=false;
+        if (
+          this.homeFormfirst.tableData.url.indexOf("jpeg") > -1 ||
+          this.homeFormfirst.tableData.url.indexOf("jpg") > -1 ||
+          this.homeFormfirst.tableData.url.indexOf("png") > -1
+        ) {
+          this.isshowimage = true;
+          this.isshowvideo = false;
         }
-         if( this.homeFormfirst.tableData.url.indexOf('mp4')>-1||this.homeFormfirst.tableData.url.indexOf('ogg')>-1||
-        this.homeFormfirst.tableData.url.indexOf('avi')>-1|| this.homeFormfirst.tableData.url.indexOf('wmv')>-1
-        ){
-            this.isshowimage=false;
-            this.isshowvideo=true;
+        if (
+          this.homeFormfirst.tableData.url.indexOf("mp4") > -1 ||
+          this.homeFormfirst.tableData.url.indexOf("ogg") > -1 ||
+          this.homeFormfirst.tableData.url.indexOf("avi") > -1 ||
+          this.homeFormfirst.tableData.url.indexOf("wmv") > -1
+        ) {
+          this.isshowimage = false;
+          this.isshowvideo = true;
         }
-        console.log(     this.homeForm.tableData  ,9);
+
+        // console.log(this.homeForm.tableData, 9);
       });
       getHomeheadline(res[0].headline1Id).then((res) => {
         this.homeForm.titleone = res[0].title;
@@ -1348,17 +1370,18 @@ export default {
         this.homeFormfirst.titletwo = res[0].title;
       });
       returnColumn(res[0].columnIds).then((res) => {
-        this.homeForm.linkcolumn = res[0].id;
-        this.homeForm.linkcolumntwo = res[1].id;
         this.homeFormfirst.linkcolumn = res[0].columnName;
         this.homeFormfirst.linkcolumntwo = res[1].columnName;
+       
       });
+      console.log(res[0].columnIds.length,0)
       if (res[0].columnIds.length >= 1) {
-        getColumnarticle(res[0].columnIds.split(",")[0]).then((res) => {
+        getColumnarticle(res[0].columnIds.split(",")[0],'').then((res) => {
           if (res) {
-            this.homeFormfirst.linkcolumnarticletop = res[0];
-            this.homeFormfirst.linkcolumnarticlebottom = res.splice(1, 4);
+            this.homeFormfirst.linkcolumnarticletop = res.list[0];
+            this.homeFormfirst.linkcolumnarticlebottom = res.list.splice(1, 4);
           }
+          console.log(this.homeFormfirst.linkcolumnarticletop,1)
         });
       }
       if (res[0].columnIds.length >= 2) {
@@ -1366,23 +1389,22 @@ export default {
           console.log(res, 6);
         });
       }
-            getHomeclassify().then((res) => {
-             this.homeForm.frinedlinkmange=res;
-              // this.homeForm.frinedlinktableData
-                 getHomefriendlink().then(res=>{
-               this.homeForm.frinedlinktableData=res.map(res=>{
-                res.options=JSON.parse(JSON.stringify(this.homeForm.frinedlinkmange));
-                res.options.push({
-                  id:0,
-                  classifyName:"无"
-                });
-                return res
-             })
-    
-           console.log(res)
+      getHomeclassify().then((res) => {
+        this.homeForm.frinedlinkmange = res;
+        getHomefriendlink(res[0].friendshipLinkIds).then((res) => {
+          this.homeForm.frinedlinktableData = res.map((res) => {
+            res.options = JSON.parse(
+              JSON.stringify(this.homeForm.frinedlinkmange)
+            );
+            res.options.push({
+              id: 0,
+              classifyName: "无",
             });
-            
-            })
+            return res;
+          });
+          console.log(res, 66);
+        });
+      });
     });
   },
 };
@@ -1425,7 +1447,7 @@ export default {
       .left {
         width: 57%;
         height: 316px;
-        img{
+        img {
           width: 100%;
           height: 100%;
         }
@@ -1501,11 +1523,12 @@ export default {
       justify-content: space-between;
       img {
         width: 580px;
-        height: 240px;
+        height: 320px;
       }
       div {
         background: #e6e6e6;
         width: 400px;
+        position: relative;
         p {
           text-align: left;
           width: 400px;
@@ -1514,11 +1537,17 @@ export default {
           white-space: normal !important;
           text-overflow: ellipsis;
           word-wrap: break-word;
-          -webkit-line-clamp: 11;
+          -webkit-line-clamp: 8;
           -webkit-box-orient: vertical;
           color: #333;
           font-size: 16px;
-          line-height: 20px;
+          line-height: 30px;
+        }
+        .timebottom{
+          color:#ccc ;
+          position: absolute;
+          bottom: 10px;
+          right: 10px;
         }
       }
     }

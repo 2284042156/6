@@ -1,6 +1,16 @@
 import axios from 'axios';
-axios.defaults.baseURL='http://liuwanr.cn:8080/msdw';
-export  const joggle='http://liuwanr.cn:8080/msdw/aliyun/uploadFiles';
+// axios.defaults.baseURL='http://liuwanr.cn:8080/msdw';
+axios.defaults.baseURL='http://192.168.31.180:8080';
+// export  const joggle='http://liuwanr.cn:8080/msdw/aliyun/uploadFiles';
+export  const joggle='http://192.168.31.180:8080/aliyun/uploadFiles';
+axios.interceptors.request.use((req)=>{
+    // console.log('请求拦截器拦截的数据：req',req)
+    const token = sessionStorage.getItem('token');
+    if(token){//给所有需要token的接口统一在请求头上添加token
+        req.headers.token = token;
+    }
+    return req;
+});
 export function allColumn(){
     return axios.get('/column/column'
     ).then(res=>{
@@ -37,8 +47,8 @@ export function uploadimg(parms){
         return res.data.data
     });
 }
-export function getColumnarticle(parms){
-    return axios.get('/column/column/'+parms,
+export function getColumnarticle(parms,pangNum){
+    return axios.get('/column/column/'+parms+'?pangNum='+pangNum,
     ).then(res=>{
         return res.data.data
     });
@@ -104,8 +114,20 @@ export function getHomeheadline(parms){
         return res.data.data
     });
 }
+export function addHomeheadline(parms){
+    return axios.put('/headline/headlines',parms
+    ).then(res=>{
+        return res.data.data
+    });
+}
 export function getHomeclassify(){
     return axios.get('/classify/classifies'
+    ).then(res=>{
+        return res.data.data
+    });
+}
+export function addHomeclassify(parms){
+    return axios.post('/classify/classifies/add',parms
     ).then(res=>{
         return res.data.data
     });
@@ -114,5 +136,19 @@ export function getHomefriendlink(){
     return axios.get('/friendshipLink/getAll'
     ).then(res=>{
         return res.data.data
+    });
+}
+export function login(params){
+    return axios.post('/admin/login',
+        params
+    ).then(res=>{
+        return res.data.data
+    });
+}
+export function adminChangepwd(params){
+    return axios.post('/admin/change',
+        params
+    ).then(res=>{
+        return res.data
     });
 }

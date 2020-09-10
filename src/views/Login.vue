@@ -31,13 +31,11 @@
               v-model="loginForm.username"
               placeholder="用户名"
               autocomplete="off"
-              prefix-icon="el-icon-s-custom"
             ></el-input>
           </el-form-item>
           <p class="password">密码</p>
           <el-form-item prop="password">
             <el-input
-              prefix-icon="el-icon-key"
               placeholder="密码"
               type="password"
               v-model="loginForm.password"
@@ -65,7 +63,7 @@
   </div>
 </template>
 <script>
-import axios from "axios";
+import { login } from "@/apis/request.js";
 
 export default {
   data() {
@@ -77,12 +75,6 @@ export default {
       },
       rules: {
         username: [
-          {
-            min: 3,
-            max: 10,
-            message: "长度在 3 到 10 个字符",
-            trigger: "blur",
-          },
           { required: true, message: "请输入用户名", trigger: "blur" },
         ],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
@@ -91,48 +83,45 @@ export default {
   },
   methods: {
     submitForm() {
-      var a = this;
+      var that = this;
       this.$refs.loginFormId.validate((valid) => {
         if (valid) {
-          axios
-            .post("http://127.0.0.1:3000/login", {
-              username: a.loginForm.username,
-              password: a.loginForm.password,
-            })
-            .then(function({ data }) {
-              if (data.success) {
-                //  sessionStorage.setItem('token',JSON.stringify({ tokenId:data.tokenId }))
-                // a.$store.state.tokenId=data.tokenId;
-                a.$message({
-                  showClose: true,
-                  message: data.message,
-                  type: "success",
-                  duration: 1000,
-                  onClose: () => {
-                    a.$router.replace("/home/homemange");
-                  },
-                });
-              } else {
-                a.$message({
-                  showClose: true,
-                  message: data.message,
-                  type: "error",
-                  duration: 1000,
-                });
-              }
-            })
-            .catch(function(error) {
-              console.log(error);
-            });
+          login({
+            adminName: that.loginForm.username,
+            adminPwd: that.loginForm.password,
+          }).then((res) => {
+            console.log(res, 666);
+            if (res.token) {
+              sessionStorage.setItem("token", res.token);
+              this.$message({
+                showClose: true,
+                message: "登陆成功",
+                type: "success",
+                duration: 1000,
+                onClose: () => {
+                  this.$router.replace("/home/homemange");
+                },
+              });
+            } else {
+              this.$message({
+                showClose: true,
+                message: "用户名或者密码输入错误",
+                type: "error",
+              });
+            }
+          });
         } else {
           this.$message({
             showClose: true,
-            message: "错了哦，这是一条错误消息",
+            message: "请输入用户名或者密码",
             type: "error",
           });
         }
       });
     },
+  },
+  mounted() {
+    sessionStorage.removeItem("token");
   },
 };
 </script>
@@ -155,7 +144,7 @@ export default {
     div {
       display: flex;
       justify-content: space-between;
-      .regist{
+      .regist {
         font-size: 20px;
       }
     }
@@ -185,7 +174,11 @@ export default {
     .el-form {
       width: 490px;
     }
+    .el-input {
+      font-family: sans-serif;
+    }
   }
+
   .form {
     display: flex;
     justify-content: space-between;
@@ -216,18 +209,18 @@ export default {
     width: 420px;
     border: 0;
     height: 46px;
-    background: orangered;
-    color: white;
+    background: #333;
+    color: #fff;
     margin-top: 60px;
     border-radius: 10px;
     outline: none;
   }
   #btn:hover {
-    background: rgba(247, 73, 10, 0.8);
+    background: rgb(109, 103, 103);
     cursor: pointer;
   }
-//   .el-form-item__label{
-//  vertical-align: left;
-//   }
+  //   .el-form-item__label{
+  //  vertical-align: left;
+  //   }
 }
 </style>

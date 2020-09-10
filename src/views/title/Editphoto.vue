@@ -6,7 +6,7 @@
           ><i class="el-icon-tickets"></i>图文样式内容编辑</span
         >
         <div>
-          <a href="#/home/contentmange">&lt;&emsp;返回</a>
+          <span @click="back()">&lt;&emsp;返回</span>
         </div>
       </div>
       <div class="contentbottom">
@@ -75,7 +75,7 @@
           ><i class="el-icon-tickets"></i>视频样式内容编辑</span
         >
         <div>
-          <a href="#/home/contentmange">&lt;&emsp;返回</a>
+          <span @click="back()">&lt;&emsp;返回</span>
         </div>
       </div>
       <div class="contentbottom">
@@ -165,7 +165,7 @@
       <div class="top">
         <span class="title"><i class="el-icon-tickets"></i>链接内容编辑</span>
         <div>
-          <a href="#/home/contentmange">&lt;&emsp;返回</a>
+          <span @click="back()">&lt;&emsp;返回</span>
         </div>
       </div>
       <div class="contentbottom">
@@ -417,16 +417,16 @@ export default {
     common() {
       allColumn().then((res) => {
         this.options = this.getTreeData(res);
-        if( this.linkForm.linkColumnId){
-       getColumnarticle(this.linkForm.linkColumnId).then((res) => {
-        this.option = res.map((res) => {
-          return {
-            value: res.id,
-            label: res.title,
-          };
-        });
-        console.log(res, 0);
-      });
+        if (this.linkForm.linkColumnId) {
+          getColumnarticle(this.linkForm.linkColumnId).then((res) => {
+            this.option = res.map((res) => {
+              return {
+                value: res.id,
+                label: res.title,
+              };
+            });
+            console.log(res, 0);
+          });
         }
       });
     },
@@ -494,7 +494,10 @@ export default {
     handleLinkSuccess(res) {
       this.linkForm.bgImgUrl = res.data.fileUrl;
     },
-
+    back() {
+      this.$router.push("/home/contentmange");
+      return false;
+    },
     photoEdit() {
       var form = { ...this.$store.state.editid, ...this.photoForm };
       var date = moment(form.createTime).format("YYYY-MM-DD");
@@ -506,6 +509,7 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid).then((res) => {
           this.$store.state.article = res;
+          this.$router.push("/home/contentmange");
         });
       });
     },
@@ -520,6 +524,7 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid).then((res) => {
           this.$store.state.article = res;
+          this.$router.push("/home/contentmange");
         });
       });
     },
@@ -536,6 +541,7 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid).then((res) => {
           this.$store.state.article = res;
+          this.$router.push("/home/contentmange");
         });
       });
     },
@@ -544,31 +550,31 @@ export default {
     },
   },
   mounted() {
-    if(this.$store.state.styleType == 1){
-        this.photoForm.bgImgUrl= this.$store.state.editid.bgImgUrl;
-        this.photoForm.title=this.$store.state.editid.title;
-        this.photoForm.createTime=this.$store.state.editid.createTime;
-        this.photoForm.description=this.$store.state.editid.description;
-        this.photoForm.textContent=this.$store.state.editid.textContent;
+    if (this.$store.state.styleType == 1) {
+      this.photoForm.bgImgUrl = this.$store.state.editid.bgImgUrl;
+      this.photoForm.title = this.$store.state.editid.title;
+      this.photoForm.createTime = this.$store.state.editid.createTime;
+      this.photoForm.description = this.$store.state.editid.description;
+      this.photoForm.textContent = this.$store.state.editid.textContent;
     }
-       if(this.$store.state.styleType == 0){
-        this.videoForm.bgImgUrl= this.$store.state.editid.bgImgUrl;
-        this.videoForm.title=this.$store.state.editid.title;
-        this.videoForm.videoUrl=this.$store.state.editid.videoUrl;
-        this.videoForm.createTime=this.$store.state.editid.createTime;
-        this.videoForm.description=this.$store.state.editid.description;
-        this.videoForm.textContent=this.$store.state.editid.textContent;
+    if (this.$store.state.styleType == 0) {
+      this.videoForm.bgImgUrl = this.$store.state.editid.bgImgUrl;
+      this.videoForm.title = this.$store.state.editid.title;
+      this.videoForm.videoUrl = this.$store.state.editid.videoUrl;
+      this.videoForm.createTime = this.$store.state.editid.createTime;
+      this.videoForm.description = this.$store.state.editid.description;
+      this.videoForm.textContent = this.$store.state.editid.textContent;
     }
-       if(this.$store.state.styleType == 2){
-        this.linkForm.bgImgUrl= this.$store.state.editid.bgImgUrl;
-        this.linkForm.title=this.$store.state.editid.title;
-        this.linkForm.createTime=this.$store.state.editid.createTime;
-        this.linkForm.description=this.$store.state.editid.description;
-        this.linkForm.linkType=this.$store.state.editid.linkType;
-        this.linkForm.linkUrl=this.$store.state.editid.linkUrl;
-        this.linkForm.linkColumnId=this.$store.state.editid.linkColumnId;
-        this.linkForm.linkArticleId=this.$store.state.editid.linkArticleId
-        console.log(this.$store.state.editid.linkColumnId)
+    if (this.$store.state.styleType == 2) {
+      this.linkForm.bgImgUrl = this.$store.state.editid.bgImgUrl;
+      this.linkForm.title = this.$store.state.editid.title;
+      this.linkForm.createTime = this.$store.state.editid.createTime;
+      this.linkForm.description = this.$store.state.editid.description;
+      this.linkForm.linkType = this.$store.state.editid.linkType;
+      this.linkForm.linkUrl = this.$store.state.editid.linkUrl;
+      this.linkForm.linkColumnId = this.$store.state.editid.linkColumnId;
+      this.linkForm.linkArticleId = this.$store.state.editid.linkArticleId;
+      console.log(this.$store.state.editid.linkColumnId);
     }
     this.common();
   },
@@ -584,9 +590,13 @@ export default {
     border-bottom: 1px solid #ccc;
     height: 50px;
     line-height: 50px;
-    a {
-      text-decoration: none;
-      color: skyblue;
+    div{
+      span{
+        color:  skyblue;
+      }
+      span:hover{
+        cursor: pointer;
+      }
     }
   }
   .contentbottom {

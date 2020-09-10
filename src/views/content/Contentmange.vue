@@ -11,7 +11,7 @@
     <el-container>
       <el-aside width="210px">
         <el-menu
-          :default-active="0"
+          :default-active="this.$store.state.columnid"
           unique-opened
           class="el-menu-vertical-demo"
           @open="handleOpen"
@@ -42,8 +42,7 @@
               <el-input-number
                 v-model="scope.row.sort"
                 controls-position="right"
-                :min="1"
-                :max="10"
+                :min="0"
               ></el-input-number>
             </template>
           </el-table-column>
@@ -80,6 +79,15 @@
             </template>
           </el-table-column>
         </el-table>
+        <el-pagination
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-size="6"
+      background
+      layout="prev, pager, next"
+      :total="this.$store.state.total"
+    >
+    </el-pagination>
       </el-main>
     </el-container>
   </div>
@@ -97,6 +105,8 @@ import moment from "moment";
 export default {
   data() {
     return {
+      currentPage: 1,
+      total: 12,
       deleteid: 0,
       id: 0,
       styleType: 0,
@@ -167,6 +177,18 @@ export default {
   },
 
   methods: {
+    handleCurrentChange(val) {
+      this.currentPage = val;
+      console.log(`当前页: ${val}`);
+      this.querystock();
+    },
+    querystock() {
+        getColumnarticle(this.$store.state.columnid,this.currentPage).then((res) => {
+        this.$store.state.article = res.list;
+        this.total=res.total;
+        console.log(res,66)
+      });
+    },
     toggleSelection() {
       this.open();
     },
@@ -193,7 +215,7 @@ export default {
       this.$store.state.editid = row;
       // console.log(row);
       this.$router.push("/home/editphoto");
-      console.log( this.$store.state.editid,6 )
+      console.log(this.$store.state.editid, 6);
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -237,11 +259,12 @@ export default {
       console.log(this.$store.state.columnid);
       returnColumn(key).then((res) => {
         this.$store.state.styleType = res[0].styleType;
-        console.log(this.$store.state.styleType, "a");
       });
-      getColumnarticle(key).then((res) => {
-        console.log(res, 1);
-        this.$store.state.article = res;
+      getColumnarticle(key,1).then((res) => {
+        // console.log(res, 1);
+        this.$store.state.article = res.list;
+         this.$store.state.total=res.total;
+            console.log( res,66)
       });
     },
     handleClose(key, keyPath) {
@@ -250,8 +273,10 @@ export default {
       returnColumn(key).then((res) => {
         this.$store.state.styleType = res[0].styleType;
       });
-      getColumnarticle(key).then((res) => {
-        this.$store.state.article = res;
+      getColumnarticle(key,1).then((res) => {
+        this.$store.state.article = res.list;
+         this.$store.state.total=res.total;
+         console.log( res,66)
       });
     },
   },
@@ -269,10 +294,11 @@ export default {
       this.listData = res;
       this.$store.state.styleType = res[0].styleType;
       this.$store.state.columnid = res[0].id;
-      console.log(res, 66666);
-      getColumnarticle(res[0].id).then((res) => {
-        this.$store.state.article = res;
-        console.log(res, 0);
+      console.log(this.$store.state.columnid)
+      getColumnarticle(res[0].id,1).then((res) => {
+        this.$store.state.article = res.list;
+         this.$store.state.total=res.total;
+        console.log(res,66)
       });
     });
   },
@@ -351,6 +377,11 @@ export default {
   }
   .el-input-number {
     width: 100px;
+  }
+  .el-pagination{
+    width: 180px;
+   margin-left: 520px;
+   margin-top: 20px;
   }
 }
 </style>

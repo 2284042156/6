@@ -4,7 +4,7 @@
       <div class="top">
         <span class="title"><i class="el-icon-tickets"></i>新增文章</span>
         <div>
-          <a href="#/home/contentmange">&lt;&emsp;返回</a>
+          <span @click="back()">&lt;&emsp;返回</span>
         </div>
       </div>
       <div class="contentbottom">
@@ -71,7 +71,7 @@
       <div class="top">
         <span class="title"><i class="el-icon-tickets"></i>新增文章</span>
         <div>
-          <a href="#/home/contentmange">&lt;&emsp;返回</a>
+          <span @click="back()">&lt;&emsp;返回</span>
         </div>
       </div>
       <div class="contentbottom">
@@ -161,7 +161,7 @@
       <div class="top">
         <span class="title"><i class="el-icon-tickets"></i>新增文章</span>
         <div>
-          <a href="#/home/contentmange">&lt;&emsp;返回</a>
+          <span @click="back()">&lt;&emsp;返回</span>
         </div>
       </div>
       <div class="contentbottom">
@@ -387,8 +387,8 @@ export default {
         createTime: "2020-08-20",
         linkType: 0,
         linkUrl: "",
-        linkColumnId:0,
-        columnId:"",
+        linkColumnId: 0,
+        columnId: "",
         title: "",
         linkArticleId: "",
       },
@@ -401,7 +401,7 @@ export default {
     handleChange(value) {
       let index = value.length - 1;
       let id = value[index];
-     this.linkForm.linkColumnId=value[index];
+      this.linkForm.linkColumnId = value[index];
       getColumnarticle(id).then((res) => {
         this.option = res.map((res) => {
           return {
@@ -496,7 +496,10 @@ export default {
       // this.linkForm.bgImgUrl = res.imgUrl;
       this.linkForm.bgImgUrl = res.data.fileUrl;
     },
-
+    back() {
+      this.$router.push("/home/contentmange");
+      return false;
+    },
     photoAdd() {
       var form = { ...this.photoForm };
       var date = moment(form.createTime).format("YYYY-MM-DD");
@@ -506,6 +509,7 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid).then((res) => {
           this.$store.state.article = res;
+          this.$router.push("/home/contentmange");
         });
       });
     },
@@ -518,6 +522,7 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid).then((res) => {
           this.$store.state.article = res;
+          this.$router.push("/home/contentmange");
         });
       });
     },
@@ -526,27 +531,25 @@ export default {
       var date = moment(form.createTime).format("YYYY-MM-DD");
       form.createTime = date;
       form.columnId = this.$store.state.columnid;
-      addArticle(
-        form
-      ).then((res) => {
+      addArticle(form).then((res) => {
         console.log(res);
         getColumnarticle(this.$store.state.columnid).then((res) => {
           this.$store.state.article = res;
+          this.$router.push("/home/contentmange");
         });
       });
-      
     },
     cancel() {
       this.$router.push("/home/contentmange");
     },
   },
   mounted() {
-      var date =new Date();
-       date = moment(date).format("YYYY-MM-DD");
-        this.linkForm.createTime=date;
-        this.photoForm.createTime=date;
-        this.videoForm.createTime=date;
-        
+    var date = new Date();
+    date = moment(date).format("YYYY-MM-DD");
+    this.linkForm.createTime = date;
+    this.photoForm.createTime = date;
+    this.videoForm.createTime = date;
+
     this.common();
   },
 };
@@ -561,9 +564,13 @@ export default {
     border-bottom: 1px solid #ccc;
     height: 50px;
     line-height: 50px;
-    a {
-      text-decoration: none;
-      color: skyblue;
+    div {
+      span {
+        color: skyblue;
+      }
+      span:hover {
+        cursor: pointer;
+      }
     }
   }
   .contentbottom {

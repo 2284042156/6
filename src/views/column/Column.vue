@@ -12,56 +12,7 @@
     <div class="addcolumn">
       <p>栏目列表</p>
     </div>
-    <div class="mange">
-      <el-table
-        :data="tableData"
-        row-key="id"
-        default-expand-all
-        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-      >
-        <el-table-column prop="columnName" label="栏目" width="500">
-        </el-table-column>
-        <el-table-column align="center" label="显示" width="180">
-          <template slot-scope="scope">
-            <!-- <i
-              class="el-icon-view"
-              @click="handleDelete(scope.$index, scope.row)"
-            ></i> -->
-            <img
-              v-if="scope.row.isShow == 0"
-              src="../../assets/images/btn_visule_n.png"
-              alt=""
-              width="20px"
-              @click="handlehidden(scope.$index, scope.row)"
-            />
-            <img
-              v-if="scope.row.isShow == 1"
-              src="../../assets/images/btn_notvisule_n.png"
-              alt=""
-              width="20px"
-              @click="handlehidden(scope.$index, scope.row)"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column prop="address" label="操作" align="center">
-          <template slot-scope="scope">
-            <i
-              class="el-icon-edit-outline"
-              @click="handleEdit(scope.$index, scope.row)"
-            ></i>
-            <i
-              class="el-icon-plus"
-              @click="handleAdd(scope.$index, scope.row)"
-            ></i>
-            <i
-              class="el-icon-delete"
-              @click="handleDelete(scope.$index, scope.row)"
-            ></i>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <!-- 对话框 -->
+    <dragTreeTable :data="treeData" :onDrag="onTreeDataChange"> </dragTreeTable>
     <el-dialog
       title="添加栏目"
       :visible.sync="dialogaddFormVisible"
@@ -80,7 +31,6 @@
           :label-width="formLabelWidth"
           prop="bgImgUrl"
         >
-
           <el-upload
             class="avatar-uploader"
             :action="joggle"
@@ -130,7 +80,7 @@
           :label-width="formLabelWidth"
           prop="parentId"
         >
-                <el-cascader
+          <el-cascader
             :change-on-select="true"
             :props="defaultParams"
             :options="options"
@@ -161,7 +111,6 @@
           <el-input v-model="editform.columnName" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="栏目banner" :label-width="formLabelWidth">
-   
           <el-upload
             class="avatar-uploader"
             :action="joggle"
@@ -212,7 +161,7 @@
             :props="defaultParams"
             :options="options"
             v-model="editform.parentId"
-            @change="handleChange"
+            @change="handleeditChange"
             :clearable="true"
           ></el-cascader>
         </el-form-item>
@@ -230,18 +179,19 @@
     </el-dialog>
   </div>
 </template>
-
 <script>
+import dragTreeTable from "drag-tree-table";
 import { allColumn } from "@/apis/request.js";
 import { editColumn } from "@/apis/request.js";
 import { addColumn } from "@/apis/request.js";
 import { deleteColumn } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
 import { joggle } from "@/apis/request.js";
-import Sortable from "sortablejs";
-// import vuedraggable from 'vuedraggable';
-// import axios from 'axios'
+import show from "@/assets/images/btn_visule_n.png";
+import hidden from "@/assets/images/btn_notvisule_n.png";
 export default {
+  name: "app",
+
   data() {
     return {
       joggle,
@@ -249,66 +199,12 @@ export default {
       deleteid: 1,
       options: [],
       selectedOptions: [],
+      value: "",
       defaultParams: {
         label: "columnName",
         value: "id",
         children: "children",
       },
-      tableData: [
-        {
-          id: 1,
-          date: "首页管理",
-          name: "",
-          hidden: "no",
-        },
-        {
-          id: 3,
-          date: " 项目介绍",
-          hidden: "no",
-          children: [
-            {
-              id: 31,
-              date: "项目1",
-              hidden: "no",
-            },
-            {
-              id: 32,
-              date: "项目1-1",
-              hidden: "no",
-            },
-          ],
-        },
-        {
-          id: 2,
-          date: "产品",
-          hidden: "no",
-          children: [
-            {
-              id: 21,
-              date: "介绍",
-              hidden: "no",
-              children: [
-                {
-                  id: 211,
-                  date: "项目1",
-                  hidden: "no",
-                },
-                {
-                  id: 212,
-                  date: "项目1-1",
-                  hidden: "no",
-                },
-              ],
-            },
-            {
-              id: 22,
-              date: "咨询",
-              hidden: "no",
-            },
-          ],
-        },
-      ],
-      value: [],
       addform: {
         columnName: "",
         bgImgUrl: null,
@@ -323,7 +219,7 @@ export default {
         showType: 0,
         styleType: 0,
         openMethod: 0,
-        parentId: [],
+        parentId: 0,
       },
       dialogaddFormVisible: false,
       dialogeditFormVisible: false,
@@ -337,91 +233,182 @@ export default {
         ],
         parentId: [{ required: true, message: "请选择上级", trigger: "blur" }],
       },
+      treeData: {
+        columns: [
+          {
+            type: "selection",
+            title: "栏目管理",
+            field: "name",
+            width: 200,
+            align: "center",
+            formatter: (item) => {
+              return item.columnName;
+            },
+          },
+          {
+            title: "显示",
+            type: "action",
+            width: 350,
+            align: "center",
+            actions: [
+              {
+                text: "显示",
+                onclick: (item) => {
+                  // item是当前行的数据
+                  console.log(item, 6666);
+                  if (item.isShow == 0) {
+                    console.log(item.isShow);
+                    editColumn({
+                      id: item.id,
+                      isShow: 1,
+                    }).then((res) => {
+                      console.log(res);
+                      allColumn().then((res) => {
+                        console.log(res);
+                        this.treeData.lists = res;
+                      });
+                    });
+                  } else {
+                    editColumn({
+                      id: item.id,
+                      isShow: 0,
+                    }).then((res) => {
+                      console.log(res);
+                      allColumn().then((res) => {
+                        console.log(res);
+                        this.treeData.lists = res;
+                      });
+                    });
+                  }
+                },
+                formatter: (item) => {
+                  if (item.isShow == 0) {
+                    return `<img src="${show}" width="20px"/>`;
+                  } else {
+                    return `<img src="${hidden}" width="20px"/>`;
+                  }
+                },
+              },
+            ],
+          },
+          {
+            title: "操作",
+            type: "action",
+            width: 350,
+            align: "center",
+            actions: [
+              {
+                text: "编辑",
+                onclick: (item) => {
+                  // item是当前行的数据
+                  console.log(item);
+                  this.dialogeditFormVisible = true;
+                  this.editid = item.id;
+                  returnColumn(item.id).then((res) => {
+                    let a = [];
+                    a.push(res[0].parentId);
+                    this.editform.columnName = res[0].columnName;
+                    this.editform.bgImgUrl = res[0].bgImgUrl;
+                    this.editform.showType = res[0].showType;
+                    this.editform.showType = res[0].showType;
+                    this.editform.parentId = a;
+                    this.editform.openMethod = res[0].openMethod;
+                    console.log(this.editform, 66);
+                  });
+                },
+                formatter: () => {
+                  return '<i class="el-icon-edit-outline"></i>';
+                },
+              },
+              {
+                text: "添加",
+                onclick: (item) => {
+                  // item是当前行的数据
+                  console.log(item);
+                  this.dialogaddFormVisible = true;
+                  this.addform = {
+                    columnName: null,
+                    bgImgUrl: null,
+                    showType: 0,
+                    styleType: 0,
+                    openMethod: 0,
+                    parentId: [],
+                  };
+                },
+                formatter: () => {
+                  return '<i class="el-icon-plus"></i>';
+                },
+              },
+              {
+                text: "删除",
+                onclick: (item) => {
+                  // item是当前行的数据
+                  console.log(item);
+                  this.deleteid = item.id;
+                  this.open();
+                },
+                formatter: () => {
+                  return '<i class="el-icon-delete"></i>';
+                },
+              },
+            ],
+          },
+        ],
+        lists: [
+          {
+            id: 40,
+            parent_id: 0,
+            order: 0,
+            name: "动物类",
+            // uri: "/masd/ds",
+            open: true,
+            lists: [],
+          },
+          {
+            id: 5,
+            parent_id: 0,
+            order: 1,
+            name: "昆虫类",
+            // uri: "/masd/ds",
+            open: true,
+            isShowCheckbox: false,
+            lists: [
+              {
+                id: 12,
+                parent_id: 5,
+                open: true,
+                order: 0,
+                name: "蚂蚁",
+                // uri: "/masd/ds",
+                lists: [],
+              },
+            ],
+          },
+          {
+            id: 19,
+            parent_id: 0,
+            order: 2,
+            name: "植物类",
+            // uri: "/masd/ds",
+            open: true,
+            lists: [],
+          },
+        ],
+        custom_field: {
+          id: "id",
+          order: "sort",
+          lists: "children",
+          parent_id: "parentId",
+          name: "columnName",
+        },
+      },
     };
   },
-  // components: {vuedraggable},
-  //  updated() {
-  //   console.log(this.list)
-  // },
+  components: {
+    dragTreeTable,
+  },
   methods: {
-    handleAvatarSuccess(res) {
-      this.editform.bgImgUrl = res.data.fileUrl;
-      console.log(this.editform.bgImgUrl);
-    },
-    handleAvatarSuccessadd(res) {
-      // this.addform.bgImgUrl = res.imgUrl;
-      this.addform.bgImgUrl =  res.data.fileUrl;
-      console.log(this.addform.bgImgUrl);
-    },
-    rowDrop() {
-      const tbody = document.querySelector(".el-table__body-wrapper tbody");
-      const _this = this;
-      Sortable.create(tbody, {
-        onEnd({ newIndex, oldIndex }) {
-          const currRow = _this.tableData.splice(oldIndex, 1)[0];
-          _this.tableData.splice(newIndex, 0, currRow);
-        },
-      });
-    },
-
-    // beforeAvatarUpload(file) {
-    //   const isJPG = file.type === "image/jpeg";
-    //   const isLt2M = file.size / 1024 / 1024 < 2;
-    //   console.log(file,"ply")
-
-    //   if (!isJPG) {
-    //     this.$message.error("上传头像图片只能是 JPG 格式!");
-    //   }
-    //   if (!isLt2M) {
-    //     this.$message.error("上传头像图片大小不能超过 2MB!");
-    //   }
-    //   return isJPG && isLt2M;
-    // },
-    handleChange(value) {
-      console.log(value,0);
-    },
-
-    handlehidden(index, row) {
-      if (row.isShow == 0) {
-        console.log(row.isShow);
-        editColumn({
-          id: row.id,
-          isShow: 1,
-        }).then((res) => {
-          console.log(res);
-          allColumn().then((res) => {
-            console.log(res);
-            this.tableData = res;
-          });
-        });
-      } else {
-        editColumn({
-          id: row.id,
-          isShow: 0,
-        }).then((res) => {
-          console.log(res);
-          allColumn().then((res) => {
-            console.log(res);
-            this.tableData = res;
-          });
-        });
-      }
-    },
-    handleEdit(index, row) {
-      this.dialogeditFormVisible = true;
-      this.editid = row.id;
-      returnColumn(row.id).then((res) => {
-        this.editform.columnName = res[0].columnName;
-        this.editform.bgImgUrl = res[0].bgImgUrl;
-        this.editform.showType = res[0].showType;
-        this.editform.styleType = res[0].styleType;
-        this.editform.openMethod = res[0].openMethod;
-        console.log(this.editform);
-      });
-      console.log(index, row);
-    },
-    handleAdd(index, row) {
-      console.log(index, row);
+    handleAdd() {
       this.dialogaddFormVisible = true;
       this.addform = {
         columnName: null,
@@ -432,59 +419,6 @@ export default {
         parentId: [],
       };
     },
-    handleDelete(index, row) {
-      console.log(index, row);
-      this.deleteid = row.id;
-      this.open();
-    },
-    addForm() {
-      this.$refs["addform"].validate((valid) => {
-        if (valid) {
-          this.addform.id = this.editid;
-          var index = this.addform.parentId.length - 1;
-          this.addform.parentId = this.addform.parentId[index];
-          addColumn(this.addform).then((res) => {
-            if (res == 0) {
-              this.$message.error("请完善栏目必填信息");
-            } else {
-              this.common();
-              this.dialogaddFormVisible = false;
-            }
-            console.log(res);
-          });
-        } else {
-          return false;
-        }
-      });
-    },
-    editForm() {
-      this.editform.id = this.editid;
-      if (this.editform.parentId.length == 0) {
-        this.editform.parentId = "";
-      } else {
-        var index = this.editform.parentId.length - 1;
-        this.editform.parentId = this.editform.parentId[index];
-      }
-
-      editColumn(this.editform).then((res) => {
-        console.log(res);
-        this.common();
-      });
-      this.dialogeditFormVisible = false;
-      console.log(this.editform);
-    },
-    // uploadFile: function() {
-    //   const file = document.getElementById("pop_file");
-    //   const fileObj = file.files[0];
-    //   const windowURL = window.URL || window.webkitURL;
-    //   // const img = document.getElementById('preview');
-    //   if (file && fileObj) {
-    //     const dataURl = windowURL.createObjectURL(fileObj);
-    //     this.editform.bgImgUrl = dataURl;
-    //     // img.setAttribute('src',dataURl);
-    //   }
-    // },
-
     open() {
       this.$confirm("此操作将永久删除该栏目, 是否继续?", "警告", {
         confirmButtonText: "确定",
@@ -511,26 +445,95 @@ export default {
     returndata() {
       this.dialogFormVisible = true;
     },
-
-    load(tree, treeNode, resolve) {
-      setTimeout(() => {
-        resolve([
-          {
-            id: 31,
-            date: "2016-05-01",
-            name: "王小虎",
-            address: "上海市普陀区金沙江路 1519 弄",
-          },
-          {
-            id: 32,
-            date: "2016-05-01",
-            name: "王小虎",
-            address: "上海市普陀区金沙江路 1519 弄",
-          },
-        ]);
-      }, 1000);
+    handleAvatarSuccess(res) {
+      this.editform.bgImgUrl = res.data.fileUrl;
+      console.log(this.editform.bgImgUrl);
     },
-
+    handleAvatarSuccessadd(res) {
+      // this.addform.bgImgUrl = res.imgUrl;
+      this.addform.bgImgUrl = res.data.fileUrl;
+      console.log(this.addform.bgImgUrl);
+    },
+    addForm() {
+      this.$refs["addform"].validate((valid) => {
+        if (valid) {
+          this.addform.id = this.editid;
+          var index = this.addform.parentId.length - 1;
+          this.addform.parentId = this.addform.parentId[index];
+          addColumn(this.addform).then((res) => {
+            if (res == 0) {
+              this.$message.error("请完善栏目必填信息");
+            } else {
+              this.common();
+              this.dialogaddFormVisible = false;
+            }
+            console.log(res);
+          });
+        } else {
+          return false;
+        }
+      });
+    },
+    editForm() {
+      this.editform.id = this.editid;
+      if (this.editform.parentId.length == 0) {
+        this.editform.parentId = 0;
+      } else {
+        var index = this.editform.parentId.length - 1;
+        this.editform.parentId = this.editform.parentId[index];
+      }
+      // console.log( this.editform.parentId,99)
+      editColumn(this.editform).then((res) => {
+        console.log(res, 9);
+        this.common();
+      });
+      this.dialogeditFormVisible = false;
+      console.log(this.editform, true);
+    },
+    onTreeDataChange(lists, from, to, where) {
+      this.treeData.lists = lists;
+      alert(from.id + "  拖拽到  " + to.id + where);
+      // if (where == "center") {
+      //   editColumn({
+      //     id: from.id,
+      //     parentId: to.id,
+      //   }).then(()=>{
+      //     this.common();
+      //   });
+      // }
+      // if (where == "bottom") {
+      //   editColumn({
+      //     id: from.id,
+      //     parentId: to.id,
+      //   }).then(() => {
+      //     this.common();
+      //   });
+      // }
+      // if (where == "top") {
+      //   editColumn({
+      //     id: to.id,
+      //     parentId: from.id,
+      //   }).then(() => {
+      //     this.common();
+      //   });
+      // }
+      // if (where == "") {
+      //   editColumn({
+      //     id: from.id,
+      //     parentId: 0,
+      //   }).then(() => {
+      //     this.common();
+      //   });
+      // }
+    },
+    handleChange(value) {
+      console.log(value);
+    },
+    handleeditChange(value) {
+      console.log(value, 1);
+      // let index = value.length - 1;
+      // this.editform.parentId = value[index];
+    },
     getTreeData(data) {
       // 循环遍历json数据
       for (var i = 0; i < data.length; i++) {
@@ -544,23 +547,34 @@ export default {
       }
       return data;
     },
+    //     beforeAvatarUpload(file) {
+    //   const isJPG = file.type === "image/jpeg";
+    //   const isLt2M = file.size / 1024 / 1024 < 2;
+    //   console.log(file,"ply")
+
+    //   if (!isJPG) {
+    //     this.$message.error("上传头像图片只能是 JPG 格式!");
+    //   }
+    //   if (!isLt2M) {
+    //     this.$message.error("上传头像图片大小不能超过 2MB!");
+    //   }
+    //   return isJPG && isLt2M;
+    // },
     common() {
       allColumn().then((res) => {
-        console.log(res,666);
-         
-        this.tableData = JSON.parse(JSON.stringify(res))  ;
+        console.log(res, 666);
+        this.treeData.lists = JSON.parse(JSON.stringify(res));
         this.options = this.getTreeData(res);
         this.options.push({
           id: 0,
           columnName: "无",
         });
-        console.log(this.options)
+        console.log(this.treeData.lists);
       });
     },
   },
   mounted() {
     this.common();
-    // this.rowDrop();
   },
 };
 </script>
@@ -591,31 +605,7 @@ export default {
     font-size: 20px;
     margin-right: 10px;
   }
-  .el-table {
-    font-size: 16px;
-    color: #333;
-  }
-  .file {
-    position: relative;
-    display: inline-block;
-    background: skyblue;
-    padding: 4px 20px;
-    overflow: hidden;
-    text-decoration: none;
-    text-indent: 0;
-    line-height: 20px;
-    border-radius: 20px;
-    color: #fff;
-    font-size: 13px;
-    margin-left: 18px;
-  }
-  .file input {
-    position: absolute;
-    font-size: 100px;
-    left: 0;
-    top: 0;
-    opacity: 0;
-  }
+
   .el-input__inner {
     width: 350px;
   }
@@ -633,23 +623,7 @@ export default {
     display: flex;
     justify-content: center;
   }
-  .el-table .has-gutter th div {
-    font-size: 18px;
-    color: #fff;
-    background: #68b6c9;
-    height: 40px;
-  }
-  .el-table td {
-    // font-size: 16px;
-    color: #333;
-  }
-  .el-table th > .cell {
-    line-height: 40px;
-    vertical-align: top;
-  }
-  // .el-icon-view{
-  //   color: rgb(209, 202, 202);
-  // }
+
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -672,6 +646,25 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
+  }
+  .drag-tree-table-header {
+    background: #68b6c9;
+    color: #fff;
+    font-size: 18px;
+  }
+  .drag-tree-table {
+    font-size: 16px;
+  }
+  .zip-icon {
+    width: 12px;
+    height: 12px;
+    background-position: -1px -1px;
+  }
+  .el-icon-edit-outline {
+    margin-right: 26px;
+  }
+  .el-icon-delete {
+    margin-left: 8px;
   }
 }
 </style>
