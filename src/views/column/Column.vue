@@ -187,6 +187,7 @@ import { addColumn } from "@/apis/request.js";
 import { deleteColumn } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
 import { joggle } from "@/apis/request.js";
+import { sortColumn } from "@/apis/request.js";
 import show from "@/assets/images/btn_visule_n.png";
 import hidden from "@/assets/images/btn_notvisule_n.png";
 export default {
@@ -490,9 +491,13 @@ export default {
       this.dialogeditFormVisible = false;
       console.log(this.editform, true);
     },
-    onTreeDataChange(lists, from, to, where) {
+    onTreeDataChange(lists) {
       this.treeData.lists = lists;
-      alert(from.id + "  拖拽到  " + to.id + where);
+      console.log(this.treeData.lists)
+      sortColumn(lists).then(res=>{
+        console.log(res,6666)
+      })
+      // alert(from.id + "  拖拽到  " + to.id + where);
       // if (where == "center") {
       //   editColumn({
       //     id: from.id,

@@ -41,6 +41,12 @@ export function returnColumn(parms){
         return res.data.data
     });
 }
+export function sortColumn(parms){
+    return axios.post('/column/sorting',parms
+    ).then(res=>{
+        return res.data.data
+    });
+}
 export function uploadimg(parms){
     return axios.post('/upload/uploadImage',parms
     ).then(res=>{
@@ -106,6 +112,12 @@ export function addHomecarouse(parms){
     return axios.put('/carouse/carouses',parms
     ).then(res=>{
         return res.data.data
+    });
+}
+export function deleteHomecarouse(parms){
+    return axios.delete('/carouse/carouses/'+parms
+    ).then(res=>{
+        return res.data
     });
 }
 export function getHomeheadline(parms){

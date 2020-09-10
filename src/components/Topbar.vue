@@ -129,7 +129,7 @@ export default {
         this.$message({
           type: "success",
           message: "下次再来玩丫,我会想你的~~",
-          duration: 2000,
+          duration: 1000,
           onClose: () => {
             this.$router.replace("/login");
           },

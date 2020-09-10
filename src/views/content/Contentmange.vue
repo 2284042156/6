@@ -266,6 +266,7 @@ export default {
          this.$store.state.total=res.total;
             console.log( res,66)
       });
+ 
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);

@@ -147,9 +147,10 @@
           <img :src="homeFormfirst.linkcolumnarticletop.bgImgUrl" alt="" />
           <div>
             <span>{{ homeFormfirst.linkcolumnarticletop.title }}</span>
-            <p v-html="homeFormfirst.linkcolumnarticletop.textContent ">
-            </p>
-            <span class="timebottom">{{homeFormfirst.linkcolumnarticletop.createTime}}</span>
+            <p v-html="homeFormfirst.linkcolumnarticletop.textContent"></p>
+            <span class="timebottom">{{
+              homeFormfirst.linkcolumnarticletop.createTime
+            }}</span>
           </div>
         </div>
         <div class="articledetailsitem">
@@ -166,76 +167,89 @@
       <div class="bottom front">
         友情链接
         <div class="back" v-show="a" @click="changefriendlink()">
-          <p>点击我更改banner</p>
+          <p>点击我更改友情链接</p>
         </div>
       </div>
     </div>
     <!-- 对话框 -->
-    <el-dialog title="添加轮播" :visible.sync="dialogFormVisible" width="60%">
-      <el-table
-        ref="multipleTable"
-        :data="homeForm.tableData"
-        tooltip-effect="dark"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-        align="center"
-      >
-        <el-table-column label="编号" width="60" align="center">
-          <template slot-scope="scope">{{ scope.row.sort }}</template>
-        </el-table-column>
-        <el-table-column label="视频图片" width="120" align="center">
-          <template slot-scope="scope">
-            <div class="demo-image__placeholder">
-              <el-image :src="scope.row.url"></el-image>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="标题" width="120" align="center">
-          <template slot-scope="scope">{{ scope.row.title }}</template>
-        </el-table-column>
-        <el-table-column label="排序值" width="120" align="center">
-          <template slot-scope="scope"
-            ><i
-              class="el-icon-bottom"
-              @click="bottom(scope.$index, scope.row)"
-              v-if="scope.$index != homeForm.tableData.length - 1"
-            ></i
-            ><i
-              class="el-icon-top"
-              @click="top(scope.$index)"
-              v-if="scope.$index != 0"
-            ></i
-          ></template>
-        </el-table-column>
-        <el-table-column label="操作" width="250" align="center">
-          <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-              >编辑</el-button
-            >
-            &emsp;
-            <el-button
-              size="mini"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
-              >删除</el-button
-            >
-            &emsp;<el-switch
-              :active-value="0"
-              :inactive-value="1"
-              v-model="scope.row.isOpen"
-            >
-            </el-switch>
-          </template>
-        </el-table-column>
-      </el-table>
-      <div id="add">
-        <i class="el-icon-circle-plus-outline" @click="addcarousel()"></i>
+    <el-dialog
+      title="项目滑动内容"
+      :visible.sync="dialogFormVisible"
+      width="60%"
+    >
+      <div v-if="carouseemptyimg" class="emptybox">
+        <img class="empty" src="../../assets/images/无数据.png" alt="" />
+        <p @click="addcarousel()">还没有项目哦~点我添加项目</p>
       </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false"
-          >确 定</el-button
+
+      <div v-else>
+        <el-table
+          ref="multipleTable"
+          :data="homeForm.tableData"
+          tooltip-effect="dark"
+          style="width: 100%"
+          @selection-change="handleSelectionChange"
+          align="center"
         >
+          <el-table-column label="编号" width="60" align="center">
+            <template slot-scope="scope">{{ scope.$index+1 }}</template>
+          </el-table-column>
+          <el-table-column label="视频图片" width="120" align="center">
+            <template slot-scope="scope">
+              <div class="demo-image__placeholder">
+                <el-image :src="scope.row.url"></el-image>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="标题" width="120" align="center">
+            <template slot-scope="scope">{{ scope.row.title }}</template>
+          </el-table-column>
+          <el-table-column label="排序值" width="120" align="center">
+            <template slot-scope="scope"
+              ><i
+                class="el-icon-bottom"
+                @click="bottom(scope.$index, scope.row)"
+                v-if="scope.$index != homeForm.tableData.length - 1"
+              ></i
+              ><i
+                class="el-icon-top"
+                @click="top(scope.$index)"
+                v-if="scope.$index != 0"
+              ></i
+            ></template>
+          </el-table-column>
+          <el-table-column label="操作" width="250" align="center">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)"
+                >编辑</el-button
+              >
+              &emsp;
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+                >删除</el-button
+              >
+              &emsp;<el-switch
+                :active-value="0"
+                :inactive-value="1"
+                v-model="scope.row.isOpen"
+              >
+              </el-switch>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div id="add">
+          <i class="el-icon-circle-plus-outline" @click="addcarousel()"></i>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false"
+            >确 定</el-button
+          >
+        </div>
       </div>
     </el-dialog>
     <el-dialog title="修改项目" :visible.sync="dialogeditcarousel" width="60%">
@@ -588,11 +602,13 @@ import { getHomeclassify } from "@/apis/request.js";
 import { getHomefriendlink } from "@/apis/request.js";
 import { addHomeclassify } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
+import { deleteHomecarouse } from "@/apis/request.js";
 export default {
   data() {
     return {
       joggle,
       index: 0,
+      carouseemptyimg: false,
       form: {
         name: "",
       },
@@ -680,7 +696,7 @@ export default {
             index: 1,
             title: "四川大学1",
             value1: true,
-            imageUrl:
+            url:
               "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
           },
           {
@@ -840,19 +856,6 @@ export default {
             value1: true,
             imageUrl:
               "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
-          },
-          {
-            index: 2,
-            title: "四川大学2",
-            value1: true,
-            imageUrl:
-              "https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg",
-          },
-          {
-            index: 3,
-            title: "四川大学3",
-            value1: true,
-            imageUrl: "",
           },
         ],
         frinedlinktableData: [
@@ -1135,8 +1138,27 @@ export default {
       this.dialogeditcarousel = true;
     },
     handleDelete(index, row) {
-      console.log(index, row);
-      this.homeForm.tableData.splice(index, 1);
+      console.log(index, row,'o');
+       this.open(row.id);
+      // this.homeForm.tableData.splice(index, 1);
+    },
+    open(id) {
+      this.$confirm("此操作将永久删除, 是否继续?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          deleteHomecarouse(id).then(res=>{
+            console.log(res,'1');
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
@@ -1160,6 +1182,7 @@ export default {
     addcarousel() {
       this.dialogcarousel = true;
     },
+    
     // 提交事件
     async submit() {
       this.isPopup = true;
@@ -1193,7 +1216,7 @@ export default {
     },
     handlecarousel(data) {
       this.homeForm.addcarousel.url = data.data.fileUrl;
-      console.log(this.homeForm.addcarousel.url, 0);
+      console.log(this.homeForm.addcarousel.url, data, 0);
     },
     Carouseltrue() {
       if (this.homeForm.tableData.length == 5)
@@ -1204,12 +1227,13 @@ export default {
         });
       else {
         addHomecarouse(this.homeForm.addcarousel).then((res) => {
-          this.homeForm.tableData.push(res);
-          this.addhomeForm.carouselIds.push(res.id);
-          console.log(this.addhomeForm.carouselIds.join(","));
+          this.homeForm.tableData.unshift(res);
+          this.addhomeForm.carouselIds.unshift(res.id);
+          // console.log(this.addhomeForm.carouselIds.join(","),'p');
         });
       }
       this.dialogcarousel = false;
+      this.carouseemptyimg = false;
     },
     beforebannerAvatarUpload(file) {
       const isJPG = file.type.indexOf("image") > -1;
@@ -1327,6 +1351,7 @@ export default {
       this.addhomeForm.bgImgId = res[0].bgImgId;
       this.addhomeForm.carouselIds = res[0].carouselIds.split(",");
       this.addhomeForm.columnIds = res[0].columnIds;
+      console.log(res[0].carouselIds,1)
       this.addhomeForm.headline1Id = res[0].headline1Id;
       var m = [];
       m.push(Number(res[0].columnIds[0]));
@@ -1334,13 +1359,19 @@ export default {
       n.push(Number(res[0].columnIds[2]));
       this.homeForm.linkcolumn = m;
       this.homeForm.linkcolumntwo = n;
+
       getHomebanner(res[0].bgImgId).then((res) => {
         this.homeForm.bannerurl = res[0].imgUrl;
         this.homeFormfirst.bannerurl = res[0].imgUrl;
       });
       getHomecarouse(res[0].carouselIds).then((res) => {
-        this.homeFormfirst.tableData = res[0];
+        if( res.length>0){
+       this.homeFormfirst.tableData = res[0];
+        }
         this.homeForm.tableData = res;
+        if (this.homeForm.tableData == "") {
+          this.carouseemptyimg = true;
+        }
         if (
           this.homeFormfirst.tableData.url.indexOf("jpeg") > -1 ||
           this.homeFormfirst.tableData.url.indexOf("jpg") > -1 ||
@@ -1372,20 +1403,19 @@ export default {
       returnColumn(res[0].columnIds).then((res) => {
         this.homeFormfirst.linkcolumn = res[0].columnName;
         this.homeFormfirst.linkcolumntwo = res[1].columnName;
-       
       });
-      console.log(res[0].columnIds.length,0)
+      console.log(res[0].columnIds.length, 0);
       if (res[0].columnIds.length >= 1) {
-        getColumnarticle(res[0].columnIds.split(",")[0],'').then((res) => {
+        getColumnarticle(res[0].columnIds.split(",")[0],"").then((res) => {
           if (res) {
             this.homeFormfirst.linkcolumnarticletop = res.list[0];
             this.homeFormfirst.linkcolumnarticlebottom = res.list.splice(1, 4);
           }
-          console.log(this.homeFormfirst.linkcolumnarticletop,1)
+          console.log(this.homeFormfirst.linkcolumnarticletop, 1);
         });
       }
       if (res[0].columnIds.length >= 2) {
-        getColumnarticle(res[0].columnIds.split(",")[1]).then((res) => {
+        getColumnarticle(res[0].columnIds.split(",")[1],"").then((res) => {
           console.log(res, 6);
         });
       }
@@ -1462,9 +1492,9 @@ export default {
           white-space: normal !important;
           text-overflow: ellipsis;
           word-wrap: break-word;
-          -webkit-line-clamp: 10;
+          -webkit-line-clamp: 9;
           -webkit-box-orient: vertical;
-          line-height: 24px;
+          line-height: 30px;
         }
       }
     }
@@ -1493,6 +1523,9 @@ export default {
         text-align: center;
         transition: 1s;
         box-shadow: 1px 1px 4px #ccc;
+        img {
+          margin-top: 15px;
+        }
       }
     }
     .box1 > div:hover {
@@ -1500,6 +1533,12 @@ export default {
     }
     .box2 > div:hover {
       transform: scale(1.1);
+    }
+    .box1 > div > p {
+      margin-top: 10px;
+    }
+    .box2 > div > p {
+      margin-top: 10px;
     }
     .article {
       margin-top: 70px;
@@ -1543,8 +1582,8 @@ export default {
           font-size: 16px;
           line-height: 30px;
         }
-        .timebottom{
-          color:#ccc ;
+        .timebottom {
+          color: #ccc;
           position: absolute;
           bottom: 10px;
           right: 10px;
@@ -1558,6 +1597,7 @@ export default {
       div {
         img {
           width: 180px;
+          height: 120px;
         }
         p {
           font-size: 16px;
@@ -1583,7 +1623,7 @@ export default {
     .back {
       width: 100%;
       height: 100%;
-      text-align: center;
+
       position: absolute;
       background: rgba(24, 22, 22, 0.7);
       top: 0;
@@ -1633,9 +1673,6 @@ export default {
   .el-input__inner {
     width: 350px;
   }
-  // .el-select .el-input__inner{
-  //   width: 160px;
-  // }
   .el-table .el-input__inner {
     width: 160px;
   }
@@ -1658,7 +1695,6 @@ export default {
     height: 40px;
     line-height: 40px;
   }
-
   .el-table th > .cell {
     line-height: 40px;
     vertical-align: top;
@@ -1671,7 +1707,6 @@ export default {
       font-size: 26px;
     }
   }
-
   .el-dialog {
     .avatar-uploader .el-upload {
       border: 1px dashed #d9d9d9;
@@ -1699,6 +1734,20 @@ export default {
     .avatar-uploader-icon {
       width: 300px;
       height: 170px;
+    }
+  }
+  .emptybox {
+    .empty {
+      width: 400px;
+      height: 360px;
+      display: block;
+      margin: 0 auto;
+    }
+    p {
+      font-size: 20px;
+      width: 252px;
+      margin: 0 auto;
+      cursor: pointer;
     }
   }
 }
