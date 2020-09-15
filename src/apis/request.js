@@ -1,8 +1,8 @@
 import axios from 'axios';
 // axios.defaults.baseURL='http://liuwanr.cn:8080/msdw';
-axios.defaults.baseURL='http://192.168.31.180:8080';
+axios.defaults.baseURL='http://192.168.31.181:8080';
 // export  const joggle='http://liuwanr.cn:8080/msdw/aliyun/uploadFiles';
-export  const joggle='http://192.168.31.180:8080/aliyun/uploadFiles';
+export  const joggle='http://192.168.31.181:8080/aliyun/uploadFiles';
 axios.interceptors.request.use((req)=>{
     // console.log('请求拦截器拦截的数据：req',req)
     const token = sessionStorage.getItem('token');
@@ -44,7 +44,7 @@ export function returnColumn(parms){
 export function sortColumn(parms){
     return axios.post('/column/sorting',parms
     ).then(res=>{
-        return res.data.data
+        return res.data
     });
 }
 export function uploadimg(parms){
@@ -148,6 +148,12 @@ export function getHomefriendlink(){
     return axios.get('/friendshipLink/getAll'
     ).then(res=>{
         return res.data.data
+    });
+}
+export function addHomefriendlink(params){
+    return axios.put('/friendshipLink/addOne',params
+    ).then(res=>{
+        return res.data
     });
 }
 export function login(params){

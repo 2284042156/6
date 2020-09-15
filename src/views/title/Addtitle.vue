@@ -402,14 +402,14 @@ export default {
       let index = value.length - 1;
       let id = value[index];
       this.linkForm.linkColumnId = value[index];
-      getColumnarticle(id).then((res) => {
-        this.option = res.map((res) => {
+      getColumnarticle(id,0).then((res) => {
+        this.option = res.list.map((res) => {
           return {
             value: res.id,
             label: res.title,
           };
         });
-        console.log(res, 0);
+        console.log(res, 1);
       });
     },
     beforeAvatarUpload(file) {
@@ -507,7 +507,7 @@ export default {
       form.columnId = this.$store.state.columnid;
       addArticle(form).then((res) => {
         console.log(res);
-        getColumnarticle(this.$store.state.columnid).then((res) => {
+        getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
           this.$router.push("/home/contentmange");
         });
@@ -520,7 +520,7 @@ export default {
       form.columnId = this.$store.state.columnid;
       addArticle(form).then((res) => {
         console.log(res);
-        getColumnarticle(this.$store.state.columnid).then((res) => {
+        getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
           this.$router.push("/home/contentmange");
         });
@@ -533,7 +533,7 @@ export default {
       form.columnId = this.$store.state.columnid;
       addArticle(form).then((res) => {
         console.log(res);
-        getColumnarticle(this.$store.state.columnid).then((res) => {
+        getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
           this.$router.push("/home/contentmange");
         });

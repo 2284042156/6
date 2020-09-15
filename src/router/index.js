@@ -32,7 +32,7 @@ const routes = [
         path: "columnmange", // 相对地址,自定带上父级地址
         name: "columnmange",
         component: () =>
-          import(/* webpackChunkName: "column" */ "../views/column/Columnone.vue"),
+          import(/* webpackChunkName: "column" */ "../views/column/Column.vue"),
         meta: { ispass: true },
       },
       {
@@ -81,16 +81,16 @@ const router = new VueRouter({
   mode: "history",
   routes,
 });
-router.beforeEach((to, from, next) => {
-  if (to.meta.ispass === true) {
-    const token = sessionStorage.getItem("token");
-    if (token) {
-      next();
-    } else {
-      next("/");
-    }
-  } else {
-    next();
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   if (to.meta.ispass === true) {
+//     const token = sessionStorage.getItem("token");
+//     if (token) {
+//       next();
+//     } else {
+//       next("/");
+//     }
+//   } else {
+//     next();
+//   }
+// });
 export default router;

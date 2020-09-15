@@ -493,7 +493,7 @@ export default {
     },
     onTreeDataChange(lists) {
       this.treeData.lists = lists;
-      console.log(this.treeData.lists)
+      console.log(lists)
       sortColumn(lists).then(res=>{
         console.log(res,6666)
       })

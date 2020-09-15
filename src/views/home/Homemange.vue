@@ -192,7 +192,7 @@
           align="center"
         >
           <el-table-column label="编号" width="60" align="center">
-            <template slot-scope="scope">{{ scope.$index+1 }}</template>
+            <template slot-scope="scope">{{ scope.$index + 1 }}</template>
           </el-table-column>
           <el-table-column label="视频图片" width="120" align="center">
             <template slot-scope="scope">
@@ -245,10 +245,8 @@
           <i class="el-icon-circle-plus-outline" @click="addcarousel()"></i>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false"
-            >确 定</el-button
-          >
+          <el-button @click="cancel()">取 消</el-button>
+          <el-button type="primary" @click="okone()">确 定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -258,15 +256,23 @@
           <el-upload
             class="avatar-uploader"
             :action="joggle"
+            v-bind:data="{ FoldPath: '上传目录', SecretKey: '安全验证' }"
             :show-file-list="false"
-            :on-success="handlecarousel"
+            :on-success="handleeditcarousel"
             :before-upload="beforeAvatarUpload"
           >
             <img
-              v-if="homeForm.editcarousel.imageUrl"
-              :src="homeForm.editcarousel.imageUrl"
+              v-if="imageshow"
+              :src="homeForm.editcarousel.url"
               class="avatar"
             />
+
+            <video
+              class="avatar"
+              controls="controls"
+              v-else-if="videoshow"
+              :src="homeForm.editcarousel.url"
+            ></video>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -449,7 +455,7 @@
             :props="defaultParams"
             :options="options"
             v-model="homeForm.linkcolumn"
-            @change="handleChange"
+            @change="handlecolumnChangeone"
             :clearable="true"
           ></el-cascader>
         </el-form-item>
@@ -474,7 +480,7 @@
             :props="defaultParams"
             :options="options"
             v-model="homeForm.linkcolumntwo"
-            @change="handleChange"
+            @change="handlecolumnChangetwo"
             :clearable="true"
           ></el-cascader>
         </el-form-item>
@@ -483,6 +489,95 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialoglinkcolumntwo = false">取 消</el-button>
         <el-button type="primary" @click="submitForm('linkcolumntwo')"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
+    <el-dialog title="添加种类" :visible.sync="dialogaddclassify" width="60%">
+      <el-form :model="homeForm" :rules="rules" ref="addclassify">
+        <el-form-item
+          prop="addclassify"
+          label="分类"
+          :label-width="formLabelWidth"
+        >
+          <el-input
+            v-model="homeForm.addclassify"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogaddclassify = false">取 消</el-button>
+        <el-button type="primary" @click="classifytrue('addclassify')"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
+    <el-dialog title="添加友情链接" :visible.sync="dialogaddlink" width="60%">
+      <el-form :model="homeForm.addlink" :rules="rules" ref="addlink">
+        <el-form-item
+          prop="title"
+          label="连接名"
+          :label-width="formLabelWidth"
+        >
+          <el-input
+            v-model="homeForm.addlink.title"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          prop="classifyId"
+          label="连接分类"
+          :label-width="formLabelWidth"
+          class="classifyId"
+        >
+          <el-select
+            v-model="homeForm.addlink.classifyId"
+            placeholder="请选择分类"
+          >
+            <el-option
+              v-for="item in optionslink"
+              :key="item.id"
+              :label="item.classifyName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          prop="linkUrl"
+          label="连接网址"
+          :label-width="formLabelWidth"
+        >
+          <el-input
+            v-model="homeForm.addlink.linkUrl"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogaddlink = false">取 消</el-button>
+        <el-button type="primary" @click="classifytrue('addlink')"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
+    <el-dialog title="修改种类" :visible.sync="dialogeditclassify" width="60%">
+      <el-form :model="homeForm" :rules="rules" ref="editclassify">
+        <el-form-item
+          prop="editclassify"
+          label="分类"
+          :label-width="formLabelWidth"
+        >
+          <el-input
+            v-model="homeForm.editclassify"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogeditclassify = false">取 消</el-button>
+        <el-button type="primary" @click="classifytrue('editclassify')"
           >确 定</el-button
         >
       </div>
@@ -503,7 +598,7 @@
             align="center"
           >
             <el-table-column label="编号" width="60" align="center">
-              <template slot-scope="scope">{{ scope.row.id }}</template>
+              <template slot-scope="scope">{{ scope.$index + 1 }}</template>
             </el-table-column>
             <el-table-column label="标题" width="180" align="center">
               <template slot-scope="scope">
@@ -539,7 +634,12 @@
             </el-table-column>
             <el-table-column label="操作" width="200" align="center">
               <template slot-scope="scope">
-                <el-switch v-model="scope.row.value"> </el-switch>
+                <el-switch
+                  v-model="scope.row.isShow"
+                  active-value="0"
+                  inactive-value="1"
+                >
+                </el-switch>
               </template>
             </el-table-column> </el-table
         ></el-tab-pane>
@@ -553,18 +653,21 @@
             align="center"
           >
             <el-table-column label="编号" width="60" align="center">
-              <template slot-scope="scope">{{ scope.row.id }}</template>
+              <template slot-scope="scope">{{ scope.$index + 1 }}</template>
             </el-table-column>
             <el-table-column label="分类" width="420" align="center">
               <template slot-scope="scope">
-                <el-input
-                  v-model="scope.row.classifyName"
-                  placeholder="请输入网址"
-                ></el-input>
+                {{ scope.row.classifyName }}
               </template>
             </el-table-column>
             <el-table-column label="操作" width="250" align="center">
               <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="classEdit(scope.$index, scope.row)"
+                  >修改</el-button
+                >
                 <el-button
                   size="mini"
                   type="danger"
@@ -580,7 +683,7 @@
         </div>
       </el-tabs>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogfriendlink = false">取 消</el-button>
+        <el-button @click="cancellink()">取 消</el-button>
         <el-button type="primary" @click="linkclassify()">确 定</el-button>
       </div>
     </el-dialog>
@@ -601,17 +704,22 @@ import { getColumnarticle } from "@/apis/request.js";
 import { getHomeclassify } from "@/apis/request.js";
 import { getHomefriendlink } from "@/apis/request.js";
 import { addHomeclassify } from "@/apis/request.js";
+import { addHomefriendlink } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
 import { deleteHomecarouse } from "@/apis/request.js";
 export default {
   data() {
     return {
       joggle,
-      index: 0,
+      editindex: 0,
       carouseemptyimg: false,
       form: {
         name: "",
       },
+      optionslink: [],
+      tableDataclone: [],
+      deletearr: [],
+      deleteobj: [],
       defaultParams: {
         label: "columnName",
         value: "id",
@@ -691,6 +799,8 @@ export default {
       activeName: "first",
       homeForm: {
         bannerurl: "",
+        bgImgId: 0,
+        editindex: 0,
         tableData: [
           {
             index: 1,
@@ -713,6 +823,8 @@ export default {
             imageUrl: "",
           },
         ],
+        carouselIds: "",
+        columnIds: [],
         frinedlinktableData: [
           {
             index: 1,
@@ -720,23 +832,7 @@ export default {
             class: "",
             value: true,
             address: "https://123",
-            options: [
-              {
-                value: "选项1",
-                label: "黄金糕",
-              },
-              {
-                value: "选项2",
-                label: "双皮奶",
-              },
-            ],
-          },
-          {
-            index: 1,
-            title: "四川大学",
-            class: "",
-            value: true,
-            address: "https://123",
+            classifyId: 0,
             options: [
               {
                 value: "选项1",
@@ -762,6 +858,8 @@ export default {
           },
         ],
         titleone: "",
+        headline1Id: 0,
+        headline2Id: 0,
         titletwo: "",
         formlink: {
           title: "",
@@ -831,22 +929,34 @@ export default {
             },
           ],
         },
-        linkcolumn: 0,
-        linkcolumntwo: 0,
+        linkcolumn: [],
+        linkcolumntwo: [],
         columnarticletop: {},
         columnarticlebottom: {},
+        addclassify: "",
+        addclassifyid: 0,
+        editclassify: "",
+        addlink: {
+          title: "",
+          classifyId: 0,
+          linkUrl: "",
+        },
         addcarousel: {
           url: "",
           title: "",
           description: "",
         },
         editcarousel: {
-          imageUrl:
+          url:
             "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
           title: "",
           content: "",
         },
       },
+      frinedlinkmangeclone: [],
+      frinedlinktableDataclone: [],
+      linkcolumn: 0,
+      linkcolumntwo: 0,
       homeFormfirst: {
         bannerurl: "",
         tableData: [
@@ -1005,6 +1115,9 @@ export default {
       dialogfriendlink: false,
       dialoglinkcolumn: false,
       dialoglinkcolumntwo: false,
+      dialogaddclassify: false,
+      dialogeditclassify: false,
+      dialogaddlink: false,
       formLabelWidth: "90px",
       a: false,
       changeCount: 0, // 判断表单数据是否改变过
@@ -1053,8 +1166,20 @@ export default {
             trigger: "change",
           },
         ],
+        addclassify: [
+          { required: true, message: "请输入内容", trigger: "blur" },
+        ],
+        editclassify: [
+          { required: true, message: "请输入内容", trigger: "blur" },
+        ],
         description: [
           { required: true, message: "请输入内容", trigger: "blur" },
+        ],
+        classifyId: [
+          { required: true, message: "请选择分类", trigger: "blur" },
+        ],
+        linkUrl: [
+          { required: true, message: "请输入网址", trigger: "blur" },
         ],
         in: [{ required: true, message: "请选择站内链接", trigger: "change" }],
         out: [{ required: true, message: "请选择站外链接", trigger: "blur" }],
@@ -1084,10 +1209,16 @@ export default {
     },
     editCarousel() {
       this.dialogeditcarousel = false;
-      this.homeForm.tableData[this.index] = {
-        ...this.homeForm.tableData[this.index],
-        ...this.homeForm.editcarousel,
-      };
+      this.homeForm.tableData[
+        this.editindex
+      ].url = this.homeForm.editcarousel.url;
+      this.homeForm.tableData[
+        this.editindex
+      ].title = this.homeForm.editcarousel.title;
+      this.homeForm.tableData[
+        this.editindex
+      ].description = this.homeForm.editcarousel.description;
+
       this.homeForm.tableData.splice(1, 0);
     },
     fun() {
@@ -1096,6 +1227,7 @@ export default {
     remove() {
       this.a = false;
       this.changeCount = 0;
+      this.initRequest();
     },
     changecolumn() {
       this.dialoglinkcolumn = true;
@@ -1111,16 +1243,23 @@ export default {
             addHomeheadline({
               title: that.homeForm.titleone,
             }).then((res) => {
-              this.addhomeForm.headline1Id = res.id;
+              this.homeForm.headline1Id = res.id;
             });
           }
           if (formName == "titletwo") {
             addHomeheadline({
               title: that.homeForm.titletwo,
             }).then((res) => {
-              this.addhomeForm.headline2Id = res.id;
+              this.homeForm.headline2Id = res.id;
             });
           }
+          if (formName == "linkcolumn") {
+            this.homeForm.columnIds[0] = this.linkcolumn;
+          }
+          if (formName == "linkcolumntwo") {
+            this.homeForm.columnIds[1] = this.linkcolumntwo;
+          }
+
           that.dialoglink = false;
           that.dialogtitleone = false;
           that.dialogtitletwo = false;
@@ -1133,14 +1272,45 @@ export default {
       });
     },
     handleEdit(index, row) {
-      console.log(index, row);
-      this.index = index;
+      console.log(row);
+      if (
+        row.url.indexOf("jpeg") > -1 ||
+        row.url.indexOf("jpg") > -1 ||
+        row.url.indexOf("png") > -1
+      ) {
+        this.imageshow = true;
+        this.videoshow = false;
+      }
+      if (
+        row.url.indexOf("mp4") > -1 ||
+        row.url.indexOf("ogg") > -1 ||
+        row.url.indexOf("avi") > -1 ||
+        row.url.indexOf("wmv") > -1
+      ) {
+        this.videoshow = true;
+        this.imageshow = false;
+      }
+      this.editindex = index;
+      this.homeForm.editcarousel.url = row.url;
+      this.homeForm.editcarousel.title = row.title;
+      this.homeForm.editcarousel.content = row.description;
       this.dialogeditcarousel = true;
     },
     handleDelete(index, row) {
-      console.log(index, row,'o');
-       this.open(row.id);
-      // this.homeForm.tableData.splice(index, 1);
+      console.log(index, row, "o");
+      this.homeForm.tableData.splice(index, 1);
+      this.deleteobj.push(row);
+      console.log(this.deleteobj, 9);
+    },
+    okone() {
+      this.dialogFormVisible = false;
+      this.tableDataclone = JSON.parse(JSON.stringify(this.homeForm.tableData));
+      console.log(this.tableDataclone, 6);
+    },
+    cancel() {
+      this.dialogFormVisible = false;
+      this.homeForm.tableData = JSON.parse(JSON.stringify(this.tableDataclone));
+      console.log(this.homeForm.tableData, 5);
     },
     open(id) {
       this.$confirm("此操作将永久删除, 是否继续?", "警告", {
@@ -1149,9 +1319,9 @@ export default {
         type: "warning",
       })
         .then(() => {
-          deleteHomecarouse(id).then(res=>{
-            console.log(res,'1');
-          })
+          deleteHomecarouse(id).then((res) => {
+            console.log(res, "1");
+          });
         })
         .catch(() => {
           this.$message({
@@ -1182,10 +1352,19 @@ export default {
     addcarousel() {
       this.dialogcarousel = true;
     },
-    
     // 提交事件
     async submit() {
       this.isPopup = true;
+      this.addhomeForm.bgImgId = this.homeForm.bgImgId;
+      this.homeForm.carouselIds = this.homeForm.tableData.map((res) => {
+        return res.id;
+      });
+      this.addhomeForm.carouselIds = this.homeForm.carouselIds.join(",");
+      this.addhomeForm.headline1Id = this.homeForm.headline1Id;
+      this.addhomeForm.headline2Id = this.homeForm.headline2Id;
+      this.addhomeForm.columnIds = this.homeForm.columnIds;
+    
+  
     },
     changecarousel() {
       this.dialogFormVisible = true;
@@ -1202,6 +1381,16 @@ export default {
     changefriendlink() {
       this.dialogfriendlink = true;
     },
+    handlecolumnChangeone(value) {
+      let index = value.length - 1;
+      this.linkcolumn = value[index];
+      console.log(this.linkcolumn, 0);
+    },
+    handlecolumnChangetwo(value) {
+      let index = value.length - 1;
+      this.linkcolumntwo = value[index];
+      console.log(this.linkcolumntwo, 0);
+    },
     handleChange(value) {
       console.log(value);
     },
@@ -1211,12 +1400,15 @@ export default {
         imgUrl: data.data.fileUrl,
       }).then((res) => {
         console.log(res, 6666);
-        this.addhomeForm.bgImgId = res.id;
+        this.homeForm.bgImgId = res.id;
       });
     },
     handlecarousel(data) {
       this.homeForm.addcarousel.url = data.data.fileUrl;
       console.log(this.homeForm.addcarousel.url, data, 0);
+    },
+    handleeditcarousel(data) {
+      this.homeForm.editcarousel.url = data.data.fileUrl;
     },
     Carouseltrue() {
       if (this.homeForm.tableData.length == 5)
@@ -1228,8 +1420,8 @@ export default {
       else {
         addHomecarouse(this.homeForm.addcarousel).then((res) => {
           this.homeForm.tableData.unshift(res);
-          this.addhomeForm.carouselIds.unshift(res.id);
-          // console.log(this.addhomeForm.carouselIds.join(","),'p');
+          // this.addhomeForm.carouselIds.unshift(res.id);
+          // console.log(res, 66);
         });
       }
       this.dialogcarousel = false;
@@ -1277,98 +1469,104 @@ export default {
     },
     linkmange() {
       if (this.activeName == "first") {
-        this.homeForm.frinedlinktableData.push({
-          index: 1,
-          title: "",
-          class: "",
-          value: true,
-          address: "",
-          options: [
-            {
-              value: "选项1",
-              label: "黄金糕",
-            },
-            {
-              value: "选项2",
-              label: "双皮奶",
-            },
-          ],
+        this.dialogaddlink = true;
+        this.optionslink = JSON.parse(
+          JSON.stringify(this.homeForm.frinedlinkmange)
+        );
+        this.optionslink.push({
+          id: 0,
+          classifyName: "无",
         });
       }
       if (this.activeName == "second") {
-        this.homeForm.frinedlinkmange.push({
-          id: 1,
-          classifyName: "00",
-        });
+        this.dialogaddclassify = true;
       }
+    },
+    classEdit(index, row) {
+      this.rowedit = row;
+      this.dialogeditclassify = true;
+      this.homeForm.editclassify = row.classifyName;
+    },
+    classifytrue(formName) {
+      const that = this;
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (formName == "addclassify") {
+            addHomeclassify({
+              classifyName: that.homeForm.addclassify,
+            }).then((res) => {
+              this.homeForm.frinedlinkmange.unshift(res);
+            });
+          }
+          if (formName == "editclassify") {
+            this.rowedit.classifyName = this.homeForm.editclassify;
+          }
+          if (formName == "addlink") {
+           addHomefriendlink(this.homeForm.addlink).then(res=>{
+             console.log(res,1)
+           })
+    
+          }
+
+          that.dialogaddclassify = false;
+          that.dialogeditclassify = false;
+          that.dialogaddlink = false;
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     linkclassify() {
-      let that = this;
       if (this.activeName == "second") {
-        if (this.homeForm.frinedlinkmange.length > 0) {
-          var index = this.homeForm.frinedlinkmange.length - 1;
-          console.log(that.homeForm.frinedlinkmange[index]);
-          addHomeclassify({
-            classifyName: that.homeForm.frinedlinkmange[index],
-          }).then((res) => {
-            console.log(res);
-          });
-        }
+        this.frinedlinkmangeclone = JSON.parse(
+          JSON.stringify(this.homeForm.frinedlinkmange)
+        );
       }
+      if (this.activeName == "first") {
+        this.frinedlinktableDataclone = JSON.parse(
+          JSON.stringify(this.homeForm.frinedlinktableData)
+        );
+      }
+          this.dialogfriendlink = false;
     },
-  },
-
-  // 监听表单数据变化
-  watch: {
-    homeForm: {
-      handler(val) {
-        val && this.changeCount++;
-      },
-      deep: true,
+    cancellink() {
+      if (this.activeName == "second") {
+        this.homeForm.frinedlinkmange = JSON.parse(
+          JSON.stringify(this.frinedlinkmangeclone)
+        );
+      }
+      if (this.activeName == "first") {
+        this.homeForm.frinedlinktableData = JSON.parse(
+          JSON.stringify(this.frinedlinktableDataclone)
+        );
+      }
+          this.dialogfriendlink = false;
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.changeCount > 10 && !this.isPopup) {
-      this.$confirm("你有内容正在编辑确定离开当前界面吗?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        center: true,
-      })
-        .then(() => {
-          next();
-        })
-        .catch(() => {
-          next(false);
-        });
-    } else {
-      next();
-    }
-  },
-  mounted() {
-    this.common();
-    getHomecolumn().then((res) => {
-      this.addhomeForm.bgImgId = res[0].bgImgId;
-      this.addhomeForm.carouselIds = res[0].carouselIds.split(",");
-      this.addhomeForm.columnIds = res[0].columnIds;
-      console.log(res[0].carouselIds,1)
-      this.addhomeForm.headline1Id = res[0].headline1Id;
+    initRequest(){
+        getHomecolumn().then((res) => {
+      this.homeForm.bgImgId = res[0].bgImgId;
+      // this.homeForm.carouselIds = res[0].carouselIds.split(",");
+      this.homeForm.columnIds = res[0].columnIds.split(",");
+      this.homeForm.headline1Id = res[0].headline1Id;
+      this.homeForm.headline2Id = res[0].headline2Id;
       var m = [];
       m.push(Number(res[0].columnIds[0]));
       var n = [];
       n.push(Number(res[0].columnIds[2]));
       this.homeForm.linkcolumn = m;
       this.homeForm.linkcolumntwo = n;
-
       getHomebanner(res[0].bgImgId).then((res) => {
         this.homeForm.bannerurl = res[0].imgUrl;
         this.homeFormfirst.bannerurl = res[0].imgUrl;
       });
       getHomecarouse(res[0].carouselIds).then((res) => {
-        if( res.length>0){
-       this.homeFormfirst.tableData = res[0];
+        if (res.length > 0) {
+          this.homeFormfirst.tableData = res[0];
         }
         this.homeForm.tableData = res;
+        this.tableDataclone = JSON.parse(JSON.stringify(res));
+        console.log(this.tableDataclone, 66);
         if (this.homeForm.tableData == "") {
           this.carouseemptyimg = true;
         }
@@ -1404,24 +1602,24 @@ export default {
         this.homeFormfirst.linkcolumn = res[0].columnName;
         this.homeFormfirst.linkcolumntwo = res[1].columnName;
       });
-      console.log(res[0].columnIds.length, 0);
+
       if (res[0].columnIds.length >= 1) {
-        getColumnarticle(res[0].columnIds.split(",")[0],"").then((res) => {
+        getColumnarticle(res[0].columnIds.split(",")[0], "").then((res) => {
           if (res) {
             this.homeFormfirst.linkcolumnarticletop = res.list[0];
             this.homeFormfirst.linkcolumnarticlebottom = res.list.splice(1, 4);
           }
-          console.log(this.homeFormfirst.linkcolumnarticletop, 1);
         });
       }
       if (res[0].columnIds.length >= 2) {
-        getColumnarticle(res[0].columnIds.split(",")[1],"").then((res) => {
-          console.log(res, 6);
+        getColumnarticle(res[0].columnIds.split(",")[1], "").then((res) => {
+          console.log(res);
         });
       }
       getHomeclassify().then((res) => {
         this.homeForm.frinedlinkmange = res;
-        getHomefriendlink(res[0].friendshipLinkIds).then((res) => {
+        this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
+        getHomefriendlink().then((res) => {
           this.homeForm.frinedlinktableData = res.map((res) => {
             res.options = JSON.parse(
               JSON.stringify(this.homeForm.frinedlinkmange)
@@ -1432,10 +1630,56 @@ export default {
             });
             return res;
           });
-          console.log(res, 66);
+          this.frinedlinktableDataclone = JSON.parse(
+            JSON.stringify(
+              res.map((res) => {
+                res.options = JSON.parse(
+                  JSON.stringify(this.homeForm.frinedlinkmange)
+                );
+                res.options.push({
+                  id: 0,
+                  classifyName: "无",
+                });
+                return res;
+              })
+            )
+          );
         });
       });
     });
+    }
+  },
+
+  // 监听表单数据变化
+  watch: {
+    homeForm: {
+      handler(val) {
+        val && this.changeCount++;
+      },
+      deep: true,
+    },
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.changeCount > 10 && !this.isPopup) {
+      this.$confirm("你有内容正在编辑确定离开当前界面吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        center: true,
+      })
+        .then(() => {
+          next();
+        })
+        .catch(() => {
+          next(false);
+        });
+    } else {
+      next();
+    }
+  },
+  mounted() {
+    this.common();
+    this.initRequest()
   },
 };
 </script>
@@ -1749,6 +1993,12 @@ export default {
       margin: 0 auto;
       cursor: pointer;
     }
+  }
+  .classifyId {
+    margin: 20px auto;
+  }
+  .el-icon-circle-plus-outline {
+    cursor: pointer;
   }
 }
 </style>

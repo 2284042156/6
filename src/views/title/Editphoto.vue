@@ -404,8 +404,8 @@ export default {
       let index = value.length - 1;
       let id = value[index];
       this.linkForm.linkColumnId = value[index];
-      getColumnarticle(id).then((res) => {
-        this.option = res.map((res) => {
+      getColumnarticle(id,0).then((res) => {
+        this.option = res.list.map((res) => {
           return {
             value: res.id,
             label: res.title,
@@ -418,8 +418,8 @@ export default {
       allColumn().then((res) => {
         this.options = this.getTreeData(res);
         if (this.linkForm.linkColumnId) {
-          getColumnarticle(this.linkForm.linkColumnId).then((res) => {
-            this.option = res.map((res) => {
+          getColumnarticle(this.linkForm.linkColumnId,0).then((res) => {
+            this.option = res.list.map((res) => {
               return {
                 value: res.id,
                 label: res.title,
@@ -507,7 +507,7 @@ export default {
       console.log(arr);
       editArticle(arr).then((res) => {
         console.log(res);
-        getColumnarticle(this.$store.state.columnid).then((res) => {
+        getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
           this.$router.push("/home/contentmange");
         });
@@ -522,7 +522,7 @@ export default {
       console.log(arr);
       editArticle(arr).then((res) => {
         console.log(res);
-        getColumnarticle(this.$store.state.columnid).then((res) => {
+        getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
           this.$router.push("/home/contentmange");
         });
@@ -539,7 +539,7 @@ export default {
       console.log(arr, 9);
       editArticle(arr).then((res) => {
         console.log(res);
-        getColumnarticle(this.$store.state.columnid).then((res) => {
+        getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
           this.$router.push("/home/contentmange");
         });
