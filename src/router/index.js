@@ -32,7 +32,7 @@ const routes = [
         path: "columnmange", // 相对地址,自定带上父级地址
         name: "columnmange",
         component: () =>
-      import(/* webpackChunkName: "column" */ "../views/column/Column.vue"),
+      import(/* webpackChunkName: "column" */ "../views/column/Demo.vue"),
         meta: { ispass: true },
       },
       {
@@ -79,6 +79,7 @@ const routes = [
 
 const router = new VueRouter({
   mode:"history",
+ 
   routes,
 });
 router.beforeEach((to, from, next) => {

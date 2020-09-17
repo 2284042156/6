@@ -187,7 +187,7 @@ import { addColumn } from "@/apis/request.js";
 import { deleteColumn } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
 import { joggle } from "@/apis/request.js";
-import { sortColumn } from "@/apis/request.js";
+// import { sortColumn } from "@/apis/request.js";
 import show from "@/assets/images/btn_visule_n.png";
 import hidden from "@/assets/images/btn_notvisule_n.png";
 export default {
