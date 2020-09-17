@@ -263,6 +263,7 @@ import { allColumn } from "@/apis/request.js";
 import moment from "moment";
 import { getColumnarticle } from "@/apis/request.js";
 import { addArticle } from "@/apis/request.js";
+import { getColumnallarticle } from "@/apis/request.js";
 import { joggle } from "@/apis/request.js";
 export default {
   components: {
@@ -402,8 +403,8 @@ export default {
       let index = value.length - 1;
       let id = value[index];
       this.linkForm.linkColumnId = value[index];
-      getColumnarticle(id,0).then((res) => {
-        this.option = res.list.map((res) => {
+      getColumnallarticle(id).then((res) => {
+        this.option = res.map((res) => {
           return {
             value: res.id,
             label: res.title,

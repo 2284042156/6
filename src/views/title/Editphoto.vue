@@ -266,6 +266,7 @@ import { quillEditor } from "vue-quill-editor";
 import { allColumn } from "@/apis/request.js";
 import moment from "moment";
 import { joggle } from "@/apis/request.js";
+import { getColumnallarticle } from "@/apis/request.js";
 import { getColumnarticle } from "@/apis/request.js";
 export default {
   components: {
@@ -403,23 +404,25 @@ export default {
     handleChange(value) {
       let index = value.length - 1;
       let id = value[index];
-      this.linkForm.linkColumnId = value[index];
-      getColumnarticle(id,0).then((res) => {
-        this.option = res.list.map((res) => {
+      this.linkForm.linkColumnId= value[index];
+      console.log(id,value,1)
+      getColumnallarticle(id).then((res) => {
+        this.option = res.map((res) => {
           return {
             value: res.id,
             label: res.title,
           };
         });
-        console.log(res, 0);
+        console.log(res, 666);
       });
+   
     },
     common() {
       allColumn().then((res) => {
         this.options = this.getTreeData(res);
         if (this.linkForm.linkColumnId) {
-          getColumnarticle(this.linkForm.linkColumnId,0).then((res) => {
-            this.option = res.list.map((res) => {
+          getColumnallarticle(this.linkForm.linkColumnId).then((res) => {
+            this.option = res.map((res) => {
               return {
                 value: res.id,
                 label: res.title,
@@ -529,9 +532,8 @@ export default {
       });
     },
     linkEdit() {
-      var index = this.linkForm.linkColumnId.length - 1;
-      this.linkForm.linkColumnId = this.linkForm.linkColumnId[index];
-      var form = { ...this.$store.state.editid, ...this.linkForm };
+  
+      var form = { ...this.$store.state.editid, ...this.linkForm};
       var date = moment(form.createTime).format("YYYY-MM-DD");
       form.createTime = date;
       var arr = [];
@@ -572,9 +574,9 @@ export default {
       this.linkForm.description = this.$store.state.editid.description;
       this.linkForm.linkType = this.$store.state.editid.linkType;
       this.linkForm.linkUrl = this.$store.state.editid.linkUrl;
-      this.linkForm.linkColumnId = this.$store.state.editid.linkColumnId;
+      this.linkForm.linkColumnId =  this.$store.state.editid.linkColumnId;
       this.linkForm.linkArticleId = this.$store.state.editid.linkArticleId;
-      console.log(this.$store.state.editid.linkColumnId);
+   
     }
     this.common();
   },

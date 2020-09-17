@@ -51,6 +51,7 @@ export default {
   margin-left: 20px;
   padding: 50px;
   overflow: visible;
+
 }
 .el-header{
   background: #333;

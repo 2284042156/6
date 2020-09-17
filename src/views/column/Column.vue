@@ -306,13 +306,11 @@ export default {
                   this.dialogeditFormVisible = true;
                   this.editid = item.id;
                   returnColumn(item.id).then((res) => {
-                    let a = [];
-                    a.push(res[0].parentId);
                     this.editform.columnName = res[0].columnName;
                     this.editform.bgImgUrl = res[0].bgImgUrl;
                     this.editform.showType = res[0].showType;
                     this.editform.showType = res[0].showType;
-                    this.editform.parentId = a;
+                    this.editform.parentId =res[0].parentId;
                     this.editform.openMethod = res[0].openMethod;
                     console.log(this.editform, 66);
                   });

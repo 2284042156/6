@@ -42,8 +42,9 @@
       </el-upload>
       <div class="carousel front">
         <div class="left">
-          <div class="input_video" v-show="isshowvideo">
+          <div class="input_video" >
             <video-player
+              v-show="isshowvideo"
               class="video-player vjs-custom-skin"
               ref="videoPlayer"
               :playsinline="true"
@@ -196,9 +197,15 @@
           </el-table-column>
           <el-table-column label="视频图片" width="120" align="center">
             <template slot-scope="scope">
-              <div class="demo-image__placeholder">
-                <el-image :src="scope.row.url"></el-image>
-              </div>
+        
+                <el-image v-if="scope.row.isImg==0" :src="scope.row.url"></el-image>
+        
+                      <video
+                      class="carousevideo"
+              v-else
+      
+              :src="scope.row.url"
+            ></video>
             </template>
           </el-table-column>
           <el-table-column label="标题" width="120" align="center">
@@ -259,7 +266,7 @@
             v-bind:data="{ FoldPath: '上传目录', SecretKey: '安全验证' }"
             :show-file-list="false"
             :on-success="handleeditcarousel"
-            :before-upload="beforeAvatarUpload"
+            :before-upload="beforeAvatareditUpload"
           >
             <img
               v-if="imageshow"
@@ -288,9 +295,9 @@
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="content" label="内容" :label-width="formLabelWidth">
+        <el-form-item prop="description" label="内容" :label-width="formLabelWidth">
           <el-input
-            v-model="homeForm.editcarousel.content"
+            v-model="homeForm.editcarousel.description"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -401,41 +408,60 @@
           ></el-input>
         </el-form-item>
         <el-form-item
+          class="linkType"
           label="连接类型"
           :label-width="formLabelWidth"
-          prop="linkclass"
+          prop="linkType"
         >
-          <el-radio-group v-model="homeForm.formlink.linkclass">
+          <el-radio-group v-model="homeForm.formlink.linkType">
             <el-radio :label="0">站内链接</el-radio>
             <el-radio :label="1">站外链接</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item
-          prop="in"
           label="站内链接"
           :label-width="formLabelWidth"
-          v-if="homeForm.formlink.linkclass == 0"
+          v-if="homeForm.formlink.linkType == 0"
         >
           <el-cascader
+            :change-on-select="true"
             :props="defaultParams"
-            v-model="homeForm.formlink.in"
             :options="options"
-            @change="handleChange"
+            v-model="homeForm.formlink.linkColumnId"
+            @change="handleChangecolumn"
+            :clearable="true"
           ></el-cascader>
         </el-form-item>
         <el-form-item
-          prop="out"
+          class="article"
+          label="文章"
+          :label-width="formLabelWidth"
+          v-if="homeForm.formlink.linkType == 0"
+        >
+          <el-select
+            v-model="homeForm.formlink.linkArticleId"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in option"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
           label="站外链接"
           :label-width="formLabelWidth"
-          v-if="homeForm.formlink.linkclass == 1"
+          v-if="homeForm.formlink.linkType == 1"
         >
           <el-input
-            v-model="homeForm.formlink.out"
+            v-model="homeForm.formlink.linkUrl"
             placeholder="请输入链接"
           ></el-input>
         </el-form-item>
       </el-form>
-
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialoglink = false">取 消</el-button>
         <el-button type="primary" @click="submitForm('ruleForm')"
@@ -515,11 +541,7 @@
     </el-dialog>
     <el-dialog title="添加友情链接" :visible.sync="dialogaddlink" width="60%">
       <el-form :model="homeForm.addlink" :rules="rules" ref="addlink">
-        <el-form-item
-          prop="title"
-          label="连接名"
-          :label-width="formLabelWidth"
-        >
+        <el-form-item prop="title" label="连接名" :label-width="formLabelWidth">
           <el-input
             v-model="homeForm.addlink.title"
             autocomplete="off"
@@ -697,15 +719,21 @@ import { getHomecolumn } from "@/apis/request.js";
 import { postHomebanner } from "@/apis/request.js";
 import { getHomecarouse } from "@/apis/request.js";
 import { addHomecarouse } from "@/apis/request.js";
+import { Homecarouseedit } from "@/apis/request.js";
 import { getHomeheadline } from "@/apis/request.js";
 import { allColumn } from "@/apis/request.js";
 import { addHomeheadline } from "@/apis/request.js";
 import { getColumnarticle } from "@/apis/request.js";
+import { getColumnallarticle } from "@/apis/request.js";
 import { getHomeclassify } from "@/apis/request.js";
 import { getHomefriendlink } from "@/apis/request.js";
 import { addHomeclassify } from "@/apis/request.js";
 import { addHomefriendlink } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
+import { modifyHomefriendlink } from "@/apis/request.js";
+import { modifyHomeclassify } from "@/apis/request.js";
+import { Homecarousesort } from "@/apis/request.js";
+import { addHomepage } from "@/apis/request.js";
 import { deleteHomecarouse } from "@/apis/request.js";
 export default {
   data() {
@@ -716,6 +744,8 @@ export default {
       form: {
         name: "",
       },
+      isImg:0,
+      option: [],
       optionslink: [],
       tableDataclone: [],
       deletearr: [],
@@ -845,25 +875,17 @@ export default {
             ],
           },
         ],
-        frinedlinkmange: [
-          {
-            index: 1,
-            title: "四川大学",
-            value: true,
-          },
-          {
-            index: 1,
-            title: "四川大学",
-            value: true,
-          },
-        ],
+        frinedlinkmange: [],
         titleone: "",
         headline1Id: 0,
         headline2Id: 0,
         titletwo: "",
         formlink: {
+          linkType: 0,
+          linkUrl: "",
+          linkColumnId: 0,
           title: "",
-          linkclass: "",
+          linkArticleId: "",
           out: "",
           in: [],
           options: [
@@ -945,12 +967,14 @@ export default {
           url: "",
           title: "",
           description: "",
+          isImg:0
         },
         editcarousel: {
           url:
             "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
           title: "",
           content: "",
+          isImg:0
         },
       },
       frinedlinkmangeclone: [],
@@ -1135,7 +1159,7 @@ export default {
         sources: [
           {
             type: "",
-            src: "1.mp4", //url地址
+            src: "", //url地址
           },
         ],
         poster: "", //你的封面地址
@@ -1159,7 +1183,7 @@ export default {
         linkcolumn: [
           { required: true, message: "请输入站内连接栏目", trigger: "blur" },
         ],
-        linkclass: [
+        linkType: [
           {
             required: true,
             message: "请至少选择一链接类型",
@@ -1178,11 +1202,10 @@ export default {
         classifyId: [
           { required: true, message: "请选择分类", trigger: "blur" },
         ],
-        linkUrl: [
-          { required: true, message: "请输入网址", trigger: "blur" },
+        linkUrl: [{ required: true, message: "请输入网址", trigger: "blur" }],
+        linkColumnId: [
+          { required: true, message: "请选择站内链接", trigger: "change" },
         ],
-        in: [{ required: true, message: "请选择站内链接", trigger: "change" }],
-        out: [{ required: true, message: "请选择站外链接", trigger: "blur" }],
       },
     };
     //  console.log(that.homeForm)
@@ -1218,7 +1241,9 @@ export default {
       this.homeForm.tableData[
         this.editindex
       ].description = this.homeForm.editcarousel.description;
-
+            this.homeForm.tableData[
+        this.editindex
+      ].isImg = this.homeForm.editcarousel.isImg;
       this.homeForm.tableData.splice(1, 0);
     },
     fun() {
@@ -1228,6 +1253,20 @@ export default {
       this.a = false;
       this.changeCount = 0;
       this.initRequest();
+    },
+    handleChangecolumn(value) {
+      let index = value.length - 1;
+      let id = value[index];
+      this.homeForm.formlink.linkColumnId = value[index];
+      getColumnallarticle(id).then((res) => {
+        this.option = res.map((res) => {
+          return {
+            value: res.id,
+            label: res.title,
+          };
+        });
+        console.log(res, 666);
+      });
     },
     changecolumn() {
       this.dialoglinkcolumn = true;
@@ -1293,12 +1332,16 @@ export default {
       this.editindex = index;
       this.homeForm.editcarousel.url = row.url;
       this.homeForm.editcarousel.title = row.title;
-      this.homeForm.editcarousel.content = row.description;
+      this.homeForm.editcarousel.description = row.description;
+      this.homeForm.editcarousel.isImg = row.isImg;
       this.dialogeditcarousel = true;
     },
     handleDelete(index, row) {
       console.log(index, row, "o");
       this.homeForm.tableData.splice(index, 1);
+      if(this.homeForm.tableData==''){
+          this.carouseemptyimg = true;
+      }
       this.deleteobj.push(row);
       console.log(this.deleteobj, 9);
     },
@@ -1359,12 +1402,31 @@ export default {
       this.homeForm.carouselIds = this.homeForm.tableData.map((res) => {
         return res.id;
       });
+       Homecarousesort( this.homeForm.carouselIds).then(res=>{
+         console.log(res,6)
+       })
+       Homecarouseedit(this.homeForm.tableData).then(res=>{
+         console.log(res,0)
+       })
       this.addhomeForm.carouselIds = this.homeForm.carouselIds.join(",");
       this.addhomeForm.headline1Id = this.homeForm.headline1Id;
       this.addhomeForm.headline2Id = this.homeForm.headline2Id;
-      this.addhomeForm.columnIds = this.homeForm.columnIds;
-    
-  
+      this.addhomeForm.columnIds = this.homeForm.columnIds.join(",");
+      modifyHomefriendlink(this.homeForm.frinedlinktableData).then((res) => {
+        console.log(res);
+      });
+      modifyHomeclassify(this.homeForm.frinedlinkmange).then((res) => {
+        console.log(res);
+      });
+      addHomepage({
+        bgImgId: this.addhomeForm.bgImgId,
+        carouselIds: this.addhomeForm.carouselIds,
+        headline1Id: this.addhomeForm.headline1Id,
+        headline2Id: this.addhomeForm.headline2Id,
+        columnIds: this.addhomeForm.columnIds,
+      }).then(() => {
+        this.initRequest();
+      });
     },
     changecarousel() {
       this.dialogFormVisible = true;
@@ -1409,6 +1471,7 @@ export default {
     },
     handleeditcarousel(data) {
       this.homeForm.editcarousel.url = data.data.fileUrl;
+      console.log(data);
     },
     Carouseltrue() {
       if (this.homeForm.tableData.length == 5)
@@ -1430,7 +1493,6 @@ export default {
     beforebannerAvatarUpload(file) {
       const isJPG = file.type.indexOf("image") > -1;
       const isLt10M = file.size / 1024 / 1024 < 10;
-
       if (!isJPG) {
         this.$message.error("文件格式错误!");
       }
@@ -1448,9 +1510,36 @@ export default {
       if (file.type.indexOf("image") > -1) {
         this.imageshow = true;
         this.videoshow = false;
+        this.homeForm.addcarousel.isImg=0;
       } else if (file.type.indexOf("video") > -1) {
         this.videoshow = true;
         this.imageshow = false;
+        this.homeForm.addcarousel.isImg=1;
+      }
+
+      if (!isJPG) {
+        this.$message.error("文件格式错误!");
+      } else if (!isLt100M) {
+        this.$message.error("文件大小不能超过100MB!");
+      }
+      return isJPG && isLt100M;
+    },
+    beforeAvatareditUpload(file) {
+      console.log(file, 66);
+      const isJPG =
+        file.type.indexOf("image") > -1 || file.type.indexOf("video") > -1;
+      // console.log(isJPG)
+      const isLt100M = file.size / 1024 / 1024 < 100;
+      if (file.type.indexOf("image") > -1) {
+        this.imageshow = true;
+        this.videoshow = false;
+        this.homeForm.editcarousel.isImg=0;
+        console.log( this.homeForm.editcarousel.isImg,7)
+      } else if (file.type.indexOf("video") > -1) {
+        this.videoshow = true;
+        this.imageshow = false;
+        this.homeForm.editcarousel.isImg=1;
+          console.log( this.homeForm.editcarousel.isImg,8)
       }
 
       if (!isJPG) {
@@ -1502,10 +1591,9 @@ export default {
             this.rowedit.classifyName = this.homeForm.editclassify;
           }
           if (formName == "addlink") {
-           addHomefriendlink(this.homeForm.addlink).then(res=>{
-             console.log(res,1)
-           })
-    
+            addHomefriendlink(this.homeForm.addlink).then((res) => {
+              console.log(res, 1);
+            });
           }
 
           that.dialogaddclassify = false;
@@ -1528,7 +1616,7 @@ export default {
           JSON.stringify(this.homeForm.frinedlinktableData)
         );
       }
-          this.dialogfriendlink = false;
+      this.dialogfriendlink = false;
     },
     cancellink() {
       if (this.activeName == "second") {
@@ -1541,113 +1629,117 @@ export default {
           JSON.stringify(this.frinedlinktableDataclone)
         );
       }
-          this.dialogfriendlink = false;
+      this.dialogfriendlink = false;
     },
-    initRequest(){
-        getHomecolumn().then((res) => {
-      this.homeForm.bgImgId = res[0].bgImgId;
-      // this.homeForm.carouselIds = res[0].carouselIds.split(",");
-      this.homeForm.columnIds = res[0].columnIds.split(",");
-      this.homeForm.headline1Id = res[0].headline1Id;
-      this.homeForm.headline2Id = res[0].headline2Id;
-      var m = [];
-      m.push(Number(res[0].columnIds[0]));
-      var n = [];
-      n.push(Number(res[0].columnIds[2]));
-      this.homeForm.linkcolumn = m;
-      this.homeForm.linkcolumntwo = n;
-      getHomebanner(res[0].bgImgId).then((res) => {
-        this.homeForm.bannerurl = res[0].imgUrl;
-        this.homeFormfirst.bannerurl = res[0].imgUrl;
-      });
-      getHomecarouse(res[0].carouselIds).then((res) => {
-        if (res.length > 0) {
-          this.homeFormfirst.tableData = res[0];
-        }
-        this.homeForm.tableData = res;
-        this.tableDataclone = JSON.parse(JSON.stringify(res));
-        console.log(this.tableDataclone, 66);
-        if (this.homeForm.tableData == "") {
-          this.carouseemptyimg = true;
-        }
-        if (
-          this.homeFormfirst.tableData.url.indexOf("jpeg") > -1 ||
-          this.homeFormfirst.tableData.url.indexOf("jpg") > -1 ||
-          this.homeFormfirst.tableData.url.indexOf("png") > -1
-        ) {
-          this.isshowimage = true;
-          this.isshowvideo = false;
-        }
-        if (
-          this.homeFormfirst.tableData.url.indexOf("mp4") > -1 ||
-          this.homeFormfirst.tableData.url.indexOf("ogg") > -1 ||
-          this.homeFormfirst.tableData.url.indexOf("avi") > -1 ||
-          this.homeFormfirst.tableData.url.indexOf("wmv") > -1
-        ) {
-          this.isshowimage = false;
-          this.isshowvideo = true;
-        }
-
-        // console.log(this.homeForm.tableData, 9);
-      });
-      getHomeheadline(res[0].headline1Id).then((res) => {
-        this.homeForm.titleone = res[0].title;
-        this.homeFormfirst.titleone = res[0].title;
-      });
-      getHomeheadline(res[0].headline2Id).then((res) => {
-        this.homeForm.titletwo = res[0].title;
-        this.homeFormfirst.titletwo = res[0].title;
-      });
-      returnColumn(res[0].columnIds).then((res) => {
-        this.homeFormfirst.linkcolumn = res[0].columnName;
-        this.homeFormfirst.linkcolumntwo = res[1].columnName;
-      });
-
-      if (res[0].columnIds.length >= 1) {
-        getColumnarticle(res[0].columnIds.split(",")[0], "").then((res) => {
-          if (res) {
-            this.homeFormfirst.linkcolumnarticletop = res.list[0];
-            this.homeFormfirst.linkcolumnarticlebottom = res.list.splice(1, 4);
+    initRequest() {
+      getHomecolumn().then((res) => {
+        this.homeForm.bgImgId = res[0].bgImgId;
+        this.homeForm.columnIds = res[0].columnIds.split(",");
+        console.log(this.homeForm.columnIds);
+        this.homeForm.headline1Id = res[0].headline1Id;
+        this.homeForm.headline2Id = res[0].headline2Id;
+        this.homeForm.linkcolumn = Number(this.homeForm.columnIds[0]);
+        this.homeForm.linkcolumntwo = Number(this.homeForm.columnIds[1]);
+        getHomebanner(res[0].bgImgId).then((res) => {
+          this.homeForm.bannerurl = res[0].imgUrl;
+          this.homeFormfirst.bannerurl = res[0].imgUrl;
+        });
+        getHomecarouse(res[0].carouselIds).then((res) => {
+          if (res.length > 0) {
+            this.homeFormfirst.tableData = res[0];
+           
           }
+          this.homeForm.tableData = res;
+          this.tableDataclone = JSON.parse(JSON.stringify(res));
+          console.log(this.tableDataclone, 66);
+          if (this.homeForm.tableData == "") {
+            this.carouseemptyimg = true;
+          }
+          if (
+            this.homeFormfirst.tableData.url.indexOf("jpeg") > -1 ||
+            this.homeFormfirst.tableData.url.indexOf("jpg") > -1 ||
+            this.homeFormfirst.tableData.url.indexOf("png") > -1
+          ) {
+            this.isshowimage = true;
+            this.isshowvideo = false;
+          }
+          if (
+            this.homeFormfirst.tableData.url.indexOf("mp4") > -1 ||
+            this.homeFormfirst.tableData.url.indexOf("ogg") > -1 ||
+            this.homeFormfirst.tableData.url.indexOf("avi") > -1 ||
+            this.homeFormfirst.tableData.url.indexOf("wmv") > -1
+          ) {
+            this.isshowimage = false;
+            this.isshowvideo = true;
+            this.playerOptions.sources[0].src = res[0].url;
+          }
+
+          // console.log(this.homeForm.tableData, 9);
         });
-      }
-      if (res[0].columnIds.length >= 2) {
-        getColumnarticle(res[0].columnIds.split(",")[1], "").then((res) => {
-          console.log(res);
+        getHomeheadline(res[0].headline1Id).then((res) => {
+          this.homeForm.titleone = res[0].title;
+          this.homeFormfirst.titleone = res[0].title;
         });
-      }
-      getHomeclassify().then((res) => {
-        this.homeForm.frinedlinkmange = res;
-        this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
-        getHomefriendlink().then((res) => {
-          this.homeForm.frinedlinktableData = res.map((res) => {
-            res.options = JSON.parse(
-              JSON.stringify(this.homeForm.frinedlinkmange)
-            );
-            res.options.push({
-              id: 0,
-              classifyName: "无",
-            });
-            return res;
+        getHomeheadline(res[0].headline2Id).then((res) => {
+          this.homeForm.titletwo = res[0].title;
+          this.homeFormfirst.titletwo = res[0].title;
+        });
+        returnColumn(this.homeForm.columnIds[0]).then((res) => {
+          this.homeFormfirst.linkcolumn = res[0].columnName;
+        });
+        console.log();
+        returnColumn(this.homeForm.columnIds[1]).then((res) => {
+          this.homeFormfirst.linkcolumntwo = res[0].columnName;
+        });
+
+        if (res[0].columnIds.length >= 1) {
+          getColumnarticle(this.homeForm.columnIds[0], 1).then((res) => {
+            if (res) {
+              this.homeFormfirst.linkcolumnarticletop = res.list[0];
+              this.homeFormfirst.linkcolumnarticlebottom = res.list.splice(
+                1,
+                4
+              );
+            }
           });
-          this.frinedlinktableDataclone = JSON.parse(
-            JSON.stringify(
-              res.map((res) => {
-                res.options = JSON.parse(
-                  JSON.stringify(this.homeForm.frinedlinkmange)
-                );
-                res.options.push({
-                  id: 0,
-                  classifyName: "无",
-                });
-                return res;
-              })
-            )
-          );
+        }
+        if (res[0].columnIds.length >= 2) {
+          getColumnarticle(this.homeForm.columnIds[1], 1).then((res) => {
+            console.log(res);
+          });
+        }
+        getHomeclassify().then((res) => {
+          this.homeForm.frinedlinkmange = res;
+          this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
+          getHomefriendlink().then((res) => {
+            this.homeForm.frinedlinktableData = res.map((res) => {
+              res.options = JSON.parse(
+                JSON.stringify(this.homeForm.frinedlinkmange)
+              );
+              res.options.push({
+                id: 0,
+                classifyName: "无",
+              });
+              return res;
+            });
+            this.frinedlinktableDataclone = JSON.parse(
+              JSON.stringify(
+                res.map((res) => {
+                  res.options = JSON.parse(
+                    JSON.stringify(this.homeForm.frinedlinkmange)
+                  );
+                  res.options.push({
+                    id: 0,
+                    classifyName: "无",
+                  });
+                  return res;
+                })
+              )
+            );
+          });
         });
       });
-    });
-    }
+    },
   },
 
   // 监听表单数据变化
@@ -1660,7 +1752,7 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    if (this.changeCount > 10 && !this.isPopup) {
+    if (this.changeCount > 7 && !this.isPopup) {
       this.$confirm("你有内容正在编辑确定离开当前界面吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -1679,7 +1771,7 @@ export default {
   },
   mounted() {
     this.common();
-    this.initRequest()
+    this.initRequest();
   },
 };
 </script>
@@ -1761,6 +1853,7 @@ export default {
       display: flex;
       justify-content: space-between;
       margin-top: 30px;
+      flex-wrap: wrap;
       div {
         width: 200px;
         height: 200px;
@@ -1999,6 +2092,16 @@ export default {
   }
   .el-icon-circle-plus-outline {
     cursor: pointer;
+  }
+  .linkType {
+    margin: 16px auto;
+  }
+  .article {
+    margin-top: 15px;
+  }
+  .carousevideo{
+    width: 100px;
+    height: 64px;
   }
 }
 </style>

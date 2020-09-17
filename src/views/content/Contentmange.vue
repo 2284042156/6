@@ -186,7 +186,6 @@ export default {
         getColumnarticle(this.$store.state.columnid,this.currentPage).then((res) => {
         this.$store.state.article = res.list;
         this.total=res.total;
-        console.log(res,66)
       });
     },
     toggleSelection() {
@@ -211,11 +210,10 @@ export default {
       console.log(this.deleteid);
     },
     handleEdit(index, row) {
-      console.log(index, row);
       this.$store.state.editid = row;
-      // console.log(row);
+      console.log( this.$store.state.editid,0);
       this.$router.push("/home/editphoto");
-      console.log(this.$store.state.editid, 6);
+
     },
     handleDelete(index, row) {
       console.log(index, row);
@@ -235,8 +233,10 @@ export default {
         .then(() => {
           deleteArticle(this.deleteid).then((res) => {
             if (res == 1) {
-              getColumnarticle(this.$store.state.columnid).then((res) => {
-                this.$store.state.article = res;
+              getColumnarticle(this.$store.state.columnid,this.currentPage).then((res) => {
+                this.$store.state.article = res.list;
+                this.$store.state.total = res.total;
+                console.log( this.$store.state.article,'ply')
               });
             }
           });

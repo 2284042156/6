@@ -59,6 +59,12 @@ export function getColumnarticle(parms,pangNum){
         return res.data.data
     });
 }
+export function getColumnallarticle(params){
+    return axios.get('/column/column/all/'+params,
+    ).then(res=>{
+        return res.data.data
+    });
+}
 export function keepOreder(parms){
     return axios.put('/article/article',parms
     ).then(res=>{
@@ -120,6 +126,18 @@ export function deleteHomecarouse(parms){
         return res.data
     });
 }
+export function Homecarousesort(parms){
+    return axios.post('/carouse/sorting',parms
+    ).then(res=>{
+        return res.data
+    });
+}
+export function Homecarouseedit(parms){
+    return axios.post('/carouse/modify',parms
+    ).then(res=>{
+        return res.data
+    });
+}
 export function getHomeheadline(parms){
     return axios.get('/headline/'+parms
     ).then(res=>{
@@ -152,6 +170,25 @@ export function getHomefriendlink(){
 }
 export function addHomefriendlink(params){
     return axios.put('/friendshipLink/addOne',params
+    ).then(res=>{
+        return res.data
+    });
+}
+export function modifyHomefriendlink(params){
+    return axios.post('/friendshipLink/modify',params
+    ).then(res=>{
+        return res.data
+    });
+}
+export function modifyHomeclassify(params){
+    return axios.post('/classify/classify',params
+    ).then(res=>{
+        return res.data
+    });
+}
+
+export function addHomepage(params){
+    return axios.put('/homepage/homepage',params
     ).then(res=>{
         return res.data
     });
