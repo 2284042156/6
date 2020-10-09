@@ -1,8 +1,8 @@
 import axios from 'axios';
-// axios.defaults.baseURL='http://liuwanr.cn:8080/msdw';
-axios.defaults.baseURL='http://192.168.31.181:8080';
-// export  const joggle='http://liuwanr.cn:8080/msdw/aliyun/uploadFiles';
-export  const joggle='http://192.168.31.181:8080/aliyun/uploadFiles';
+axios.defaults.baseURL='http://liuwanr.cn:8080/msdw';
+export  const joggle='http://liuwanr.cn:8080/msdw/aliyun/uploadFiles';
+// axios.defaults.baseURL='http://192.168.31.179:8080';
+// export  const joggle='http://192.168.31.179:8080/aliyun/uploadFiles';
 axios.interceptors.request.use((req)=>{
     // console.log('请求拦截器拦截的数据：req',req)
     const token = sessionStorage.getItem('token');
@@ -80,7 +80,7 @@ export function deleteArticle(parms){
 export function editArticle(parms){
     return axios.put('/article/article',parms
     ).then(res=>{
-        return res.data.data
+        return res.data
     });
 }
 export function addArticle(parms){
@@ -136,6 +136,18 @@ export function Homecarouseedit(parms){
     return axios.post('/carouse/modify',parms
     ).then(res=>{
         return res.data
+    });
+}
+export function getHomelinks(parms){
+    return axios.get('/link/'+parms
+    ).then(res=>{
+        return res.data.data
+    });
+}
+export function editHomelinks(parms){
+    return axios.post('/link',parms
+    ).then(res=>{
+        return res.data.data
     });
 }
 export function getHomeheadline(parms){

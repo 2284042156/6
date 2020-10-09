@@ -1,9 +1,9 @@
 <template>
-  <div class="home">
+  <div id="ply">
 <el-container>
   <el-header height="80px"><Topbar/></el-header>
   <el-container id="box">
-    <el-aside width="200px" v-if="!fun"><LeftMenu/></el-aside>
+    <LeftMenu  v-if="!fun"/>
     <el-main>
     <router-view/>
     </el-main>
@@ -41,17 +41,20 @@ export default {
 // .home,.el-container,.el-menu,.el-header{
 //   height: 100%;
 // }
-.home,.el-container,.el-header{
+#ply{
+  background: #f8f8f8;
+}
+#ply,.el-container,.el-header{
   padding:0 ;
 }
-.home{
+#ply{
     font-family: "Source Han Serif CN";
 }
 .el-container .el-main{
   margin-left: 20px;
   padding: 50px;
   overflow: visible;
-
+ background: #fff;
 }
 .el-header{
   background: #333;

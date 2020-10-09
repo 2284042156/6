@@ -11,7 +11,7 @@
     <el-container>
       <el-aside width="210px">
         <el-menu
-          :default-active="this.$store.state.columnid"
+          :default-active="this.$route.params.id"
           unique-opened
           class="el-menu-vertical-demo"
           @open="handleOpen"
@@ -251,12 +251,31 @@ export default {
     },
     keepOrder() {
       editArticle(this.tablelist).then((res) => {
-        console.log(res);
+       if(res.message=="修改成功"){
+              this.$message({
+                showClose: true,
+                message: "修改排序成功",
+                type: "success",
+                duration: 1000,
+              });
+       }
+       else{
+            this.$message({
+                showClose: true,
+                message: "修改排序失败",
+                type: "error",
+                duration: 1000,
+              });
+       }
       });
     },
     handleOpen(key) {
       this.$store.state.columnid = key;
       console.log(this.$store.state.columnid);
+            this.$router.push({
+        path:
+         '/home/contentmange/' + key,
+      });
       returnColumn(key).then((res) => {
         this.$store.state.styleType = res[0].styleType;
       });
@@ -271,6 +290,10 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
       this.$store.state.columnid = key;
+            this.$router.push({
+        path:
+         '/home/contentmange/' + key,
+      });
       returnColumn(key).then((res) => {
         this.$store.state.styleType = res[0].styleType;
       });
@@ -290,13 +313,14 @@ export default {
       }
     },
   },
-  mounted() {
+  created() {
+    
     allColumn().then((res) => {
       this.listData = res;
-      this.$store.state.styleType = res[0].styleType;
-      this.$store.state.columnid = res[0].id;
-      console.log(this.$store.state.columnid)
-      getColumnarticle(res[0].id,1).then((res) => {
+      // this.$store.state.styleType = res[0].styleType;
+      // this.$store.state.columnid = res[0].id;
+      // console.log(this.$store.state.columnid)
+      getColumnarticle(this.$route.params.id,1).then((res) => {
         this.$store.state.article = res.list;
          this.$store.state.total=res.total;
         console.log(res,66)

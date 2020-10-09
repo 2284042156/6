@@ -7,6 +7,7 @@
         >
         <div>
           <span @click="back()">&lt;&emsp;返回</span>
+             
         </div>
       </div>
       <div class="contentbottom">
@@ -76,6 +77,7 @@
         >
         <div>
           <span @click="back()">&lt;&emsp;返回</span>
+              <!-- <a href="" >&lt;&emsp;返回1</a>  -->
         </div>
       </div>
       <div class="contentbottom">
@@ -166,6 +168,7 @@
         <span class="title"><i class="el-icon-tickets"></i>链接内容编辑</span>
         <div>
           <span @click="back()">&lt;&emsp;返回</span>
+        
         </div>
       </div>
       <div class="contentbottom">
@@ -498,7 +501,8 @@ export default {
       this.linkForm.bgImgUrl = res.data.fileUrl;
     },
     back() {
-      this.$router.push("/home/contentmange");
+      this.$router.push("/home/contentmange/"+this.$store.state.columnid);
+     
       return false;
     },
     photoEdit() {
@@ -512,7 +516,7 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange");
+          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
         });
       });
     },
@@ -527,7 +531,7 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange");
+         this.$router.push("/home/contentmange/"+this.$store.state.columnid);
         });
       });
     },
@@ -543,12 +547,12 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange");
+          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
         });
       });
     },
     cancel() {
-      this.$router.push("/home/contentmange");
+      this.$router.push("/home/contentmange/"+this.$store.state.columnid);
     },
   },
   mounted() {

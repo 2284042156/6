@@ -45,7 +45,7 @@ const routes = [
         meta: { ispass: true },
       },
       {
-        path: "contentmange", // 相对地址,自定带上父级地址
+        path: "contentmange/:id", // 相对地址,自定带上父级地址
         name: "contentmange",
         component: () =>
           import(
@@ -79,7 +79,7 @@ const routes = [
 
 const router = new VueRouter({
   mode:"history",
- 
+  base:'/distt/',
   routes,
 });
 router.beforeEach((to, from, next) => {

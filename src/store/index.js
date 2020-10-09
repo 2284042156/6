@@ -8,7 +8,8 @@ export default new Vuex.Store({
     article:[],
     editid:{ bgImgUrl:"",title: "", createTime: "", description: "", textContent: null },
     columnid:0,
-    total:0
+    total:0,
+  
   },
   mutations: {
   },

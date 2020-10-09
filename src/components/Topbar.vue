@@ -4,7 +4,7 @@
       <p class="webmange">网站管理后台</p>
       <div class="change">
         <img src="../assets/images/university.jpg" class="avatar" />
-        <span class="name">彭留洋</span>
+        <span class="name">{{name}}</span>
         <el-dropdown @command="handleCommand">
           <i class="el-icon-arrow-down el-icon--right"></i>
           <el-dropdown-menu slot="dropdown">
@@ -99,6 +99,7 @@ export default {
       }
     };
     return {
+      name:"",
       changeForm: {
         oldPassword: "", // 初始化表单数据
         newPassword: "",
@@ -131,6 +132,7 @@ export default {
           message: "下次再来玩丫,我会想你的~~",
           duration: 1000,
           onClose: () => {
+         localStorage.removeItem("flag");
             this.$router.replace("/login");
           },
         });
@@ -173,6 +175,9 @@ export default {
     },
   },
   computed: {},
+  created(){
+     this.name=localStorage.getItem('username')
+  }
 };
 </script>
 

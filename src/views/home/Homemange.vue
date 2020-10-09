@@ -42,7 +42,7 @@
       </el-upload>
       <div class="carousel front">
         <div class="left">
-          <div class="input_video" >
+          <div class="input_video">
             <video-player
               v-show="isshowvideo"
               class="video-player vjs-custom-skin"
@@ -55,7 +55,7 @@
         </div>
         <div class="right ">
           <h3>{{ homeFormfirst.tableData.title }}</h3>
-          <p>
+          <p class="description">
             {{ homeFormfirst.tableData.description }}
           </p>
         </div>
@@ -71,57 +71,33 @@
           </div>
         </h3>
         <div class="box1">
-          <div class="front">
-            <img src="../../assets/images/2.png" alt="" />
-            <p>虚拟仿真</p>
-            <p>biubiu</p>
-            <div class="back" v-show="a" @click="changelink()">
-              <p>点击我更改banner</p>
-            </div>
-          </div>
-          <div class="front">
-            <img src="../../assets/images/2.png" alt="" />
-            <p>虚拟仿真</p>
-            <p>biubiu</p>
-            <div class="back" v-show="a" @click="changelink()">
-              <p>点击我更改banner</p>
-            </div>
-          </div>
-          <div class="front">
-            <img src="../../assets/images/2.png" alt="" />
-            <p>虚拟仿真</p>
-            <p>biubiu</p>
-            <div class="back" v-show="a" @click="changelink()">
+          <div
+            class="front"
+            v-for="(value, index) in homeFormfirst.links"
+            :key="value.id"
+          >
+            <img :src="value.icon" alt="" />
+            <p>{{ value.title }}</p>
+            <p>{{ value.englishTitle }}</p>
+            <div class="back" v-show="a" @click="changelink(index)">
               <p>点击我更改banner</p>
             </div>
           </div>
         </div>
-        <div class="box2">
-          <div class="front">
+        <!-- <div class="box2">
+     <div
+            class="front"
+            v-for="(value, index) in homeFormfirst.linksone"
+            :key="value.id"
+          >
             <img src="../../assets/images/2.png" alt="" />
-            <p>虚拟仿真</p>
-            <p>biubiu</p>
-            <div class="back" v-show="a" @click="changelink()">
+            <p>{{ value.title }}</p>
+            <p>{{ value.englishTitle }}</p>
+            <div class="back" v-show="a" @click="changelink(index)">
               <p>点击我更改banner</p>
             </div>
           </div>
-          <div class="front">
-            <img src="../../assets/images/2.png" alt="" />
-            <p>虚拟仿真</p>
-            <p>biubiu</p>
-            <div class="back" v-show="a" @click="changelink()">
-              <p>点击我更改banner</p>
-            </div>
-          </div>
-          <div class="front">
-            <img src="../../assets/images/2.png" alt="" />
-            <p>虚拟仿真</p>
-            <p>biubiu</p>
-            <div class="back" v-show="a" @click="changelink()">
-              <p>点击我更改banner</p>
-            </div>
-          </div>
-        </div>
+        </div> -->
       </div>
       <div class="article">
         <h3 class="front">
@@ -148,7 +124,10 @@
           <img :src="homeFormfirst.linkcolumnarticletop.bgImgUrl" alt="" />
           <div>
             <span>{{ homeFormfirst.linkcolumnarticletop.title }}</span>
-            <p v-html="homeFormfirst.linkcolumnarticletop.textContent"></p>
+            <p
+              class="textContent"
+              v-html="homeFormfirst.linkcolumnarticletop.textContent"
+            ></p>
             <span class="timebottom">{{
               homeFormfirst.linkcolumnarticletop.createTime
             }}</span>
@@ -197,15 +176,12 @@
           </el-table-column>
           <el-table-column label="视频图片" width="120" align="center">
             <template slot-scope="scope">
-        
-                <el-image v-if="scope.row.isImg==0" :src="scope.row.url"></el-image>
-        
-                      <video
-                      class="carousevideo"
-              v-else
-      
-              :src="scope.row.url"
-            ></video>
+              <el-image
+                v-if="scope.row.isImg == 0"
+                :src="scope.row.url"
+              ></el-image>
+
+              <video class="carousevideo" v-else :src="scope.row.url"></video>
             </template>
           </el-table-column>
           <el-table-column label="标题" width="120" align="center">
@@ -283,7 +259,6 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
-
         <el-form-item
           id="carouseltitle"
           prop="title"
@@ -295,7 +270,11 @@
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item prop="description" label="内容" :label-width="formLabelWidth">
+        <el-form-item
+          prop="description"
+          label="内容"
+          :label-width="formLabelWidth"
+        >
           <el-input
             v-model="homeForm.editcarousel.description"
             autocomplete="off"
@@ -395,15 +374,25 @@
         >
       </div>
     </el-dialog>
-    <el-dialog title="添加模块链接" :visible.sync="dialoglink" width="60%">
-      <el-form :model="homeForm.formlink" :rules="rules" ref="ruleForm">
+    <el-dialog title="添加模块链接" :visible.sync="dialoglink0" width="60%">
+      <el-form :model="homeForm.links0" :rules="rules" ref="ruleForm">
         <el-form-item
           label="标题名称"
           :label-width="formLabelWidth"
           prop="title"
         >
           <el-input
-            v-model="homeForm.formlink.title"
+            v-model="homeForm.links0.title"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="英文标题"
+          :label-width="formLabelWidth"
+          prop="englishTitle"
+        >
+          <el-input
+            v-model="homeForm.links0.englishTitle"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -413,7 +402,7 @@
           :label-width="formLabelWidth"
           prop="linkType"
         >
-          <el-radio-group v-model="homeForm.formlink.linkType">
+          <el-radio-group v-model="homeForm.links0.linkType">
             <el-radio :label="0">站内链接</el-radio>
             <el-radio :label="1">站外链接</el-radio>
           </el-radio-group>
@@ -421,14 +410,14 @@
         <el-form-item
           label="站内链接"
           :label-width="formLabelWidth"
-          v-if="homeForm.formlink.linkType == 0"
+          v-if="homeForm.links0.linkType == 0"
         >
           <el-cascader
             :change-on-select="true"
             :props="defaultParams"
             :options="options"
-            v-model="homeForm.formlink.linkColumnId"
-            @change="handleChangecolumn"
+            v-model="homeForm.links0.linkColumnId"
+            @change="handleChangecolumn0"
             :clearable="true"
           ></el-cascader>
         </el-form-item>
@@ -436,14 +425,14 @@
           class="article"
           label="文章"
           :label-width="formLabelWidth"
-          v-if="homeForm.formlink.linkType == 0"
+          v-if="homeForm.links0.linkType == 0"
         >
           <el-select
-            v-model="homeForm.formlink.linkArticleId"
+            v-model="homeForm.links0.linkArticleId"
             placeholder="请选择"
           >
             <el-option
-              v-for="item in option"
+              v-for="item in option0"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -454,19 +443,428 @@
         <el-form-item
           label="站外链接"
           :label-width="formLabelWidth"
-          v-if="homeForm.formlink.linkType == 1"
+          v-if="homeForm.links0.linkType == 1"
         >
           <el-input
-            v-model="homeForm.formlink.linkUrl"
+            v-model="homeForm.links0.linkUrl"
             placeholder="请输入链接"
           ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialoglink = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm('ruleForm')"
-          >确 定</el-button
+        <el-button @click="cancelmoudlelink(0)">取 消</el-button>
+        <el-button type="primary" @click="moudlelink(0)">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="添加模块链接" :visible.sync="dialoglink1" width="60%">
+      <el-form :model="homeForm.links1" :rules="rules" ref="ruleForm">
+        <el-form-item
+          label="标题名称"
+          :label-width="formLabelWidth"
+          prop="title"
         >
+          <el-input
+            v-model="homeForm.links1.title"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="英文标题"
+          :label-width="formLabelWidth"
+          prop="englishTitle"
+        >
+          <el-input
+            v-model="homeForm.links1.englishTitle"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          class="linkType"
+          label="连接类型"
+          :label-width="formLabelWidth"
+          prop="linkType"
+        >
+          <el-radio-group v-model="homeForm.links1.linkType">
+            <el-radio :label="0">站内链接</el-radio>
+            <el-radio :label="1">站外链接</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          label="站内链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links1.linkType == 0"
+        >
+          <el-cascader
+            :change-on-select="true"
+            :props="defaultParams"
+            :options="options"
+            v-model="homeForm.links1.linkColumnId"
+            @change="handleChangecolumn1"
+            :clearable="true"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item
+          class="article"
+          label="文章"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links1.linkType == 0"
+        >
+          <el-select
+            v-model="homeForm.links1.linkArticleId"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in option1"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="站外链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links1.linkType == 1"
+        >
+          <el-input
+            v-model="homeForm.links1.linkUrl"
+            placeholder="请输入链接"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelmoudlelink(1)">取 消</el-button>
+        <el-button type="primary" @click="moudlelink(1)">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="添加模块链接" :visible.sync="dialoglink2" width="60%">
+      <el-form :model="homeForm.links2" :rules="rules" ref="ruleForm">
+        <el-form-item
+          label="标题名称"
+          :label-width="formLabelWidth"
+          prop="title"
+        >
+          <el-input
+            v-model="homeForm.links2.title"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="英文标题"
+          :label-width="formLabelWidth"
+          prop="englishTitle"
+          id="englishTitle"
+        >
+          <el-input
+            v-model="homeForm.links2.englishTitle"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          class="linkType"
+          label="连接类型"
+          :label-width="formLabelWidth"
+          prop="linkType"
+        >
+          <el-radio-group v-model="homeForm.links2.linkType">
+            <el-radio :label="0">站内链接</el-radio>
+            <el-radio :label="1">站外链接</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          label="站内链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links2.linkType == 0"
+        >
+          <el-cascader
+            :change-on-select="true"
+            :props="defaultParams"
+            :options="options"
+            v-model="homeForm.links2.linkColumnId"
+            @change="handleChangecolumn2"
+            :clearable="true"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item
+          class="article"
+          label="文章"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links2.linkType == 0"
+        >
+          <el-select
+            v-model="homeForm.links2.linkArticleId"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in option2"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="站外链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links2.linkType == 1"
+        >
+          <el-input
+            v-model="homeForm.links2.linkUrl"
+            placeholder="请输入链接"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelmoudlelink(2)">取 消</el-button>
+        <el-button type="primary" @click="moudlelink(2)">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="添加模块链接" :visible.sync="dialoglink3" width="60%">
+      <el-form :model="homeForm.links3" :rules="rules" ref="ruleForm">
+        <el-form-item
+          label="标题名称"
+          :label-width="formLabelWidth"
+          prop="title"
+        >
+          <el-input
+            v-model="homeForm.links3.title"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="英文标题"
+          :label-width="formLabelWidth"
+          prop="englishTitle"
+        >
+          <el-input
+            v-model="homeForm.links3.englishTitle"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          class="linkType"
+          label="连接类型"
+          :label-width="formLabelWidth"
+          prop="linkType"
+        >
+          <el-radio-group v-model="homeForm.links3.linkType">
+            <el-radio :label="0">站内链接</el-radio>
+            <el-radio :label="1">站外链接</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          label="站内链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links3.linkType == 0"
+        >
+          <el-cascader
+            :change-on-select="true"
+            :props="defaultParams"
+            :options="options"
+            v-model="homeForm.links3.linkColumnId"
+            @change="handleChangecolumn3"
+            :clearable="true"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item
+          class="article"
+          label="文章"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links3.linkType == 0"
+        >
+          <el-select
+            v-model="homeForm.links3.linkArticleId"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in option3"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="站外链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links3.linkType == 1"
+        >
+          <el-input
+            v-model="homeForm.links3.linkUrl"
+            placeholder="请输入链接"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelmoudlelink(3)">取 消</el-button>
+        <el-button type="primary" @click="moudlelink(3)">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="添加模块链接" :visible.sync="dialoglink4" width="60%">
+      <el-form :model="homeForm.links4" :rules="rules" ref="ruleForm">
+        <el-form-item
+          label="标题名称"
+          :label-width="formLabelWidth"
+          prop="title"
+        >
+          <el-input
+            v-model="homeForm.links4.title"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="英文标题"
+          :label-width="formLabelWidth"
+          prop="englishTitle"
+        >
+          <el-input
+            v-model="homeForm.links4.englishTitle"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          class="linkType"
+          label="连接类型"
+          :label-width="formLabelWidth"
+          prop="linkType"
+        >
+          <el-radio-group v-model="homeForm.links4.linkType">
+            <el-radio :label="0">站内链接</el-radio>
+            <el-radio :label="1">站外链接</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          label="站内链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links4.linkType == 0"
+        >
+          <el-cascader
+            :change-on-select="true"
+            :props="defaultParams"
+            :options="options"
+            v-model="homeForm.links4.linkColumnId"
+            @change="handleChangecolumn4"
+            :clearable="true"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item
+          class="article"
+          label="文章"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links4.linkType == 0"
+        >
+          <el-select
+            v-model="homeForm.links4.linkArticleId"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in option4"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="站外链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links4.linkType == 1"
+        >
+          <el-input
+            v-model="homeForm.links1.linkUrl"
+            placeholder="请输入链接"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelmoudlelink(4)">取 消</el-button>
+        <el-button type="primary" @click="moudlelink(4)">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="添加模块链接" :visible.sync="dialoglink5" width="60%">
+      <el-form :model="homeForm.links5" :rules="rules" ref="ruleForm">
+        <el-form-item
+          label="标题名称"
+          :label-width="formLabelWidth"
+          prop="title"
+        >
+          <el-input
+            v-model="homeForm.links5.title"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          label="英文标题"
+          :label-width="formLabelWidth"
+          prop="englishTitle"
+        >
+          <el-input
+            v-model="homeForm.links5.englishTitle"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+        <el-form-item
+          class="linkType"
+          label="连接类型"
+          :label-width="formLabelWidth"
+          prop="linkType"
+        >
+          <el-radio-group v-model="homeForm.links5.linkType">
+            <el-radio :label="0">站内链接</el-radio>
+            <el-radio :label="1">站外链接</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          label="站内链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links5.linkType == 0"
+        >
+          <el-cascader
+            :change-on-select="true"
+            :props="defaultParams"
+            :options="options"
+            v-model="homeForm.links5.linkColumnId"
+            @change="handleChangecolumn5"
+            :clearable="true"
+          ></el-cascader>
+        </el-form-item>
+        <el-form-item
+          class="article"
+          label="文章"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links5.linkType == 0"
+        >
+          <el-select
+            v-model="homeForm.links5.linkArticleId"
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in option5"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item
+          label="站外链接"
+          :label-width="formLabelWidth"
+          v-if="homeForm.links5.linkType == 1"
+        >
+          <el-input
+            v-model="homeForm.links5.linkUrl"
+            placeholder="请输入链接"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancelmoudlelink(5)">取 消</el-button>
+        <el-button type="primary" @click="moudlelink(5)">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="链接栏目" :visible.sync="dialoglinkcolumn" width="60%">
@@ -727,6 +1125,8 @@ import { getColumnarticle } from "@/apis/request.js";
 import { getColumnallarticle } from "@/apis/request.js";
 import { getHomeclassify } from "@/apis/request.js";
 import { getHomefriendlink } from "@/apis/request.js";
+import { editHomelinks } from "@/apis/request.js";
+import { getHomelinks } from "@/apis/request.js";
 import { addHomeclassify } from "@/apis/request.js";
 import { addHomefriendlink } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
@@ -741,82 +1141,29 @@ export default {
       joggle,
       editindex: 0,
       carouseemptyimg: false,
-      form: {
-        name: "",
-      },
-      isImg:0,
-      option: [],
+      isImg: 0,
+      option0: [],
+      option1: [],
+      option2: [],
+      option3: [],
+      option4: [],
+      option5: [],
       optionslink: [],
       tableDataclone: [],
       deletearr: [],
       deleteobj: [],
+      links0clone: {},
+      links1clone: {},
+      links2clone: {},
+      links3clone: {},
+      links4clone: {},
+      links5clone: {},
       defaultParams: {
         label: "columnName",
         value: "id",
         children: "children",
       },
-      options: [
-        {
-          value: "zhinan",
-          label: "指南",
-          children: [
-            {
-              value: "shejiyuanze",
-              label: "设计原则",
-              children: [
-                {
-                  value: "yizhi",
-                  label: "一致",
-                },
-                {
-                  value: "fankui",
-                  label: "反馈",
-                },
-                {
-                  value: "xiaolv",
-                  label: "效率",
-                },
-                {
-                  value: "kekong",
-                  label: "可控",
-                },
-              ],
-            },
-            {
-              value: "daohang",
-              label: "导航",
-              children: [
-                {
-                  value: "cexiangdaohang",
-                  label: "侧向导航",
-                },
-                {
-                  value: "dingbudaohang",
-                  label: "顶部导航",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          value: "ziyuan",
-          label: "资源",
-          children: [
-            {
-              value: "axure",
-              label: "Axure Components",
-            },
-            {
-              value: "sketch",
-              label: "Sketch Templates",
-            },
-            {
-              value: "jiaohu",
-              label: "组件交互文档",
-            },
-          ],
-        },
-      ],
+      options: [],
       addhomeForm: {
         bgImgId: 2,
         carouselIds: "1,2,3,4",
@@ -854,6 +1201,12 @@ export default {
           },
         ],
         carouselIds: "",
+        links0: {},
+        links1: {},
+        links2: {},
+        links3: {},
+        links4: {},
+        links5: {},
         columnIds: [],
         frinedlinktableData: [
           {
@@ -880,77 +1233,6 @@ export default {
         headline1Id: 0,
         headline2Id: 0,
         titletwo: "",
-        formlink: {
-          linkType: 0,
-          linkUrl: "",
-          linkColumnId: 0,
-          title: "",
-          linkArticleId: "",
-          out: "",
-          in: [],
-          options: [
-            {
-              value: "zhinan",
-              label: "指南",
-              children: [
-                {
-                  value: "shejiyuanze",
-                  label: "设计原则",
-                  children: [
-                    {
-                      value: "yizhi",
-                      label: "一致",
-                    },
-                    {
-                      value: "fankui",
-                      label: "反馈",
-                    },
-                    {
-                      value: "xiaolv",
-                      label: "效率",
-                    },
-                    {
-                      value: "kekong",
-                      label: "可控",
-                    },
-                  ],
-                },
-                {
-                  value: "daohang",
-                  label: "导航",
-                  children: [
-                    {
-                      value: "cexiangdaohang",
-                      label: "侧向导航",
-                    },
-                    {
-                      value: "dingbudaohang",
-                      label: "顶部导航",
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              value: "ziyuan",
-              label: "资源",
-              children: [
-                {
-                  value: "axure",
-                  label: "Axure Components",
-                },
-                {
-                  value: "sketch",
-                  label: "Sketch Templates",
-                },
-                {
-                  value: "jiaohu",
-                  label: "组件交互文档",
-                },
-              ],
-            },
-          ],
-        },
         linkcolumn: [],
         linkcolumntwo: [],
         columnarticletop: {},
@@ -967,14 +1249,14 @@ export default {
           url: "",
           title: "",
           description: "",
-          isImg:0
+          isImg: 0,
         },
         editcarousel: {
           url:
             "https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg",
           title: "",
-          content: "",
-          isImg:0
+          description: "",
+          isImg: 0,
         },
       },
       frinedlinkmangeclone: [],
@@ -1042,6 +1324,7 @@ export default {
         ],
         titleone: "",
         titletwo: "",
+        links: [],
         linkcolumn: [],
         linkcolumntwo: [],
         formlink: {
@@ -1135,7 +1418,12 @@ export default {
       dialogeditcarousel: false,
       dialogtitleone: false,
       dialogtitletwo: false,
-      dialoglink: false,
+      dialoglink0: false,
+      dialoglink1: false,
+      dialoglink2: false,
+      dialoglink3: false,
+      dialoglink4: false,
+      dialoglink5: false,
       dialogfriendlink: false,
       dialoglinkcolumn: false,
       dialoglinkcolumntwo: false,
@@ -1174,6 +1462,9 @@ export default {
       },
       rules: {
         title: [{ required: true, message: "请输入标题名称", trigger: "blur" }],
+        englishTitle: [
+          { required: true, message: "请输入英文标题", trigger: "blur" },
+        ],
         titleone: [
           { required: true, message: "请输入标题名称", trigger: "blur" },
         ],
@@ -1211,6 +1502,59 @@ export default {
     //  console.log(that.homeForm)
   },
   methods: {
+    moudlelink(index) {
+      if (index == 0) {
+        this.dialoglink0 = false;
+        this.links0clone = JSON.parse(JSON.stringify(this.homeForm.links0));
+        console.log(this.homeForm.links0, 0);
+      }
+      if (index == 1) {
+        this.dialoglink1 = false;
+        this.links1clone = JSON.parse(JSON.stringify(this.homeForm.links1));
+      }
+      if (index == 2) {
+        this.dialoglink2 = false;
+        this.links2clone = JSON.parse(JSON.stringify(this.homeForm.links2));
+      }
+      if (index == 3) {
+        this.dialoglink3 = false;
+        this.links3clone = JSON.parse(JSON.stringify(this.homeForm.links3));
+      }
+      if (index == 4) {
+        this.dialoglink4 = false;
+        this.links4clone = JSON.parse(JSON.stringify(this.homeForm.links4));
+      }
+      if (index == 5) {
+        this.dialoglink5 = false;
+        this.links5clone = JSON.parse(JSON.stringify(this.homeForm.links5));
+      }
+    },
+    cancelmoudlelink(index) {
+      if (index == 0) {
+        this.dialoglink0 = false;
+        this.homeForm.links0 = JSON.parse(JSON.stringify(this.links0clone));
+      }
+      if (index == 1) {
+        this.dialoglink1 = false;
+        this.homeForm.links1 = JSON.parse(JSON.stringify(this.links1clone));
+      }
+      if (index == 2) {
+        this.dialoglink2 = false;
+        this.homeForm.links2 = JSON.parse(JSON.stringify(this.links2clone));
+      }
+      if (index == 3) {
+        this.dialoglink3 = false;
+        this.homeForm.links3 = JSON.parse(JSON.stringify(this.links3clone));
+      }
+      if (index == 4) {
+        this.dialoglink4 = false;
+        this.homeForm.links4 = JSON.parse(JSON.stringify(this.links4clone));
+      }
+      if (index == 5) {
+        this.dialoglink5 = false;
+        this.homeForm.links5 = JSON.parse(JSON.stringify(this.links5clone));
+      }
+    },
     getTreeData(data) {
       // 循环遍历json数据
       for (var i = 0; i < data.length; i++) {
@@ -1241,7 +1585,7 @@ export default {
       this.homeForm.tableData[
         this.editindex
       ].description = this.homeForm.editcarousel.description;
-            this.homeForm.tableData[
+      this.homeForm.tableData[
         this.editindex
       ].isImg = this.homeForm.editcarousel.isImg;
       this.homeForm.tableData.splice(1, 0);
@@ -1254,17 +1598,111 @@ export default {
       this.changeCount = 0;
       this.initRequest();
     },
-    handleChangecolumn(value) {
+    handleChangecolumn0(value) {
       let index = value.length - 1;
       let id = value[index];
-      this.homeForm.formlink.linkColumnId = value[index];
+      this.homeForm.links0.linkColumnId = id;
       getColumnallarticle(id).then((res) => {
-        this.option = res.map((res) => {
+        this.option0 = res.map((res) => {
           return {
             value: res.id,
             label: res.title,
           };
         });
+            this.option0.unshift( {
+                value: 0,
+                label: '无',
+              })
+        console.log(res, 666);
+      });
+    },
+    handleChangecolumn1(value) {
+      let index = value.length - 1;
+      let id = value[index];
+      this.homeForm.links1.linkColumnId = id;
+      getColumnallarticle(id).then((res) => {
+        this.option1 = res.map((res) => {
+          return {
+            value: res.id,
+            label: res.title,
+          };
+        });
+            this.option1.unshift( {
+                value: 0,
+                label: '无',
+              })
+        console.log(res, 666);
+      });
+    },
+    handleChangecolumn2(value) {
+      let index = value.length - 1;
+      let id = value[index];
+      this.homeForm.links2.linkColumnId = id;
+      getColumnallarticle(id).then((res) => {
+        this.option2 = res.map((res) => {
+          return {
+            value: res.id,
+            label: res.title,
+          };
+        });
+            this.option2.unshift( {
+                value: 0,
+                label: '无',
+              })
+        console.log(res, 666);
+      });
+    },
+    handleChangecolumn3(value) {
+      let index = value.length - 1;
+      let id = value[index];
+      this.homeForm.links3.linkColumnId = id;
+      getColumnallarticle(id).then((res) => {
+        this.option3 = res.map((res) => {
+          return {
+            value: res.id,
+            label: res.title,
+          };
+        });
+            this.option3.unshift( {
+                value: 0,
+                label: '无',
+              })
+        console.log(res, 666);
+      });
+    },
+    handleChangecolumn4(value) {
+      let index = value.length - 1;
+      let id = value[index];
+      this.homeForm.links4.linkColumnId = id;
+      getColumnallarticle(id).then((res) => {
+        this.option4 = res.map((res) => {
+          return {
+            value: res.id,
+            label: res.title,
+          };
+        });
+            this.option4.unshift( {
+                value: 0,
+                label: '无',
+              })
+        console.log(res, 666);
+      });
+    },
+    handleChangecolumn5(value) {
+      let index = value.length - 1;
+      let id = value[index];
+      this.homeForm.links5.linkColumnId = id;
+      getColumnallarticle(id).then((res) => {
+        this.option5 = res.map((res) => {
+          return {
+            value: res.id,
+            label: res.title,
+          };
+        });
+            this.option5.unshift( {
+                value: 0,
+                label: '无',
+              })
         console.log(res, 666);
       });
     },
@@ -1299,7 +1737,6 @@ export default {
             this.homeForm.columnIds[1] = this.linkcolumntwo;
           }
 
-          that.dialoglink = false;
           that.dialogtitleone = false;
           that.dialogtitletwo = false;
           that.dialoglinkcolumn = false;
@@ -1339,8 +1776,8 @@ export default {
     handleDelete(index, row) {
       console.log(index, row, "o");
       this.homeForm.tableData.splice(index, 1);
-      if(this.homeForm.tableData==''){
-          this.carouseemptyimg = true;
+      if (this.homeForm.tableData == "") {
+        this.carouseemptyimg = true;
       }
       this.deleteobj.push(row);
       console.log(this.deleteobj, 9);
@@ -1396,22 +1833,36 @@ export default {
       this.dialogcarousel = true;
     },
     // 提交事件
-    async submit() {
+    submit() {
+      var that = this;
+      let linkArr = [
+        that.homeForm.links0,
+        that.homeForm.links1,
+        that.homeForm.links2,
+        that.homeForm.links3,
+        that.homeForm.links4,
+        that.homeForm.links5,
+      ];
+
       this.isPopup = true;
       this.addhomeForm.bgImgId = this.homeForm.bgImgId;
+      this.addhomeForm.headline1Id = this.homeForm.headline1Id;
+      this.addhomeForm.headline2Id = this.homeForm.headline2Id;
       this.homeForm.carouselIds = this.homeForm.tableData.map((res) => {
         return res.id;
       });
-       Homecarousesort( this.homeForm.carouselIds).then(res=>{
-         console.log(res,6)
-       })
-       Homecarouseedit(this.homeForm.tableData).then(res=>{
-         console.log(res,0)
-       })
+
+      Homecarouseedit(this.homeForm.tableData).then((res) => {
+        console.log(res, "ply2");
+        Homecarousesort(this.homeForm.carouselIds).then((res) => {
+          console.log(res, "ply1");
+        });
+      });
       this.addhomeForm.carouselIds = this.homeForm.carouselIds.join(",");
-      this.addhomeForm.headline1Id = this.homeForm.headline1Id;
-      this.addhomeForm.headline2Id = this.homeForm.headline2Id;
       this.addhomeForm.columnIds = this.homeForm.columnIds.join(",");
+      editHomelinks(linkArr).then((res) => {
+        console.log(res, "m");
+      });
       modifyHomefriendlink(this.homeForm.frinedlinktableData).then((res) => {
         console.log(res);
       });
@@ -1424,7 +1875,8 @@ export default {
         headline1Id: this.addhomeForm.headline1Id,
         headline2Id: this.addhomeForm.headline2Id,
         columnIds: this.addhomeForm.columnIds,
-      }).then(() => {
+      }).then((res) => {
+        console.log(res, "ply3");
         this.initRequest();
       });
     },
@@ -1437,8 +1889,25 @@ export default {
     changearticle() {
       this.dialogtitletwo = true;
     },
-    changelink() {
-      this.dialoglink = true;
+    changelink(index) {
+      if (index == 0) {
+        this.dialoglink0 = true;
+      }
+      if (index == 1) {
+        this.dialoglink1 = true;
+      }
+      if (index == 2) {
+        this.dialoglink2 = true;
+      }
+      if (index == 3) {
+        this.dialoglink3 = true;
+      }
+      if (index == 4) {
+        this.dialoglink4 = true;
+      }
+      if (index == 5) {
+        this.dialoglink5 = true;
+      }
     },
     changefriendlink() {
       this.dialogfriendlink = true;
@@ -1510,11 +1979,11 @@ export default {
       if (file.type.indexOf("image") > -1) {
         this.imageshow = true;
         this.videoshow = false;
-        this.homeForm.addcarousel.isImg=0;
+        this.homeForm.addcarousel.isImg = 0;
       } else if (file.type.indexOf("video") > -1) {
         this.videoshow = true;
         this.imageshow = false;
-        this.homeForm.addcarousel.isImg=1;
+        this.homeForm.addcarousel.isImg = 1;
       }
 
       if (!isJPG) {
@@ -1533,13 +2002,13 @@ export default {
       if (file.type.indexOf("image") > -1) {
         this.imageshow = true;
         this.videoshow = false;
-        this.homeForm.editcarousel.isImg=0;
-        console.log( this.homeForm.editcarousel.isImg,7)
+        this.homeForm.editcarousel.isImg = 0;
+        console.log(this.homeForm.editcarousel.isImg, 7);
       } else if (file.type.indexOf("video") > -1) {
         this.videoshow = true;
         this.imageshow = false;
-        this.homeForm.editcarousel.isImg=1;
-          console.log( this.homeForm.editcarousel.isImg,8)
+        this.homeForm.editcarousel.isImg = 1;
+        console.log(this.homeForm.editcarousel.isImg, 8);
       }
 
       if (!isJPG) {
@@ -1592,7 +2061,15 @@ export default {
           }
           if (formName == "addlink") {
             addHomefriendlink(this.homeForm.addlink).then((res) => {
-              console.log(res, 1);
+              console.log(res, "a");
+              res.data.options = JSON.parse(
+                JSON.stringify(this.homeForm.frinedlinkmange)
+              );
+              res.data.options.push({
+                id: 0,
+                classifyName: "无",
+              });
+              this.homeForm.frinedlinktableData.push(res.data);
             });
           }
 
@@ -1635,19 +2112,18 @@ export default {
       getHomecolumn().then((res) => {
         this.homeForm.bgImgId = res[0].bgImgId;
         this.homeForm.columnIds = res[0].columnIds.split(",");
-        console.log(this.homeForm.columnIds);
         this.homeForm.headline1Id = res[0].headline1Id;
         this.homeForm.headline2Id = res[0].headline2Id;
         this.homeForm.linkcolumn = Number(this.homeForm.columnIds[0]);
         this.homeForm.linkcolumntwo = Number(this.homeForm.columnIds[1]);
         getHomebanner(res[0].bgImgId).then((res) => {
+          console.log(res, "img");
           this.homeForm.bannerurl = res[0].imgUrl;
           this.homeFormfirst.bannerurl = res[0].imgUrl;
         });
         getHomecarouse(res[0].carouselIds).then((res) => {
           if (res.length > 0) {
             this.homeFormfirst.tableData = res[0];
-           
           }
           this.homeForm.tableData = res;
           this.tableDataclone = JSON.parse(JSON.stringify(res));
@@ -1680,6 +2156,101 @@ export default {
           this.homeForm.titleone = res[0].title;
           this.homeFormfirst.titleone = res[0].title;
         });
+        getHomelinks(res[0].linkIds).then((res) => {
+          this.homeForm.links0 = res[0];
+          getColumnallarticle(res[0].linkColumnId).then((res) => {
+            this.option0 = res.map((res) => {
+              return {
+                value: res.id,
+                label: res.title,
+              };
+            });
+            this.option0.unshift( {
+                value: 0,
+                label: '无',
+              })
+            console.log(res, 666);
+          });
+          getColumnallarticle(res[1].linkColumnId).then((res) => {
+            this.option1 = res.map((res) => {
+              return {
+                value: res.id,
+                label: res.title,
+              };
+            });
+                this.option1.unshift( {
+                value: 0,
+                label: '无',
+              })
+            console.log(res, 666);
+          });
+          getColumnallarticle(res[2].linkColumnId).then((res) => {
+            this.option2 = res.map((res) => {
+              return {
+                value: res.id,
+                label: res.title,
+              };
+            });
+                this.option2.unshift( {
+                value: 0,
+                label: '无',
+              })
+            console.log(res, 666);
+          });
+          getColumnallarticle(res[3].linkColumnId).then((res) => {
+            this.option3 = res.map((res) => {
+              return {
+                value: res.id,
+                label: res.title,
+              };
+            });
+                this.option3.unshift( {
+                value: 0,
+                label: '无',
+              })
+            console.log(res, 666);
+          });
+          getColumnallarticle(res[4].linkColumnId).then((res) => {
+            this.option4 = res.map((res) => {
+              return {
+                value: res.id,
+                label: res.title,
+              };
+            });
+                this.option4.unshift( {
+                value: 0,
+                label: '无',
+              })
+            console.log(res, 666);
+          });
+          getColumnallarticle(res[5].linkColumnId).then((res) => {
+            this.option5 = res.map((res) => {
+              return {
+                value: res.id,
+                label: res.title,
+              };
+            });
+                this.option5.unshift( {
+                value: 0,
+                label: '无',
+              })
+            console.log(res, 666);
+          });
+          this.links0clone = JSON.parse(JSON.stringify(res[0]));
+          this.homeForm.links1 = res[1];
+          this.links1clone = JSON.parse(JSON.stringify(res[1]));
+          this.homeForm.links2 = res[2];
+          this.links2clone = JSON.parse(JSON.stringify(res[2]));
+          this.homeForm.links3 = res[3];
+          this.links3clone = JSON.parse(JSON.stringify(res[3]));
+          this.homeForm.links4 = res[4];
+          this.links4clone = JSON.parse(JSON.stringify(res[4]));
+          this.homeForm.links5 = res[5];
+          this.links5clone = JSON.parse(JSON.stringify(res[5]));
+          this.homeFormfirst.links = res;
+
+          console.log(res, 0);
+        });
         getHomeheadline(res[0].headline2Id).then((res) => {
           this.homeForm.titletwo = res[0].title;
           this.homeFormfirst.titletwo = res[0].title;
@@ -1687,11 +2258,9 @@ export default {
         returnColumn(this.homeForm.columnIds[0]).then((res) => {
           this.homeFormfirst.linkcolumn = res[0].columnName;
         });
-        console.log();
         returnColumn(this.homeForm.columnIds[1]).then((res) => {
           this.homeFormfirst.linkcolumntwo = res[0].columnName;
         });
-
         if (res[0].columnIds.length >= 1) {
           getColumnarticle(this.homeForm.columnIds[0], 1).then((res) => {
             if (res) {
@@ -1709,9 +2278,11 @@ export default {
           });
         }
         getHomeclassify().then((res) => {
-          this.homeForm.frinedlinkmange = res;
+          this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
+          console.log(res, "ply");
           this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
           getHomefriendlink().then((res) => {
+            console.log(res, "ply1");
             this.homeForm.frinedlinktableData = res.map((res) => {
               res.options = JSON.parse(
                 JSON.stringify(this.homeForm.frinedlinkmange)
@@ -1752,7 +2323,7 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    if (this.changeCount > 7 && !this.isPopup) {
+    if (this.changeCount > 8 && !this.isPopup) {
       this.$confirm("你有内容正在编辑确定离开当前界面吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -1821,7 +2392,7 @@ export default {
       .right {
         width: 400px;
         text-align: left;
-        p {
+        .description {
           font-size: 18px;
           display: -webkit-box;
           overflow: hidden;
@@ -1855,9 +2426,10 @@ export default {
       margin-top: 30px;
       flex-wrap: wrap;
       div {
-        width: 200px;
+        width: 246px;
         height: 200px;
         text-align: center;
+        margin-bottom: 20px;
         transition: 1s;
         box-shadow: 1px 1px 4px #ccc;
         img {
@@ -1905,7 +2477,7 @@ export default {
         background: #e6e6e6;
         width: 400px;
         position: relative;
-        p {
+        .textContent {
           text-align: left;
           width: 400px;
           display: -webkit-box;
@@ -2099,9 +2671,12 @@ export default {
   .article {
     margin-top: 15px;
   }
-  .carousevideo{
+  .carousevideo {
     width: 100px;
     height: 64px;
+  }
+  .el-form-item {
+    margin-top: 16px;
   }
 }
 </style>

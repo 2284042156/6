@@ -1,5 +1,5 @@
 <template>
-  <div class="login" @keyup.enter="submitForm">
+  <div class="ply" @keyup.enter="submitForm">
     <div class="topbar">
       <div class="container ">
         <span>网站管理后台</span><span class="regist">注册</span>
@@ -84,13 +84,22 @@ export default {
   methods: {
     submitForm() {
       var that = this;
+      if (that.loginForm.checked == true) {
+        localStorage.setItem("username", that.loginForm.username);
+        localStorage.setItem("pwd", that.loginForm.password);
+        localStorage.setItem("flag", true);
+      }
+      if (that.loginForm.checked == false) {
+        localStorage.removeItem("username");
+        localStorage.removeItem("pwd");
+        localStorage.removeItem("flag");
+      }
       this.$refs.loginFormId.validate((valid) => {
         if (valid) {
           login({
             adminName: that.loginForm.username,
             adminPwd: that.loginForm.password,
           }).then((res) => {
-            console.log(res, 666);
             if (res.token) {
               sessionStorage.setItem("token", res.token);
               this.$message({
@@ -120,16 +129,27 @@ export default {
       });
     },
   },
+  created(){
+   if(localStorage.getItem('username')){
+     this.loginForm.username=localStorage.getItem('username')
+   }
+   if(localStorage.getItem('pwd')){
+     this.loginForm.password=localStorage.getItem('pwd')
+   }
+  },
   mounted() {
+    if(localStorage.getItem('flag')){
+      this.submitForm()
+    }
     sessionStorage.removeItem("token");
   },
 };
 </script>
 <style lang="less" scoped>
-.login {
+.ply {
   height: 100%;
   opacity: 0.8;
-  background: skyblue;
+  background: url('../assets/images/1.png');
   font-family: "Source Han Serif CN";
   .container {
     width: 1200px;

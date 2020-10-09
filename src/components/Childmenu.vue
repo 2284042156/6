@@ -3,14 +3,16 @@
     <label v-for="list in dataList" :key="list.id">
       <el-submenu :index="list.id" v-if="list.children.length != 0">
         <template slot="title">
-          <span>{{ list.columnName }}</span>
+           <img src="../assets/images/icon_submenu_blue.png" alt="" v-if="$route.params.id==list.id"> 
+           <img v-else src="../assets/images/icon_submenu_black.png" alt="" >  <span>{{ list.columnName }}</span>
         </template>
         <label>
           <Child :dataList="list.children"></Child>
         </label>
       </el-submenu>
       <el-menu-item v-else :index="list.id" @click="getColumnmessage(list.id)">
-        <span slot="title">{{ list.columnName }}</span>
+       <img src="../assets/images/icon_submenu_blue.png" v-if="$route.params.id==list.id" alt="">
+       <img src="../assets/images/icon_submenu_black.png" v-else alt="" ><span slot="title">{{ list.columnName }}</span>
       </el-menu-item>
     </label>
   </div>
@@ -33,6 +35,10 @@ export default {
     getColumnmessage(id) {
       this.id = id;
         this.$store.state.columnid = id;
+          this.$router.push({
+        path:
+         '/home/contentmange/' + id,
+      });
           returnColumn(id).then(res=>{
          this.$store.state.styleType=res[0].styleType;
          console.log( this.$store.state.styleType,"66")
@@ -41,6 +47,7 @@ export default {
         this.$store.state.article = res.list;
          this.$store.state.total=res.total
       });
+    
       console.log(id);
     },
 
@@ -51,4 +58,11 @@ export default {
 // .el-menu-item.is-active{
 //   color:#303133;
 // }
+img{
+  // margin-top: 2px;
+  // display: inline-block;
+  margin-right: 4px;
+  margin-bottom: -3px;
+  
+}
 </style>

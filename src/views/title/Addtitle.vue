@@ -498,7 +498,7 @@ export default {
       this.linkForm.bgImgUrl = res.data.fileUrl;
     },
     back() {
-      this.$router.push("/home/contentmange");
+       this.$router.push("/home/contentmange/"+this.$store.state.columnid);
       return false;
     },
     photoAdd() {
@@ -510,7 +510,7 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange");
+          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
         });
       });
     },
@@ -523,7 +523,7 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange");
+          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
         });
       });
     },
@@ -536,12 +536,12 @@ export default {
         console.log(res);
         getColumnarticle(this.$store.state.columnid,1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange");
+          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
         });
       });
     },
     cancel() {
-      this.$router.push("/home/contentmange");
+      this.$router.push("/home/contentmange/"+this.$store.state.columnid);
     },
   },
   mounted() {
