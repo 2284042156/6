@@ -9,6 +9,7 @@ export default new Vuex.Store({
     editid:{ bgImgUrl:"",title: "", createTime: "", description: "", textContent: null },
     columnid:0,
     total:0,
+    flag:1
   
   },
   mutations: {

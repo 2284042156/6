@@ -1,45 +1,34 @@
 <template>
   <div class="left-menu">
-    <!-- <el-menu
-      :default-active="this.$route.path"
-      router
-      class="el-menu-vertical-demo"
-      background="#ccc"
-      @open="handleOpen"
-      @close="handleClose">
-        <el-menu-item index="/home/homemange">
-        <i class="el-icon-s-home"></i>
-        <span slot="title">首页管理</span>
-      </el-menu-item>
-      <el-menu-item :index="address">
-        <i class="el-icon-s-operation"></i>
-        <span slot="title">栏目管理</span>
-      </el-menu-item>
-      <el-menu-item index="/home/contentmange">
-        <i class="el-icon-tickets"></i>
-        <span slot="title">内容管理</span>
-      </el-menu-item>
-    </el-menu> -->
     <ul>
       <li
         @click="link('/home/homemange')"
-        :class="{ active: address == '/home/homemange' ? true : false }"
+        :class="{ active: $route.path.indexOf('/home/homemange')>-1   ? true : false }"
       >
-        <i class="el-icon-s-home"></i>首页管理
+       <img  src="../assets/images/leftbar_icon_home_white.png" alt="" v-if="$route.path.indexOf('/home/homemange')>-1">
+        <img  src="../assets/images/leftbar_icon_home_blue.png" alt="" v-else>
+       
+        
+        首页管理
       </li>
       <li
         @click="link('/home/columnmange')"
-        :class="{ active: address == '/home/columnmange' ? true : false }"
+        :class="{ active: $route.path.indexOf('/home/columnmange')>-1 ? true : false }"
       >
-        <i class="el-icon-s-operation"></i>栏目管理
+        <img  src="../assets/images/leftbar_icon_index_white.png" alt="" v-if="$route.path.indexOf('/home/columnmange')>-1">
+       <img  src="../assets/images/leftbar_icon_index_blue.png" alt="" v-else>
+     
+       栏目管理
       </li>
       <li
         @click="link('/home/contentmange/')"
         :class="{
           active: address.indexOf('/home/contentmange/') > -1 ? true : false,
         }"
-      >
-        <i class="el-icon-tickets"></i>内容管理
+      >   <img  src="../assets/images/leftbar_icon_messages_white.png" alt="" v-if="$route.path.indexOf('/home/contentmange/')>-1">
+          <img  src="../assets/images/leftbar_icon_messages_blue.png" alt="" v-else>
+       
+          内容管理
       </li>
     </ul>
   </div>
@@ -73,21 +62,22 @@ export default {
   created() {
     console.log(this.$route,666);
     this.address =this.$route.path;
-    allColumn().then((res) => {
-      this.listData = res;
-      this.$store.state.styleType = res[0].styleType;
-      this.$store.state.columnid = res[0].id;
-    });
+    // allColumn().then((res) => {
+    //   this.listData = res;
+    //   this.$store.state.styleType = res[0].styleType;
+    //   this.$store.state.columnid = res[0].id;
+    // });
+
   },
 };
 </script>
 
 <style lang="less">
 .left-menu {
+  // color: #000;
   height: 100%;
   ul {
     padding: 0px;
- 
   }
   li {
     list-style: none;

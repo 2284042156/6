@@ -219,3 +219,9 @@ export function adminChangepwd(params){
         return res.data
     });
 }
+export function getHomelink(){
+    return axios.get('/friendshipLink/friendshipLinkGet/all'
+    ).then(res=>{
+        return res.data.data
+    });
+}

@@ -8,7 +8,7 @@
     <div class="form container">
       <div class="welcome">
         <p>欢迎来到</p>
-        <p>xxx后台</p>
+        <p>网站后台</p>
         <p>管理系统</p>
         <p class="introduce">介绍介绍介绍介绍</p>
       </div>
@@ -150,17 +150,17 @@ export default {
   height: 100%;
   opacity: 0.8;
   background: url('../assets/images/1.png');
-  font-family: "Source Han Serif CN";
+  // font-family: "Source Han Serif CN";
   .container {
     width: 1200px;
     margin: 0 auto;
   }
   .topbar {
     font-size: 24px;
-    height: 80px;
+    height: 60px;
     background: #333;
     color: #fff;
-    line-height: 80px;
+    line-height: 60px;
     div {
       display: flex;
       justify-content: space-between;

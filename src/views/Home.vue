@@ -47,9 +47,7 @@ export default {
 #ply,.el-container,.el-header{
   padding:0 ;
 }
-#ply{
-    font-family: "Source Han Serif CN";
-}
+
 .el-container .el-main{
   margin-left: 20px;
   padding: 50px;

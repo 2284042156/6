@@ -1,7 +1,8 @@
 <template>
   <div id="home">
     <div class="top">
-      <span class="title"><i class="el-icon-s-home"></i>首页管理</span>
+      <span class="title">    
+        <img  src="../../assets/images/leftbar_icon_home_blue.png" alt="">首页管理 </span>
       <div>
         <el-button size="mini" type="primary" @click="fun()" v-show="!a"
           >编辑</el-button
@@ -84,20 +85,20 @@
             </div>
           </div>
         </div>
-        <!-- <div class="box2">
+        <div class="box2">
      <div
             class="front"
             v-for="(value, index) in homeFormfirst.linksone"
             :key="value.id"
           >
-            <img src="../../assets/images/2.png" alt="" />
+            <img :src="value.icon" alt="" />
             <p>{{ value.title }}</p>
             <p>{{ value.englishTitle }}</p>
-            <div class="back" v-show="a" @click="changelink(index)">
+            <div class="back" v-show="a" @click="changelinktwo(index)">
               <p>点击我更改banner</p>
             </div>
           </div>
-        </div> -->
+        </div>
       </div>
       <div class="article">
         <h3 class="front">
@@ -145,7 +146,61 @@
         </div>
       </div>
       <div class="bottom front">
-        友情链接
+       <div class="link">
+      <div class="con">
+        <div class="visit">
+          <div class="visittotal">
+            <img src="../../assets/images/icon_msg_.png" alt="" /><span>
+              访问统计</span
+            >
+          </div>
+          <p>近日访问:<span>24,666</span></p>
+          <p>历史访问:<span>400万</span></p>
+        </div>
+        <div class="friendlink">
+          <div class="visittotal">
+            <img src="../../assets/images/icon.png" alt="" />
+            <span>
+              友情链接</span
+            >
+          </div>
+          <el-menu
+      
+            class="el-menu-demo"
+            mode="horizontal"
+            @select="handleSelect"
+            background-color="#f3f3f3"
+            text-color="#2d2d2d"
+          >
+            <el-submenu
+              :index="value.id"
+              v-for="value in Datachild"
+              :key="value.id"
+            >
+              <template slot="title">{{ value.classifyName }}</template>
+              <el-menu-item
+                :index="value.id"
+                v-for="value in value.friendshipLink"
+                :key="value.id"
+              >
+                <span @click="ply(value.linkUrl)" >{{
+                  value.title
+                }}</span></el-menu-item
+              >
+            </el-submenu>
+            <el-menu-item
+              v-for="value in Data"
+              :index="value.id"
+              :key="value.id"
+            >
+              <a  @click="ply(value.linkUrl)" >{{
+                value.title
+              }}</a></el-menu-item
+            >
+          </el-menu>
+        </div>
+      </div>
+    </div>
         <div class="back" v-show="a" @click="changefriendlink()">
           <p>点击我更改友情链接</p>
         </div>
@@ -1070,30 +1125,32 @@
             tooltip-effect="dark"
             style="width: 100%"
             @selection-change="handleSelectionChange"
-            align="center"
+          
           >
-            <el-table-column label="编号" width="60" align="center">
+            <el-table-column label="编号" width="150" align="center">
               <template slot-scope="scope">{{ scope.$index + 1 }}</template>
             </el-table-column>
-            <el-table-column label="分类" width="420" align="center">
+            <el-table-column label="分类" width="100" align="center">
               <template slot-scope="scope">
                 {{ scope.row.classifyName }}
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="250" align="center">
-              <template slot-scope="scope">
-                <el-button
+            <el-table-column label="操作" width="600" align="right" >
+              <template slot-scope="scope" >
+                <span class="classEdit"  @click="classEdit(scope.$index, scope.row)" style="color:skyblue" >修改</span>
+                <span  class="classDelete"   @click="classDelete(scope.$index, scope.row)" style="color:red">删除</span>
+                <!-- <el-button
                   size="mini"
                   type="danger"
                   @click="classEdit(scope.$index, scope.row)"
                   >修改</el-button
-                >
-                <el-button
+                > -->
+                <!-- <el-button
                   size="mini"
                   type="danger"
                   @click="classDelete(scope.$index, scope.row)"
                   >删除</el-button
-                >
+                > -->
               </template>
             </el-table-column>
           </el-table>
@@ -1127,6 +1184,7 @@ import { getHomeclassify } from "@/apis/request.js";
 import { getHomefriendlink } from "@/apis/request.js";
 import { editHomelinks } from "@/apis/request.js";
 import { getHomelinks } from "@/apis/request.js";
+import { getHomelink } from "@/apis/request.js";
 import { addHomeclassify } from "@/apis/request.js";
 import { addHomefriendlink } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
@@ -1138,6 +1196,8 @@ import { deleteHomecarouse } from "@/apis/request.js";
 export default {
   data() {
     return {
+        Datachild: [],
+      Data: [],
       joggle,
       editindex: 0,
       carouseemptyimg: false,
@@ -1502,6 +1562,9 @@ export default {
     //  console.log(that.homeForm)
   },
   methods: {
+    ply(a){
+      location.href=a
+    },
     moudlelink(index) {
       if (index == 0) {
         this.dialoglink0 = false;
@@ -1551,6 +1614,21 @@ export default {
         this.homeForm.links4 = JSON.parse(JSON.stringify(this.links4clone));
       }
       if (index == 5) {
+        this.dialoglink5 = false;
+        this.homeForm.links5 = JSON.parse(JSON.stringify(this.links5clone));
+      }
+    },
+        cancelmoudlelinktwo(index) {
+   
+      if (index == 0) {
+        this.dialoglink3 = false;
+        this.homeForm.links3 = JSON.parse(JSON.stringify(this.links3clone));
+      }
+      if (index == 1) {
+        this.dialoglink4 = false;
+        this.homeForm.links4 = JSON.parse(JSON.stringify(this.links4clone));
+      }
+      if (index == 2) {
         this.dialoglink5 = false;
         this.homeForm.links5 = JSON.parse(JSON.stringify(this.links5clone));
       }
@@ -1609,10 +1687,10 @@ export default {
             label: res.title,
           };
         });
-            this.option0.unshift( {
-                value: 0,
-                label: '无',
-              })
+        this.option0.unshift({
+          value: 0,
+          label: "无",
+        });
         console.log(res, 666);
       });
     },
@@ -1627,10 +1705,10 @@ export default {
             label: res.title,
           };
         });
-            this.option1.unshift( {
-                value: 0,
-                label: '无',
-              })
+        this.option1.unshift({
+          value: 0,
+          label: "无",
+        });
         console.log(res, 666);
       });
     },
@@ -1645,10 +1723,10 @@ export default {
             label: res.title,
           };
         });
-            this.option2.unshift( {
-                value: 0,
-                label: '无',
-              })
+        this.option2.unshift({
+          value: 0,
+          label: "无",
+        });
         console.log(res, 666);
       });
     },
@@ -1663,10 +1741,10 @@ export default {
             label: res.title,
           };
         });
-            this.option3.unshift( {
-                value: 0,
-                label: '无',
-              })
+        this.option3.unshift({
+          value: 0,
+          label: "无",
+        });
         console.log(res, 666);
       });
     },
@@ -1681,10 +1759,10 @@ export default {
             label: res.title,
           };
         });
-            this.option4.unshift( {
-                value: 0,
-                label: '无',
-              })
+        this.option4.unshift({
+          value: 0,
+          label: "无",
+        });
         console.log(res, 666);
       });
     },
@@ -1699,10 +1777,10 @@ export default {
             label: res.title,
           };
         });
-            this.option5.unshift( {
-                value: 0,
-                label: '无',
-              })
+        this.option5.unshift({
+          value: 0,
+          label: "无",
+        });
         console.log(res, 666);
       });
     },
@@ -1834,6 +1912,8 @@ export default {
     },
     // 提交事件
     submit() {
+      this.a = false;
+      this.changeCount = 0;
       var that = this;
       let linkArr = [
         that.homeForm.links0,
@@ -1878,6 +1958,12 @@ export default {
       }).then((res) => {
         console.log(res, "ply3");
         this.initRequest();
+             this.$message({
+                showClose: true,
+                message: "保存成功",
+                type: "success",
+                duration: 1000,
+              });
       });
     },
     changecarousel() {
@@ -1906,6 +1992,18 @@ export default {
         this.dialoglink4 = true;
       }
       if (index == 5) {
+        this.dialoglink5 = true;
+      }
+    },
+      changelinktwo(index) {
+      
+      if (index == 0) {
+        this.dialoglink3 = true;
+      }
+      if (index == 1) {
+        this.dialoglink4 = true;
+      }
+      if (index == 2) {
         this.dialoglink5 = true;
       }
     },
@@ -2165,10 +2263,10 @@ export default {
                 label: res.title,
               };
             });
-            this.option0.unshift( {
-                value: 0,
-                label: '无',
-              })
+            this.option0.unshift({
+              value: 0,
+              label: "无",
+            });
             console.log(res, 666);
           });
           getColumnallarticle(res[1].linkColumnId).then((res) => {
@@ -2178,10 +2276,10 @@ export default {
                 label: res.title,
               };
             });
-                this.option1.unshift( {
-                value: 0,
-                label: '无',
-              })
+            this.option1.unshift({
+              value: 0,
+              label: "无",
+            });
             console.log(res, 666);
           });
           getColumnallarticle(res[2].linkColumnId).then((res) => {
@@ -2191,10 +2289,10 @@ export default {
                 label: res.title,
               };
             });
-                this.option2.unshift( {
-                value: 0,
-                label: '无',
-              })
+            this.option2.unshift({
+              value: 0,
+              label: "无",
+            });
             console.log(res, 666);
           });
           getColumnallarticle(res[3].linkColumnId).then((res) => {
@@ -2204,10 +2302,10 @@ export default {
                 label: res.title,
               };
             });
-                this.option3.unshift( {
-                value: 0,
-                label: '无',
-              })
+            this.option3.unshift({
+              value: 0,
+              label: "无",
+            });
             console.log(res, 666);
           });
           getColumnallarticle(res[4].linkColumnId).then((res) => {
@@ -2217,10 +2315,10 @@ export default {
                 label: res.title,
               };
             });
-                this.option4.unshift( {
-                value: 0,
-                label: '无',
-              })
+            this.option4.unshift({
+              value: 0,
+              label: "无",
+            });
             console.log(res, 666);
           });
           getColumnallarticle(res[5].linkColumnId).then((res) => {
@@ -2230,10 +2328,10 @@ export default {
                 label: res.title,
               };
             });
-                this.option5.unshift( {
-                value: 0,
-                label: '无',
-              })
+            this.option5.unshift({
+              value: 0,
+              label: "无",
+            });
             console.log(res, 666);
           });
           this.links0clone = JSON.parse(JSON.stringify(res[0]));
@@ -2247,7 +2345,8 @@ export default {
           this.links4clone = JSON.parse(JSON.stringify(res[4]));
           this.homeForm.links5 = res[5];
           this.links5clone = JSON.parse(JSON.stringify(res[5]));
-          this.homeFormfirst.links = res;
+          this.homeFormfirst.links = res.splice(0,3);
+          this.homeFormfirst.linksone = res;
 
           console.log(res, 0);
         });
@@ -2310,6 +2409,12 @@ export default {
           });
         });
       });
+          getHomelink().then((res) => {
+      console.log(res, 666);
+      this.Datachild = res[0];
+      // console.log(this.Datachild, 8);
+      this.Data = res[1];
+    });
     },
   },
 
@@ -2348,6 +2453,7 @@ export default {
 </script>
 <style lang="less">
 #home {
+
   #carouseltitle {
     margin-bottom: 20px;
   }
@@ -2365,9 +2471,15 @@ export default {
     }
   }
   .title {
-    color: blue;
+ 
     margin-top: 18px;
     font-size: 20px;
+    img{
+   vertical-align: middle;
+   display: inline-block;
+   margin-bottom: 3px;
+   margin-right: 10px;
+    }
   }
   i {
     font-size: 20px;
@@ -2393,6 +2505,8 @@ export default {
         width: 400px;
         text-align: left;
         .description {
+    
+          margin-top: 10px;
           font-size: 18px;
           display: -webkit-box;
           overflow: hidden;
@@ -2421,9 +2535,15 @@ export default {
       }
     }
     .category > div {
+      margin-top: 30px;
+      display: -ms-flexbox;
+      -webkit-flex-wrap: wrap;
+      -moz-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+      -o-flex-wrap: wrap;
+      -ms-justify-content: space-between;
       display: flex;
       justify-content: space-between;
-      margin-top: 30px;
       flex-wrap: wrap;
       div {
         width: 246px;
@@ -2437,12 +2557,12 @@ export default {
         }
       }
     }
-    .box1 > div:hover {
-      transform: scale(1.1);
-    }
-    .box2 > div:hover {
-      transform: scale(1.1);
-    }
+    // .box1 > div:hover {
+    //   transform: scale(1.1);
+    // }
+    // .box2 > div:hover {
+    //   transform: scale(1.1);
+    // }
     .box1 > div > p {
       margin-top: 10px;
     }
@@ -2451,6 +2571,7 @@ export default {
     }
     .article {
       margin-top: 70px;
+      text-align: center;
       h3 {
         width: 190px;
       }
@@ -2518,13 +2639,13 @@ export default {
         }
       }
     }
-    .bottom {
-      margin-top: 70px;
-      background: #e6e6e6;
-      height: 100px;
-      text-align: center;
-      line-height: 100px;
-    }
+    // .bottom {
+    //   margin-top: 70px;
+    //   // background: #e6e6e6;
+    //   // height: 100px;
+    //   text-align: center;
+    //   // line-height: 100px;
+    // }
     .front {
       position: relative;
       // text-align: center;
@@ -2574,6 +2695,7 @@ export default {
   }
   .el-dialog__header .el-dialog__title {
     border-bottom: 1px solid skyblue;
+    color:skyblue;
     display: block;
     width: 80%;
     margin: 0 auto;
@@ -2677,6 +2799,75 @@ export default {
   }
   .el-form-item {
     margin-top: 16px;
+  }
+  .classEdit{
+    cursor: pointer;
+    margin-right: 50px;
+  }
+  .classDelete{
+    cursor: pointer;
+  }
+   .link {
+    width: 100%;
+    height: 150px;
+    background: #f3f3f3;
+    padding-top: 50px;
+    margin-top: 80px;
+    font-size: 18px;
+    img {
+      width: 20px;
+      height: 20px;
+      margin-bottom: -3px;
+    }
+
+    .con {
+      display: flex;
+      .visit {
+        margin-right: 108px;
+      }
+      .el-menu-item {
+        font-size: 18px;
+      }
+    }
+    .visit,
+    .friendlink {
+      .visittotal {
+        padding-bottom: 10px;
+        width: 200px;
+        border-bottom: 2px solid #ccc;
+        margin-bottom: 20px;
+        span {
+          font-size: 18px;
+          color: #2d2d2d;
+        }
+      }
+      p {
+        margin-top: 10px;
+      }
+      span {
+        margin-left: 10px;
+      }
+      .el-menu--horizontal {
+        border-bottom: none;
+      }
+      .el-menu-item a {
+        text-decoration: none !important;
+      }
+      .el-submenu__title {
+        font-size: 18px;
+      }
+      .el-menu-item * {
+        vertical-align: baseline;
+      }
+      .el-submenu__title,
+      .is-active,
+      .el-submenu {
+        border: none;
+      }
+      .el-menu--horizontal > .el-submenu.is-active .el-submenu__title {
+        border: none;
+      }
+    }
   }
 }
 </style>

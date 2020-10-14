@@ -3,8 +3,8 @@
     <label v-for="list in dataList" :key="list.id">
       <el-submenu :index="list.id" v-if="list.children.length != 0">
         <template slot="title">
-           <img src="../assets/images/icon_submenu_blue.png" alt="" v-if="$route.params.id==list.id"> 
-           <img v-else src="../assets/images/icon_submenu_black.png" alt="" >  <span>{{ list.columnName }}</span>
+           <img src="../assets/images/icon_submenu_blue.png" v-if="$route.params.id==list.id" alt="">
+           <img src="../assets/images/icon_submenu_black.png" v-else alt="" >  <span :class="{acitive:$route.params.id==list.id}">{{ list.columnName }}</span>
         </template>
         <label>
           <Child :dataList="list.children"></Child>
@@ -55,14 +55,20 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-// .el-menu-item.is-active{
-//   color:#303133;
-// }
+.el-menu-item{
+font-family: 'Source Han Sans CN';
+}
+.el-submenu__title{
+  font-family:'Source Han Sans CN' ;
+}
 img{
   // margin-top: 2px;
   // display: inline-block;
   margin-right: 4px;
   margin-bottom: -3px;
   
+}
+.acitive{
+  color: #409EFF;
 }
 </style>

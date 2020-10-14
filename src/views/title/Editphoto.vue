@@ -502,7 +502,6 @@ export default {
     },
     back() {
       this.$router.push("/home/contentmange/"+this.$store.state.columnid);
-     
       return false;
     },
     photoEdit() {

@@ -183,6 +183,7 @@ export default {
 
 <style lang="less">
 .home-top-bar {
+    
   width: 1300px;
   margin: 0 auto;
   height: 80px;

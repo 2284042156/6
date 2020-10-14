@@ -1,7 +1,9 @@
 <template>
   <div class="content">
     <div class="top">
-      <span class="title"><i class="el-icon-tickets"></i>内容管理</span>
+      <span class="title">
+          <img  src="../../assets/images/leftbar_icon_messages_blue.png" alt="">
+        内容管理</span>
       <div>
         <el-button size="mini" @click="keepOrder()">保存排序</el-button>
         <el-button size="mini" @click="addtitle()">新增文章</el-button>
@@ -239,6 +241,7 @@ export default {
                 console.log( this.$store.state.article,'ply')
               });
             }
+         
           });
         })
         .catch(() => {
@@ -269,7 +272,9 @@ export default {
        }
       });
     },
-    handleOpen(key) {
+    handleOpen(key,keyPath) {
+console.log(keyPath,66)
+
       this.$store.state.columnid = key;
       console.log(this.$store.state.columnid);
             this.$router.push({
@@ -285,7 +290,7 @@ export default {
          this.$store.state.total=res.total;
             console.log( res,66)
       });
- 
+      
     },
     handleClose(key, keyPath) {
       console.log(key, keyPath);
@@ -314,7 +319,8 @@ export default {
     },
   },
   created() {
-    
+    this.$store.state.columnid =this.$route.params.id;
+    console.log( this.$store.state.columnid,'ppp')
     allColumn().then((res) => {
       this.listData = res;
       // this.$store.state.styleType = res[0].styleType;
@@ -342,9 +348,12 @@ export default {
     }
   }
   .title {
-    color: blue;
+ 
     margin-top: 18px;
     font-size: 20px;
+    img{
+      margin-right: 10px;
+    }
   }
   .el-icon-tickets {
     font-size: 20px;
@@ -408,5 +417,12 @@ export default {
    margin-left: 520px;
    margin-top: 20px;
   }
+  .el-menu-vertical-demo .el-submenu.is-opened>.el-submenu__title {
+  color:#409EFF;
+}
+
+.el-menu-vertical-demo .el-submenu .el-submenu__title{
+  color: #303133;
+}
 }
 </style>
