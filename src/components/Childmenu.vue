@@ -35,13 +35,18 @@ export default {
     getColumnmessage(id) {
       this.id = id;
         this.$store.state.columnid = id;
+          localStorage.setItem('columnid',id)
           this.$router.push({
         path:
          '/home/contentmange/' + id,
       });
           returnColumn(id).then(res=>{
          this.$store.state.styleType=res[0].styleType;
-         console.log( this.$store.state.styleType,"66")
+            localStorage.setItem(
+                    "style",
+                    res[0].styleType
+                  );
+       
       })
       getColumnarticle(id,1).then((res) => {
         this.$store.state.article = res.list;

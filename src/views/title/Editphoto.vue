@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="photocontent" v-if="this.$store.state.styleType == 1">
+    <div class="photocontent" v-if="show == 1">
       <div class="top">
         <span class="title"
           ><i class="el-icon-tickets"></i>图文样式内容编辑</span
@@ -70,7 +70,7 @@
         </el-form>
       </div>
     </div>
-    <div class="photocontent" v-else-if="this.$store.state.styleType == 0">
+    <div class="photocontent" v-else-if="show== 0">
       <div class="top">
         <span class="title"
           ><i class="el-icon-tickets"></i>视频样式内容编辑</span
@@ -163,7 +163,7 @@
         </el-form>
       </div>
     </div>
-    <div class="photocontent" v-if="this.$store.state.styleType == 2">
+    <div class="photocontent" v-if="show == 2">
       <div class="top">
         <span class="title"><i class="el-icon-tickets"></i>链接内容编辑</span>
         <div>
@@ -501,11 +501,14 @@ export default {
       this.linkForm.bgImgUrl = res.data.fileUrl;
     },
     back() {
-      this.$router.push("/home/contentmange/"+this.$store.state.columnid);
+        let a=localStorage.getItem('columnid')
+      this.$router.push("/home/contentmange/"+a);
       return false;
     },
     photoEdit() {
-      var form = { ...this.$store.state.editid, ...this.photoForm };
+        let a=localStorage.getItem('columnid');
+         let editid=  JSON.parse( localStorage.getItem('row'));
+      var form = { ...editid, ...this.photoForm };
       var date = moment(form.createTime).format("YYYY-MM-DD");
       form.createTime = date;
       var arr = [];
@@ -513,14 +516,16 @@ export default {
       console.log(arr);
       editArticle(arr).then((res) => {
         console.log(res);
-        getColumnarticle(this.$store.state.columnid,1).then((res) => {
+        getColumnarticle(a,1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
+          this.$router.push("/home/contentmange/"+a);
         });
       });
     },
     videoEdit() {
-      var form = { ...this.$store.state.editid, ...this.videoForm };
+        let a=localStorage.getItem('columnid');
+         let editid=  JSON.parse( localStorage.getItem('row'));
+      var form = {editid, ...this.videoForm };
       var date = moment(form.createTime).format("YYYY-MM-DD");
       form.createTime = date;
       var arr = [];
@@ -528,15 +533,16 @@ export default {
       console.log(arr);
       editArticle(arr).then((res) => {
         console.log(res);
-        getColumnarticle(this.$store.state.columnid,1).then((res) => {
+        getColumnarticle(a,1).then((res) => {
           this.$store.state.article = res;
-         this.$router.push("/home/contentmange/"+this.$store.state.columnid);
+         this.$router.push("/home/contentmange/"+a);
         });
       });
     },
     linkEdit() {
-  
-      var form = { ...this.$store.state.editid, ...this.linkForm};
+    let a=localStorage.getItem('columnid');
+     let editid=  JSON.parse( localStorage.getItem('row'));
+      var form = { ...editid, ...this.linkForm};
       var date = moment(form.createTime).format("YYYY-MM-DD");
       form.createTime = date;
       var arr = [];
@@ -544,41 +550,53 @@ export default {
       console.log(arr, 9);
       editArticle(arr).then((res) => {
         console.log(res);
-        getColumnarticle(this.$store.state.columnid,1).then((res) => {
+        getColumnarticle(a,1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
+          this.$router.push("/home/contentmange/"+a);
         });
       });
     },
     cancel() {
-      this.$router.push("/home/contentmange/"+this.$store.state.columnid);
+        let a=localStorage.getItem('columnid')
+      this.$router.push("/home/contentmange/"+a);
+    },
+  },
+  computed: {
+    show() {
+      if (localStorage.getItem("style")) {
+        return localStorage.getItem("style");
+      }
+      else{
+        return ''
+      }
     },
   },
   mounted() {
-    if (this.$store.state.styleType == 1) {
-      this.photoForm.bgImgUrl = this.$store.state.editid.bgImgUrl;
-      this.photoForm.title = this.$store.state.editid.title;
-      this.photoForm.createTime = this.$store.state.editid.createTime;
-      this.photoForm.description = this.$store.state.editid.description;
-      this.photoForm.textContent = this.$store.state.editid.textContent;
+     let editid=  JSON.parse( localStorage.getItem('row'));
+    if (localStorage.getItem("style")== 1) {
+      this.photoForm.bgImgUrl = editid.bgImgUrl;
+      this.photoForm.title = editid.title;
+      this.photoForm.createTime = editid.createTime;
+      this.photoForm.description = editid.description;
+      this.photoForm.textContent = editid.textContent;
     }
-    if (this.$store.state.styleType == 0) {
-      this.videoForm.bgImgUrl = this.$store.state.editid.bgImgUrl;
-      this.videoForm.title = this.$store.state.editid.title;
-      this.videoForm.videoUrl = this.$store.state.editid.videoUrl;
-      this.videoForm.createTime = this.$store.state.editid.createTime;
-      this.videoForm.description = this.$store.state.editid.description;
-      this.videoForm.textContent = this.$store.state.editid.textContent;
+    if (localStorage.getItem("style")== 0) {
+      this.videoForm.bgImgUrl = editid.bgImgUrl;
+      this.videoForm.title = editid.title;
+      this.videoForm.videoUrl = editid.videoUrl;
+      this.videoForm.createTime = editid.createTime;
+      this.videoForm.description = editid.description;
+      this.videoForm.textContent = editid.textContent;
     }
-    if (this.$store.state.styleType == 2) {
-      this.linkForm.bgImgUrl = this.$store.state.editid.bgImgUrl;
-      this.linkForm.title = this.$store.state.editid.title;
-      this.linkForm.createTime = this.$store.state.editid.createTime;
-      this.linkForm.description = this.$store.state.editid.description;
-      this.linkForm.linkType = this.$store.state.editid.linkType;
-      this.linkForm.linkUrl = this.$store.state.editid.linkUrl;
-      this.linkForm.linkColumnId =  this.$store.state.editid.linkColumnId;
-      this.linkForm.linkArticleId = this.$store.state.editid.linkArticleId;
+    if (localStorage.getItem("style") == 2) {
+      this.linkForm.bgImgUrl =editid.bgImgUrl;
+      this.linkForm.title = editid.title;
+      this.linkForm.createTime = editid.createTime;
+      this.linkForm.description = editid.description;
+      this.linkForm.linkType =editid.linkType;
+      this.linkForm.linkUrl =editid.linkUrl;
+      this.linkForm.linkColumnId =  editid.linkColumnId;
+      this.linkForm.linkArticleId = editid.linkArticleId;
    
     }
     this.common();

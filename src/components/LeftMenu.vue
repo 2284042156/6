@@ -78,6 +78,7 @@ export default {
   height: 100%;
   ul {
     padding: 0px;
+    margin: 0px;
   }
   li {
     list-style: none;

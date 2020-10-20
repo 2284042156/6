@@ -213,6 +213,7 @@ export default {
     },
     handleEdit(index, row) {
       this.$store.state.editid = row;
+      localStorage.setItem('row', JSON.stringify(row) )
       console.log( this.$store.state.editid,0);
       this.$router.push("/home/editphoto");
 
@@ -276,6 +277,7 @@ export default {
 console.log(keyPath,66)
 
       this.$store.state.columnid = key;
+      localStorage.setItem('columnid',key)
       console.log(this.$store.state.columnid);
             this.$router.push({
         path:
@@ -283,6 +285,10 @@ console.log(keyPath,66)
       });
       returnColumn(key).then((res) => {
         this.$store.state.styleType = res[0].styleType;
+         localStorage.setItem(
+                    "style",
+                    res[0].styleType
+                  );
       });
       getColumnarticle(key,1).then((res) => {
         // console.log(res, 1);
@@ -295,12 +301,17 @@ console.log(keyPath,66)
     handleClose(key, keyPath) {
       console.log(key, keyPath);
       this.$store.state.columnid = key;
+       localStorage.setItem('columnid',key)
             this.$router.push({
         path:
          '/home/contentmange/' + key,
       });
       returnColumn(key).then((res) => {
-        this.$store.state.styleType = res[0].styleType;
+        this.$store.state.style = res[0].styleType;
+           localStorage.setItem(
+                    "styleType",
+                    res[0].styleType
+                  );
       });
       getColumnarticle(key,1).then((res) => {
         this.$store.state.article = res.list;
@@ -320,12 +331,16 @@ console.log(keyPath,66)
   },
   created() {
     this.$store.state.columnid =this.$route.params.id;
-    console.log( this.$store.state.columnid,'ppp')
+        localStorage.setItem('columnid',this.$route.params.id)
+   returnColumn(this.$route.params.id).then((res) => {
+        this.$store.state.styleType = res[0].styleType;
+            localStorage.setItem(
+                    "style",
+                    res[0].styleType
+                  );
+      });
     allColumn().then((res) => {
       this.listData = res;
-      // this.$store.state.styleType = res[0].styleType;
-      // this.$store.state.columnid = res[0].id;
-      // console.log(this.$store.state.columnid)
       getColumnarticle(this.$route.params.id,1).then((res) => {
         this.$store.state.article = res.list;
          this.$store.state.total=res.total;

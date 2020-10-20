@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="photocontent" v-if="this.$store.state.styleType == 1">
+    <div class="photocontent" v-if="show == 1">
       <div class="top">
         <span class="title"><i class="el-icon-tickets"></i>新增文章</span>
         <div>
@@ -8,8 +8,12 @@
         </div>
       </div>
       <div class="contentbottom">
-        <el-form :model="photoForm">
-          <el-form-item label="封面图" :label-width="formLabelWidth">
+        <el-form :model="photoForm" :rules="rules" ref="photoForm">
+          <el-form-item
+            label="封面图"
+            :label-width="formLabelWidth"
+            prop="bgImgUrl"
+          >
             <el-upload
               class="avatar-uploader"
               :action="joggle"
@@ -29,7 +33,11 @@
           <a href="javascript:;" class="file gradient">
           <input id="pop_file" type="file" accept=".jpg,.jpeg,.png" v-on:change="uploadFile($event)" name="fileTrans" ref="file" value="" />选择文件</a> -->
           </el-form-item>
-          <el-form-item label="文章标题" :label-width="formLabelWidth">
+          <el-form-item
+            label="文章标题"
+            :label-width="formLabelWidth"
+            prop="title"
+          >
             <el-input v-model="photoForm.title" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="日期" :label-width="formLabelWidth">
@@ -42,7 +50,11 @@
               ></el-date-picker>
             </el-col>
           </el-form-item>
-          <el-form-item label="来源" :label-width="formLabelWidth">
+          <el-form-item
+            label="来源"
+            :label-width="formLabelWidth"
+            prop="description"
+          >
             <el-input
               v-model="photoForm.description"
               autocomplete="off"
@@ -51,7 +63,11 @@
           <!-- <quill-editor v-model="form.content" ref="myQuillEditor" style="height: 300px;" :options="editorOption">
       </quill-editor> -->
           <!-- <editor-bar v-model="detail" :isClear="isClear" @change="change"></editor-bar>  -->
-          <el-form-item label="文章内容" :label-width="formLabelWidth">
+          <el-form-item
+            label="文章内容"
+            :label-width="formLabelWidth"
+            prop="textContent"
+          >
             <quill-editor
               ref="text"
               v-model="photoForm.textContent"
@@ -61,13 +77,15 @@
           </el-form-item>
 
           <div class="footer">
-            <el-button type="primary" @click="photoAdd()">确认</el-button>
+            <el-button type="primary" @click="photoAdd('photoForm')"
+              >确认</el-button
+            >
             <el-button type="info" @click="cancel()">取消</el-button>
           </div>
         </el-form>
       </div>
     </div>
-    <div class="photocontent" v-else-if="this.$store.state.styleType == 0">
+    <div class="photocontent" v-else-if="show== 0">
       <div class="top">
         <span class="title"><i class="el-icon-tickets"></i>新增文章</span>
         <div>
@@ -75,8 +93,12 @@
         </div>
       </div>
       <div class="contentbottom">
-        <el-form :model="videoForm">
-          <el-form-item label="封面图" :label-width="formLabelWidth">
+        <el-form :model="videoForm" :rules="rules" ref="videoForm">
+          <el-form-item
+            label="封面图"
+            :label-width="formLabelWidth"
+            prop="bgImgUrl"
+          >
             <el-upload
               class="avatar-uploader"
               :action="joggle"
@@ -93,7 +115,11 @@
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
           </el-form-item>
-          <el-form-item label="文章标题" :label-width="formLabelWidth">
+          <el-form-item
+            label="文章标题"
+            :label-width="formLabelWidth"
+            prop="title"
+          >
             <el-input v-model="videoForm.title" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="日期" :label-width="formLabelWidth">
@@ -106,13 +132,21 @@
               ></el-date-picker>
             </el-col>
           </el-form-item>
-          <el-form-item label="来源" :label-width="formLabelWidth">
+          <el-form-item
+            label="来源"
+            :label-width="formLabelWidth"
+            prop="description"
+          >
             <el-input
               v-model="videoForm.description"
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <el-form-item label="视频" :label-width="formLabelWidth">
+          <el-form-item
+            label="视频"
+            :label-width="formLabelWidth"
+            prop="videoUrl"
+          >
             <el-upload
               class="avatar-uploader"
               :action="joggle"
@@ -142,7 +176,11 @@
               ></el-progress>
             </el-upload>
           </el-form-item>
-          <el-form-item label="文章内容" :label-width="formLabelWidth">
+          <el-form-item
+            label="文章内容"
+            :label-width="formLabelWidth"
+            prop="textContent"
+          >
             <quill-editor
               ref="text"
               v-model="videoForm.textContent"
@@ -151,13 +189,15 @@
             />
           </el-form-item>
           <div class="footer">
-            <el-button type="primary" @click="videoAdd()">确认</el-button>
+            <el-button type="primary" @click="videoAdd('videoForm')"
+              >确认</el-button
+            >
             <el-button type="info" @click="cancel()">取消</el-button>
           </div>
         </el-form>
       </div>
     </div>
-    <div class="photocontent" v-if="this.$store.state.styleType == 2">
+    <div class="photocontent" v-if="show== 2">
       <div class="top">
         <span class="title"><i class="el-icon-tickets"></i>新增文章</span>
         <div>
@@ -165,8 +205,12 @@
         </div>
       </div>
       <div class="contentbottom">
-        <el-form :model="linkForm">
-          <el-form-item label="封面图" :label-width="formLabelWidth">
+        <el-form :model="linkForm" :rules="rules" ref="linkForm">
+          <el-form-item
+            label="封面图"
+            :label-width="formLabelWidth"
+            prop="bgImgUrl"
+          >
             <el-upload
               class="avatar-uploader"
               :action="joggle"
@@ -204,7 +248,7 @@
             </el-radio-group>
           </el-form-item>
           <el-form-item
-            prop="in"
+            prop="value"
             label="站内链接"
             :label-width="formLabelWidth"
             v-if="linkForm.linkType == 0"
@@ -222,6 +266,7 @@
             label="文章"
             :label-width="formLabelWidth"
             v-if="linkForm.linkType == 0"
+            prop="linkArticleId"
           >
             <el-select v-model="linkForm.linkArticleId" placeholder="请选择">
               <el-option
@@ -234,7 +279,7 @@
             </el-select>
           </el-form-item>
           <el-form-item
-            prop="out"
+            prop="linkUrl"
             label="站外链接"
             :label-width="formLabelWidth"
             v-if="linkForm.linkType == 1"
@@ -244,11 +289,17 @@
               placeholder="请输入链接"
             ></el-input>
           </el-form-item>
-          <el-form-item label="文章标题" :label-width="formLabelWidth">
+          <el-form-item
+            label="文章标题"
+            :label-width="formLabelWidth"
+            prop="title"
+          >
             <el-input v-model="linkForm.title" autocomplete="off"></el-input>
           </el-form-item>
           <div class="footer">
-            <el-button type="primary" @click="linkAdd()">确认</el-button>
+            <el-button type="primary" @click="linkAdd('linkForm')"
+              >确认</el-button
+            >
             <el-button type="info" @click="cancel()">取消</el-button>
           </div>
         </el-form>
@@ -271,6 +322,29 @@ export default {
   },
   data() {
     return {
+      rules: {
+        bgImgUrl: [
+          { required: true, message: "请上传图片", trigger: "change" },
+        ],
+        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+        textContent: [
+          { required: true, message: "请输入内容", trigger: "blur" },
+        ],
+        description: [
+          { required: true, message: "请输入来源", trigger: "blur" },
+        ],
+        videoUrl: [{ required: true, message: "请上传视频", trigger: "blur" }],
+        linkType: [
+          { required: true, message: "请选择链接类型", trigger: "blur" },
+        ],
+        value: [{ required: true, message: "请选择站内链接", trigger: "blur" }],
+        linkArticleId: [
+          { required: true, message: "请选择链接文章", trigger: "blur" },
+        ],
+        linkUrl: [
+          { required: true, message: "请输入站外链接", trigger: "blur" },
+        ],
+      },
       joggle,
       defaultParams: {
         label: "columnName",
@@ -346,28 +420,7 @@ export default {
           ],
         },
       ],
-      option: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
-        {
-          value: "选项2",
-          label: "双皮奶",
-        },
-        {
-          value: "选项3",
-          label: "蚵仔煎",
-        },
-        {
-          value: "选项4",
-          label: "龙须面",
-        },
-        {
-          value: "选项5",
-          label: "北京烤鸭",
-        },
-      ],
+      option: [],
       photoForm: {
         bgImgUrl: "",
         title: "",
@@ -498,59 +551,101 @@ export default {
       this.linkForm.bgImgUrl = res.data.fileUrl;
     },
     back() {
-       this.$router.push("/home/contentmange/"+this.$store.state.columnid);
+         let a=localStorage.getItem('columnid')
+      this.$router.push("/home/contentmange/" + a);
       return false;
     },
-    photoAdd() {
-      var form = { ...this.photoForm };
-      var date = moment(form.createTime).format("YYYY-MM-DD");
-      form.createTime = date;
-      form.columnId = this.$store.state.columnid;
-      addArticle(form).then((res) => {
-        console.log(res);
-        getColumnarticle(this.$store.state.columnid,1).then((res) => {
-          this.$store.state.article = res;
-          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
-        });
+    photoAdd(formName) {
+         let a=localStorage.getItem('columnid')
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          var form = { ...this.photoForm };
+          var date = moment(form.createTime).format("YYYY-MM-DD");
+          form.createTime = date;
+          form.columnId = a;
+          addArticle(form).then((res) => {
+            console.log(res);
+            getColumnarticle(a, 1).then((res) => {
+              this.$store.state.article = res;
+              this.$router.push(
+                "/home/contentmange/" + a
+              );
+            });
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
     },
-    videoAdd() {
-      var form = { ...this.videoForm };
-      var date = moment(form.createTime).format("YYYY-MM-DD");
-      form.createTime = date;
-      form.columnId = this.$store.state.columnid;
-      addArticle(form).then((res) => {
-        console.log(res);
-        getColumnarticle(this.$store.state.columnid,1).then((res) => {
-          this.$store.state.article = res;
-          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
-        });
+    videoAdd(formName) {
+         let a=localStorage.getItem('columnid')
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          var form = { ...this.videoForm };
+          var date = moment(form.createTime).format("YYYY-MM-DD");
+          form.createTime = date;
+          form.columnId = a;
+          addArticle(form).then((res) => {
+            console.log(res);
+            getColumnarticle(a, 1).then((res) => {
+              this.$store.state.article = res;
+              this.$router.push(
+                "/home/contentmange/" + a
+              );
+            });
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
     },
-    linkAdd() {
-      var form = { ...this.linkForm };
-      var date = moment(form.createTime).format("YYYY-MM-DD");
-      form.createTime = date;
-      form.columnId = this.$store.state.columnid;
-      addArticle(form).then((res) => {
-        console.log(res);
-        getColumnarticle(this.$store.state.columnid,1).then((res) => {
-          this.$store.state.article = res;
-          this.$router.push("/home/contentmange/"+this.$store.state.columnid);
-        });
+    linkAdd(formName) {
+         let a=localStorage.getItem('columnid')
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          var form = { ...this.linkForm };
+          var date = moment(form.createTime).format("YYYY-MM-DD");
+          form.createTime = date;
+          form.columnId = a;
+          addArticle(form).then((res) => {
+            console.log(res);
+            getColumnarticle(a, 1).then((res) => {
+              this.$store.state.article = res;
+              this.$router.push(
+                "/home/contentmange/" + a
+              );
+            });
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
       });
     },
     cancel() {
-      this.$router.push("/home/contentmange/"+this.$store.state.columnid);
+      let a=localStorage.getItem('columnid')
+      this.$router.push("/home/contentmange/" + a);
     },
   },
+  computed: {
+    show() {
+      if (localStorage.getItem("style")) {
+        return localStorage.getItem("style");
+      }
+      else{
+        return ''
+      }
+    },
+  },
+
   mounted() {
     var date = new Date();
     date = moment(date).format("YYYY-MM-DD");
     this.linkForm.createTime = date;
     this.photoForm.createTime = date;
     this.videoForm.createTime = date;
-
     this.common();
   },
 };
@@ -610,7 +705,7 @@ export default {
   }
   .footer {
     width: 200px;
-    margin: 0 auto;
+    margin: 40px auto;
   }
 }
 </style>

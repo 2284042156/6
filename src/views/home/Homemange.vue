@@ -973,14 +973,14 @@
       </div>
     </el-dialog>
     <el-dialog title="添加种类" :visible.sync="dialogaddclassify" width="60%">
-      <el-form :model="homeForm" :rules="rules" ref="addclassify">
+      <el-form :model="homeFormlink" :rules="rules" ref="addclassify">
         <el-form-item
           prop="addclassify"
           label="分类"
           :label-width="formLabelWidth"
         >
           <el-input
-            v-model="homeForm.addclassify"
+            v-model="homeFormlink.addclassify"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -993,10 +993,10 @@
       </div>
     </el-dialog>
     <el-dialog title="添加友情链接" :visible.sync="dialogaddlink" width="60%">
-      <el-form :model="homeForm.addlink" :rules="rules" ref="addlink">
+      <el-form :model="homeFormlink.addlink" :rules="rules" ref="addlink">
         <el-form-item prop="title" label="连接名" :label-width="formLabelWidth">
           <el-input
-            v-model="homeForm.addlink.title"
+            v-model="homeFormlink.addlink.title"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -1007,7 +1007,7 @@
           class="classifyId"
         >
           <el-select
-            v-model="homeForm.addlink.classifyId"
+            v-model="homeFormlink.addlink.classifyId"
             placeholder="请选择分类"
           >
             <el-option
@@ -1025,7 +1025,7 @@
           :label-width="formLabelWidth"
         >
           <el-input
-            v-model="homeForm.addlink.linkUrl"
+            v-model="homeFormlink.addlink.linkUrl"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -1038,14 +1038,14 @@
       </div>
     </el-dialog>
     <el-dialog title="修改种类" :visible.sync="dialogeditclassify" width="60%">
-      <el-form :model="homeForm" :rules="rules" ref="editclassify">
+      <el-form :model="homeFormlink" :rules="rules" ref="editclassify">
         <el-form-item
           prop="editclassify"
           label="分类"
           :label-width="formLabelWidth"
         >
           <el-input
-            v-model="homeForm.editclassify"
+            v-model="homeFormlink.editclassify"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -1066,11 +1066,12 @@
         <el-tab-pane label="链接管理" name="first">
           <el-table
             ref="multipleTable"
-            :data="homeForm.frinedlinktableData"
+            :data="homeFormlink.frinedlinktableData"
             tooltip-effect="dark"
             style="width: 100%"
             @selection-change="handleSelectionChange"
             align="center"
+            class="linktable"
           >
             <el-table-column label="编号" width="60" align="center">
               <template slot-scope="scope">{{ scope.$index + 1 }}</template>
@@ -1115,13 +1116,14 @@
                   inactive-value="1"
                 >
                 </el-switch>
+                  <el-button type="danger" size="mini" class="move"  @click="linkDelete(scope.$index, scope.row)"  >删除</el-button>
               </template>
             </el-table-column> </el-table
         ></el-tab-pane>
         <el-tab-pane label="分类管理" name="second">
           <el-table
             ref="multipleTable"
-            :data="homeForm.frinedlinkmange"
+            :data="homeFormlink.frinedlinkmange"
             tooltip-effect="dark"
             style="width: 100%"
             @selection-change="handleSelectionChange"
@@ -1135,22 +1137,10 @@
                 {{ scope.row.classifyName }}
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="600" align="right" >
+            <el-table-column label="操作" width="600" align="center" >
               <template slot-scope="scope" >
                 <span class="classEdit"  @click="classEdit(scope.$index, scope.row)" style="color:skyblue" >修改</span>
                 <span  class="classDelete"   @click="classDelete(scope.$index, scope.row)" style="color:red">删除</span>
-                <!-- <el-button
-                  size="mini"
-                  type="danger"
-                  @click="classEdit(scope.$index, scope.row)"
-                  >修改</el-button
-                > -->
-                <!-- <el-button
-                  size="mini"
-                  type="danger"
-                  @click="classDelete(scope.$index, scope.row)"
-                  >删除</el-button
-                > -->
               </template>
             </el-table-column>
           </el-table>
@@ -1182,6 +1172,8 @@ import { getColumnarticle } from "@/apis/request.js";
 import { getColumnallarticle } from "@/apis/request.js";
 import { getHomeclassify } from "@/apis/request.js";
 import { getHomefriendlink } from "@/apis/request.js";
+import { deleteHomeclassify } from "@/apis/request.js";
+// import { deleteHomelink } from "@/apis/request.js";
 import { editHomelinks } from "@/apis/request.js";
 import { getHomelinks } from "@/apis/request.js";
 import { getHomelink } from "@/apis/request.js";
@@ -1271,19 +1263,15 @@ export default {
         frinedlinktableData: [
           {
             index: 1,
-            title: "四川大学",
+            title: "",
             class: "",
             value: true,
             address: "https://123",
             classifyId: 0,
             options: [
               {
-                value: "选项1",
-                label: "黄金糕",
-              },
-              {
-                value: "选项2",
-                label: "双皮奶",
+                value: "1",
+                label: "2",
               },
             ],
           },
@@ -1323,6 +1311,17 @@ export default {
       frinedlinktableDataclone: [],
       linkcolumn: 0,
       linkcolumntwo: 0,
+      homeFormlink:{
+        frinedlinkmange:[],
+        frinedlinktableData:[],
+        editclassify:{},
+           addclassify: "",
+        addlink:{
+           title: "",
+          classifyId: 0,
+          linkUrl: "",
+        }
+      },
       homeFormfirst: {
         bannerurl: "",
         tableData: [
@@ -1565,6 +1564,9 @@ export default {
     ply(a){
       location.href=a
     },
+    linkDelete(index){
+    this.homeFormlink.frinedlinktableData.splice(index,1)
+    },
     moudlelink(index) {
       if (index == 0) {
         this.dialoglink0 = false;
@@ -1618,7 +1620,7 @@ export default {
         this.homeForm.links5 = JSON.parse(JSON.stringify(this.links5clone));
       }
     },
-        cancelmoudlelinktwo(index) {
+    cancelmoudlelinktwo(index) {
    
       if (index == 0) {
         this.dialoglink3 = false;
@@ -1915,6 +1917,14 @@ export default {
       this.a = false;
       this.changeCount = 0;
       var that = this;
+      // console.log(this.homeForm.frinedlinktableData,'py');
+         let linkids= this.homeFormlink.frinedlinktableData.map(res=>{
+          return res.id
+      })
+       let classify= this.homeFormlink.frinedlinkmange.map(res=>{
+         return res.id
+       })
+      console.log(linkids,classify,0)
       let linkArr = [
         that.homeForm.links0,
         that.homeForm.links1,
@@ -1943,11 +1953,17 @@ export default {
       editHomelinks(linkArr).then((res) => {
         console.log(res, "m");
       });
-      modifyHomefriendlink(this.homeForm.frinedlinktableData).then((res) => {
+      modifyHomefriendlink(this.homeFormlink.frinedlinktableData).then((res) => {
         console.log(res);
+        // deleteHomelink().then(res=>{
+        //   console.log(res,666)
+        // })
       });
-      modifyHomeclassify(this.homeForm.frinedlinkmange).then((res) => {
-        console.log(res);
+      modifyHomeclassify(this.homeFormlink.frinedlinkmange).then((res) => {
+        deleteHomeclassify(classify).then(res=>{
+          console.log(res)
+        })
+        console.log(res)
       });
       addHomepage({
         bgImgId: this.addhomeForm.bgImgId,
@@ -1995,7 +2011,7 @@ export default {
         this.dialoglink5 = true;
       }
     },
-      changelinktwo(index) {
+    changelinktwo(index) {
       
       if (index == 0) {
         this.dialoglink3 = true;
@@ -2121,13 +2137,13 @@ export default {
       console.log(this.activeName);
     },
     classDelete(index) {
-      this.homeForm.frinedlinkmange.splice(index, 1);
+      this.homeFormlink.frinedlinkmange.splice(index, 1);
     },
     linkmange() {
       if (this.activeName == "first") {
         this.dialogaddlink = true;
         this.optionslink = JSON.parse(
-          JSON.stringify(this.homeForm.frinedlinkmange)
+          JSON.stringify(this.homeFormlink.frinedlinkmange)
         );
         this.optionslink.push({
           id: 0,
@@ -2141,7 +2157,7 @@ export default {
     classEdit(index, row) {
       this.rowedit = row;
       this.dialogeditclassify = true;
-      this.homeForm.editclassify = row.classifyName;
+      this.homeFormlink.editclassify = row.classifyName;
     },
     classifytrue(formName) {
       const that = this;
@@ -2149,25 +2165,25 @@ export default {
         if (valid) {
           if (formName == "addclassify") {
             addHomeclassify({
-              classifyName: that.homeForm.addclassify,
+              classifyName: that.homeFormlink.addclassify,
             }).then((res) => {
-              this.homeForm.frinedlinkmange.unshift(res);
+              this.homeFormlink.frinedlinkmange.unshift(res);
             });
           }
           if (formName == "editclassify") {
-            this.rowedit.classifyName = this.homeForm.editclassify;
+            this.rowedit.classifyName = this.homeFormlink.editclassify;
           }
           if (formName == "addlink") {
-            addHomefriendlink(this.homeForm.addlink).then((res) => {
+            addHomefriendlink(this.homeFormlink.addlink).then((res) => {
               console.log(res, "a");
               res.data.options = JSON.parse(
-                JSON.stringify(this.homeForm.frinedlinkmange)
+                JSON.stringify(this.homeFormlink.frinedlinkmange)
               );
               res.data.options.push({
                 id: 0,
                 classifyName: "无",
               });
-              this.homeForm.frinedlinktableData.push(res.data);
+              this.homeFormlink.frinedlinktableData.push(res.data);
             });
           }
 
@@ -2195,12 +2211,12 @@ export default {
     },
     cancellink() {
       if (this.activeName == "second") {
-        this.homeForm.frinedlinkmange = JSON.parse(
+        this.homeFormlink.frinedlinkmange = JSON.parse(
           JSON.stringify(this.frinedlinkmangeclone)
         );
       }
       if (this.activeName == "first") {
-        this.homeForm.frinedlinktableData = JSON.parse(
+        this.homeFormlink.frinedlinktableData = JSON.parse(
           JSON.stringify(this.frinedlinktableDataclone)
         );
       }
@@ -2377,14 +2393,15 @@ export default {
           });
         }
         getHomeclassify().then((res) => {
-          this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
+          // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
+          this.homeFormlink.frinedlinkmange = JSON.parse(JSON.stringify(res));
           console.log(res, "ply");
           this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
           getHomefriendlink().then((res) => {
             console.log(res, "ply1");
-            this.homeForm.frinedlinktableData = res.map((res) => {
+                   this.homeFormlink.frinedlinktableData = res.map((res) => {
               res.options = JSON.parse(
-                JSON.stringify(this.homeForm.frinedlinkmange)
+                JSON.stringify(this.homeFormlink.frinedlinkmange)
               );
               res.options.push({
                 id: 0,
@@ -2396,7 +2413,7 @@ export default {
               JSON.stringify(
                 res.map((res) => {
                   res.options = JSON.parse(
-                    JSON.stringify(this.homeForm.frinedlinkmange)
+                    JSON.stringify(this.homeFormlink.frinedlinkmange)
                   );
                   res.options.push({
                     id: 0,
@@ -2453,7 +2470,6 @@ export default {
 </script>
 <style lang="less">
 #home {
-
   #carouseltitle {
     margin-bottom: 20px;
   }
@@ -2471,7 +2487,6 @@ export default {
     }
   }
   .title {
- 
     margin-top: 18px;
     font-size: 20px;
     img{
@@ -2507,7 +2522,7 @@ export default {
         .description {
     
           margin-top: 10px;
-          font-size: 18px;
+          font-size: 16px;
           display: -webkit-box;
           overflow: hidden;
           white-space: normal !important;
@@ -2532,6 +2547,7 @@ export default {
       }
       h3 {
         width: 190px;
+  
       }
     }
     .category > div {
@@ -2557,12 +2573,6 @@ export default {
         }
       }
     }
-    // .box1 > div:hover {
-    //   transform: scale(1.1);
-    // }
-    // .box2 > div:hover {
-    //   transform: scale(1.1);
-    // }
     .box1 > div > p {
       margin-top: 10px;
     }
@@ -2571,7 +2581,7 @@ export default {
     }
     .article {
       margin-top: 70px;
-      text-align: center;
+      // text-align: center;
       h3 {
         width: 190px;
       }
@@ -2583,7 +2593,7 @@ export default {
       margin-bottom: 40px;
 
       h3 {
-        margin-right: 50px;
+        margin-left: 60px;
         font-size: 18px;
       }
     }
@@ -2601,6 +2611,8 @@ export default {
         .textContent {
           text-align: left;
           width: 400px;
+          margin-top: 10px;
+          // padding-left: 10px;
           display: -webkit-box;
           overflow: hidden;
           white-space: normal !important;
@@ -2611,6 +2623,12 @@ export default {
           color: #333;
           font-size: 16px;
           line-height: 30px;
+          img{
+           display: none;
+          }
+          video{
+             display: none;
+          }
         }
         .timebottom {
           color: #ccc;
@@ -2639,21 +2657,12 @@ export default {
         }
       }
     }
-    // .bottom {
-    //   margin-top: 70px;
-    //   // background: #e6e6e6;
-    //   // height: 100px;
-    //   text-align: center;
-    //   // line-height: 100px;
-    // }
     .front {
       position: relative;
-      // text-align: center;
     }
     .back {
       width: 100%;
       height: 100%;
-
       position: absolute;
       background: rgba(24, 22, 22, 0.7);
       top: 0;
@@ -2715,10 +2724,7 @@ export default {
     display: flex;
     justify-content: center;
   }
-  .el-table td,
-  .el-table .has-gutter th div {
-    text-align: center;
-  }
+
   .el-table .has-gutter th div {
     font-size: 18px;
     color: #fff;
@@ -2726,6 +2732,32 @@ export default {
     height: 40px;
     line-height: 40px;
   }
+    .el-table td{
+    text-align: center;
+   border: none;
+
+  .cell{
+  padding-top:10px ;
+   height: 80px;
+ background:#f3f0f0;
+ text-align: center;
+ line-height: 60px;
+  }
+  // .el-table tr:hover{
+  //   background: red  !important;
+  // }
+  }
+  .el-table--enable-row-transition .el-table__body tr:hover>td{
+    background: #fff !important;
+  }
+    .el-table  tr td:nth-child(1) .cell{
+      background: #fff;
+    }
+    // .el-table .el-table__body td{
+    //   display: inline-block;
+    //   width: 50px;;
+    //   margin-bottom: 10px;
+    // }
   .el-table th > .cell {
     line-height: 40px;
     vertical-align: top;
@@ -2868,6 +2900,10 @@ export default {
         border: none;
       }
     }
+  }
+  .move{
+    width: 54px;
+    margin-left: 10px;
   }
 }
 </style>

@@ -1,8 +1,8 @@
 import axios from 'axios';
 axios.defaults.baseURL='http://liuwanr.cn:8080/msdw';
 export  const joggle='http://liuwanr.cn:8080/msdw/aliyun/uploadFiles';
-// axios.defaults.baseURL='http://192.168.31.179:8080';
-// export  const joggle='http://192.168.31.179:8080/aliyun/uploadFiles';
+// axios.defaults.baseURL='http://192.168.31.183:8080';
+// export  const joggle='http://192.168.31.183:8080/aliyun/uploadFiles';
 axios.interceptors.request.use((req)=>{
     // console.log('请求拦截器拦截的数据：req',req)
     const token = sessionStorage.getItem('token');
@@ -150,6 +150,7 @@ export function editHomelinks(parms){
         return res.data.data
     });
 }
+
 export function getHomeheadline(parms){
     return axios.get('/headline/'+parms
     ).then(res=>{
@@ -221,6 +222,18 @@ export function adminChangepwd(params){
 }
 export function getHomelink(){
     return axios.get('/friendshipLink/friendshipLinkGet/all'
+    ).then(res=>{
+        return res.data.data
+    });
+}
+export function deleteHomelink(params){
+    return axios.get('/friendshipLink/delete/'+params,
+    ).then(res=>{
+        return res.data.data
+    });
+}
+export function deleteHomeclassify(params){
+    return axios.delete('/classify/classifies/'+params,
     ).then(res=>{
         return res.data.data
     });

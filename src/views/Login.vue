@@ -149,7 +149,7 @@ export default {
 .ply {
   height: 100%;
   opacity: 0.8;
-  background: url('../assets/images/1.png');
+  background: url('../assets/images/login.jpg');
   // font-family: "Source Han Serif CN";
   .container {
     width: 1200px;
