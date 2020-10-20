@@ -227,7 +227,7 @@ export function getHomelink(){
     });
 }
 export function deleteHomelink(params){
-    return axios.get('/friendshipLink/delete/'+params,
+    return axios.delete('/friendshipLink/deleteFriend/'+params,
     ).then(res=>{
         return res.data.data
     });

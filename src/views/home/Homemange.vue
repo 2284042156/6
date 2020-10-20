@@ -973,14 +973,14 @@
       </div>
     </el-dialog>
     <el-dialog title="添加种类" :visible.sync="dialogaddclassify" width="60%">
-      <el-form :model="homeFormlink" :rules="rules" ref="addclassify">
+      <el-form :model="homeFormlink.addclassify" :rules="rules" ref="addclassify">
         <el-form-item
-          prop="addclassify"
+          prop="classifyName"
           label="分类"
           :label-width="formLabelWidth"
         >
           <el-input
-            v-model="homeFormlink.addclassify"
+            v-model="homeFormlink.addclassify.classifyName"
             autocomplete="off"
           ></el-input>
         </el-form-item>
@@ -1129,15 +1129,15 @@
             @selection-change="handleSelectionChange"
           
           >
-            <el-table-column label="编号" width="150" align="center">
+            <el-table-column label="编号" width="60" align="center">
               <template slot-scope="scope">{{ scope.$index + 1 }}</template>
             </el-table-column>
-            <el-table-column label="分类" width="100" align="center">
+            <el-table-column label="分类" width="180" align="center">
               <template slot-scope="scope">
                 {{ scope.row.classifyName }}
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="600" align="center" >
+            <el-table-column label="操作" width="620" align="center" >
               <template slot-scope="scope" >
                 <span class="classEdit"  @click="classEdit(scope.$index, scope.row)" style="color:skyblue" >修改</span>
                 <span  class="classDelete"   @click="classDelete(scope.$index, scope.row)" style="color:red">删除</span>
@@ -1173,12 +1173,12 @@ import { getColumnallarticle } from "@/apis/request.js";
 import { getHomeclassify } from "@/apis/request.js";
 import { getHomefriendlink } from "@/apis/request.js";
 import { deleteHomeclassify } from "@/apis/request.js";
-// import { deleteHomelink } from "@/apis/request.js";
+import { deleteHomelink } from "@/apis/request.js";
 import { editHomelinks } from "@/apis/request.js";
 import { getHomelinks } from "@/apis/request.js";
 import { getHomelink } from "@/apis/request.js";
-import { addHomeclassify } from "@/apis/request.js";
-import { addHomefriendlink } from "@/apis/request.js";
+// import { addHomeclassify } from "@/apis/request.js";
+// import { addHomefriendlink } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
 import { modifyHomefriendlink } from "@/apis/request.js";
 import { modifyHomeclassify } from "@/apis/request.js";
@@ -1291,6 +1291,7 @@ export default {
         addlink: {
           title: "",
           classifyId: 0,
+          options:[],
           linkUrl: "",
         },
         addcarousel: {
@@ -1315,10 +1316,11 @@ export default {
         frinedlinkmange:[],
         frinedlinktableData:[],
         editclassify:{},
-           addclassify: "",
+        addclassify: {classifyName:''},
         addlink:{
            title: "",
           classifyId: 0,
+          isShow:'0',
           linkUrl: "",
         }
       },
@@ -1542,6 +1544,9 @@ export default {
         ],
         addclassify: [
           { required: true, message: "请输入内容", trigger: "blur" },
+        ],
+        classifyName:[
+ { required: true, message: "请输入内容", trigger: "blur" },
         ],
         editclassify: [
           { required: true, message: "请输入内容", trigger: "blur" },
@@ -1918,13 +1923,13 @@ export default {
       this.changeCount = 0;
       var that = this;
       // console.log(this.homeForm.frinedlinktableData,'py');
-         let linkids= this.homeFormlink.frinedlinktableData.map(res=>{
-          return res.id
-      })
-       let classify= this.homeFormlink.frinedlinkmange.map(res=>{
-         return res.id
-       })
-      console.log(linkids,classify,0)
+      //    let linkids= this.homeFormlink.frinedlinktableData.map(res=>{
+      //     return res.id
+      // })
+      //  let classify= this.homeFormlink.frinedlinkmange.map(res=>{
+      //    return res.id
+      //  })
+      // console.log(linkids,classify,0)
       let linkArr = [
         that.homeForm.links0,
         that.homeForm.links1,
@@ -1953,18 +1958,18 @@ export default {
       editHomelinks(linkArr).then((res) => {
         console.log(res, "m");
       });
-      modifyHomefriendlink(this.homeFormlink.frinedlinktableData).then((res) => {
-        console.log(res);
-        // deleteHomelink().then(res=>{
-        //   console.log(res,666)
-        // })
-      });
-      modifyHomeclassify(this.homeFormlink.frinedlinkmange).then((res) => {
-        deleteHomeclassify(classify).then(res=>{
-          console.log(res)
-        })
-        console.log(res)
-      });
+      // modifyHomefriendlink(this.homeFormlink.frinedlinktableData).then((res) => {
+      //   console.log(res);
+      //   // deleteHomelink().then(res=>{
+      //   //   console.log(res,666)
+      //   // })
+      // });
+      // modifyHomeclassify(this.homeFormlink.frinedlinkmange).then((res) => {
+      //   // deleteHomeclassify(classify).then(res=>{
+      //   //   console.log(res)
+      //   // })
+      //   console.log(res)
+      // });
       addHomepage({
         bgImgId: this.addhomeForm.bgImgId,
         carouselIds: this.addhomeForm.carouselIds,
@@ -2025,6 +2030,7 @@ export default {
     },
     changefriendlink() {
       this.dialogfriendlink = true;
+
     },
     handlecolumnChangeone(value) {
       let index = value.length - 1;
@@ -2142,6 +2148,12 @@ export default {
     linkmange() {
       if (this.activeName == "first") {
         this.dialogaddlink = true;
+           this.homeFormlink.addlink={
+           title: "",
+          classifyId: 0,
+          isShow:'0',
+          linkUrl: "",
+        }
         this.optionslink = JSON.parse(
           JSON.stringify(this.homeFormlink.frinedlinkmange)
         );
@@ -2151,6 +2163,7 @@ export default {
         });
       }
       if (this.activeName == "second") {
+          this.homeFormlink.addclassify.classifyName='';
         this.dialogaddclassify = true;
       }
     },
@@ -2164,27 +2177,33 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (formName == "addclassify") {
-            addHomeclassify({
-              classifyName: that.homeFormlink.addclassify,
-            }).then((res) => {
-              this.homeFormlink.frinedlinkmange.unshift(res);
-            });
+            // addHomeclassify({
+            //   classifyName: that.homeFormlink.addclassify,
+            // }).then((res) => {
+             
+            // });
+         
+      
+             this.homeFormlink.frinedlinkmange.push(JSON.parse(JSON.stringify(this.homeFormlink.addclassify) ) );
+             console.log(   this.homeFormlink.frinedlinkmange,666)
           }
           if (formName == "editclassify") {
             this.rowedit.classifyName = this.homeFormlink.editclassify;
           }
           if (formName == "addlink") {
-            addHomefriendlink(this.homeFormlink.addlink).then((res) => {
-              console.log(res, "a");
-              res.data.options = JSON.parse(
-                JSON.stringify(this.homeFormlink.frinedlinkmange)
-              );
-              res.data.options.push({
-                id: 0,
-                classifyName: "无",
-              });
-              this.homeFormlink.frinedlinktableData.push(res.data);
-            });
+            // addHomefriendlink(this.homeFormlink.addlink).then((res) => {
+            //   console.log(res, "a");
+            //   res.data.options = JSON.parse(
+            //     JSON.stringify(this.homeFormlink.frinedlinkmange)
+            //   );
+            //   res.data.options.push({
+            //     id: 0,
+            //     classifyName: "无",
+            //   });
+            //   this.homeFormlink.frinedlinktableData.push(res.data);
+            // });
+               this.homeFormlink.addlink.options=  this.optionslink;
+             this.homeFormlink.frinedlinktableData.push(JSON.parse(JSON.stringify(this.homeFormlink.addlink)));
           }
 
           that.dialogaddclassify = false;
@@ -2197,15 +2216,113 @@ export default {
       });
     },
     linkclassify() {
+         let linkids= this.homeFormlink.frinedlinktableData.map(res=>{
+          return res.id
+      })
+       let classify= this.homeFormlink.frinedlinkmange.map(res=>{
+         return res.id
+       })
       if (this.activeName == "second") {
         this.frinedlinkmangeclone = JSON.parse(
-          JSON.stringify(this.homeForm.frinedlinkmange)
+          JSON.stringify(this.homeFormlink.frinedlinkmange)
         );
+
+            modifyHomeclassify(this.homeFormlink.frinedlinkmange).then((res) => {
+        deleteHomeclassify(classify).then(res=>{
+          console.log(res);
+                getHomelink().then((res) => {
+      console.log(res, 666);
+      this.Datachild = res[0];
+      // console.log(this.Datachild, 8);
+      this.Data = res[1];
+    });
+                 getHomeclassify().then((res) => {
+          // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
+          this.homeFormlink.frinedlinkmange = JSON.parse(JSON.stringify(res));
+          console.log(res, "ply");
+          this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
+          getHomefriendlink().then((res) => {
+            console.log(res, "ply1");
+                   this.homeFormlink.frinedlinktableData = res.map((res) => {
+              res.options = JSON.parse(
+                JSON.stringify(this.homeFormlink.frinedlinkmange)
+              );
+              res.options.push({
+                id: 0,
+                classifyName: "无",
+              });
+              return res;
+            });
+            this.frinedlinktableDataclone = JSON.parse(
+              JSON.stringify(
+                res.map((res) => {
+                  res.options = JSON.parse(
+                    JSON.stringify(this.homeFormlink.frinedlinkmange)
+                  );
+                  res.options.push({
+                    id: 0,
+                    classifyName: "无",
+                  });
+                  return res;
+                })
+              )
+            );
+          });
+        });
+        })
+        console.log(res)
+      });
       }
       if (this.activeName == "first") {
         this.frinedlinktableDataclone = JSON.parse(
-          JSON.stringify(this.homeForm.frinedlinktableData)
+          JSON.stringify(this.homeFormlink.frinedlinktableData)
         );
+           modifyHomefriendlink(this.homeFormlink.frinedlinktableData).then((res) => {
+        console.log(res);
+        deleteHomelink(linkids).then(res=>{
+          console.log(res,666);
+                getHomelink().then((res) => {
+      console.log(res, 666);
+      this.Datachild = res[0];
+      // console.log(this.Datachild, 8);
+      this.Data = res[1];
+    });
+                     getHomeclassify().then((res) => {
+          // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
+          this.homeFormlink.frinedlinkmange = JSON.parse(JSON.stringify(res));
+          console.log(res, "ply");
+          this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
+          getHomefriendlink().then((res) => {
+            console.log(res, "ply1");
+                   this.homeFormlink.frinedlinktableData = res.map((res) => {
+              res.options = JSON.parse(
+                JSON.stringify(this.homeFormlink.frinedlinkmange)
+              );
+              res.options.push({
+                id: 0,
+                classifyName: "无",
+              });
+              return res;
+            });
+            this.frinedlinktableDataclone = JSON.parse(
+              JSON.stringify(
+                res.map((res) => {
+                  res.options = JSON.parse(
+                    JSON.stringify(this.homeFormlink.frinedlinkmange)
+                  );
+                  res.options.push({
+                    id: 0,
+                    classifyName: "无",
+                  });
+                  return res;
+                })
+              )
+            );
+          });
+        });
+        })
+    
+      });
       }
       this.dialogfriendlink = false;
     },
@@ -2392,7 +2509,9 @@ export default {
             console.log(res);
           });
         }
-        getHomeclassify().then((res) => {
+
+      });
+              getHomeclassify().then((res) => {
           // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
           this.homeFormlink.frinedlinkmange = JSON.parse(JSON.stringify(res));
           console.log(res, "ply");
@@ -2425,7 +2544,6 @@ export default {
             );
           });
         });
-      });
           getHomelink().then((res) => {
       console.log(res, 666);
       this.Datachild = res[0];
@@ -2445,7 +2563,7 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    if (this.changeCount > 8 && !this.isPopup) {
+    if (this.changeCount > 6 && !this.isPopup) {
       this.$confirm("你有内容正在编辑确定离开当前界面吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
