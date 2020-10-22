@@ -256,6 +256,11 @@ export default {
     keepOrder() {
       editArticle(this.tablelist).then((res) => {
        if(res.message=="修改成功"){
+            getColumnarticle(this.$route.params.id,this.currentPage).then((res) => {
+            this.$store.state.article = res.list;
+             this.$store.state.total=res.total;
+            //  console.log( res,66)
+      });
               this.$message({
                 showClose: true,
                 message: "修改排序成功",
@@ -353,6 +358,7 @@ console.log(keyPath,66)
 <style lang="less">
 .content {
   height: 100%;
+  
   .top {
     display: flex;
     justify-content: space-between;
@@ -394,6 +400,7 @@ console.log(keyPath,66)
           .el-submenu__title {
             span {
               font-size: 16px;
+          
             }
           }
         }
