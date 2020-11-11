@@ -1,22 +1,21 @@
 <template>
   <div class="ply" @keyup.enter="submitForm">
- 
     <div class="topbar">
       <div class="container ">
-        <span>网站管理后台</span><span class="regist">注册</span>
+        <span>网站管理后台</span><span class="regist" @click="go()">返回</span>
       </div>
     </div>
     <div class="form container">
       <div class="welcome">
-        <p>欢迎来到</p>
-        <p>网站后台</p>
-        <p>管理系统</p>
-        <p class="introduce">介绍介绍介绍介绍</p>
+        <p>欢&nbsp;迎&nbsp;来&nbsp;到</p>
+        <p>网&nbsp;站&nbsp;后&nbsp;台</p>
+        <p>管&nbsp;理&nbsp;系&nbsp;统&nbsp;平&nbsp;台</p>
       </div>
       <div id="box">
         <div class="title">
           <p>欢迎登录</p>
         </div>
+        <!-- element ui表单数据 -->
         <el-form
           :model="loginForm"
           :rules="rules"
@@ -35,6 +34,8 @@
             ></el-input>
           </el-form-item>
           <p class="password">密码</p>
+          <!-- 表单验证，其prop是必备属性，且必须写再el-form-item中 -->
+          <!-- 显示密码 show-password -->
           <el-form-item prop="password">
             <el-input
               placeholder="密码"
@@ -45,6 +46,7 @@
             ></el-input>
           </el-form-item>
           <el-form-item class="bottom">
+            <!-- 勾选框 -->
             <el-checkbox v-model="loginForm.checked">下次自动登录</el-checkbox>
             <a class="right">忘记密码?</a>
           </el-form-item>
@@ -64,7 +66,7 @@
   </div>
 </template>
 <script>
-import { login } from "@/apis/request.js";
+import { login } from "@/apis/request.js";//登录接口
 
 export default {
   data() {
@@ -74,42 +76,44 @@ export default {
         password: "",
         checked: true,
       },
-      rules: {
-        username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-        ],
+      rules: {//数据检索
+        username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
         password: [{ required: true, message: "请输入密码", trigger: "blur" }],
       },
     };
   },
   methods: {
-    submitForm() {
+    //返回即回到前端地址
+    go(){
+      this.$router.push("")
+    },
+    submitForm() {//登录
       var that = this;
-      if (that.loginForm.checked == true) {
+      if (that.loginForm.checked == true) {//当选择记住密码时，获取用户名和密码，并存储至本地
         localStorage.setItem("username", that.loginForm.username);
         localStorage.setItem("pwd", that.loginForm.password);
-        localStorage.setItem("flag", true);
+        localStorage.setItem("flag", true);//有用户名和密码，则设置flag为true
       }
-      if (that.loginForm.checked == false) {
+      if (that.loginForm.checked == false) {//如果为未选中记住密码，则移除本地用户名和密码与flag
         localStorage.removeItem("username");
         localStorage.removeItem("pwd");
         localStorage.removeItem("flag");
       }
-      this.$refs.loginFormId.validate((valid) => {
-        if (valid) {
+      this.$refs.loginFormId.validate((valid) => {//
+        if (valid) {//数据校验，如果有数据，则处理login接口，如果没有数据，则弹出消息，输入用户名或者密码
           login({
             adminName: that.loginForm.username,
             adminPwd: that.loginForm.password,
           }).then((res) => {
-            if (res.token) {
+            if (res.token) {//如果验证通过，则弹出消息，并跳转，如果错误，则弹出消息错误
               sessionStorage.setItem("token", res.token);
-              this.$message({
-                showClose: true,
-                message: "登陆成功",
-                type: "success",
-                duration: 1000,
+              this.$message({//弹出消息提示
+                showClose: true,//显示关闭按钮
+                message: "登陆成功",//消息文字
+                type: "success",//主题
+                duration: 1000,//弹出1秒
                 onClose: () => {
-                  this.$router.replace("/home/homemange");
+                  this.$router.replace("/home/homemange");//编程式跳转，关闭当前页面并跳转至下一个页面
                 },
               });
             } else {
@@ -131,7 +135,7 @@ export default {
     },
   },
   created(){
-   if(localStorage.getItem('username')){
+   if(localStorage.getItem('username')){//如果本地缓存有数据，则获取用户名和密码
      this.loginForm.username=localStorage.getItem('username')
    }
    if(localStorage.getItem('pwd')){
@@ -139,17 +143,17 @@ export default {
    }
   },
   mounted() {
-    if(localStorage.getItem('flag')){
+    if(localStorage.getItem('flag')){//如果本地存储flag为true，则自动登录
       this.submitForm()
     }
     sessionStorage.removeItem("token");
   },
 };
 </script>
-<style lang="less" scoped>
+<style lang="less" scoped>//scoped表示此样式只作用域本组件
 .ply {
   height: 100%;
-  opacity: 0.8;
+  opacity: 1;
   background: url('../assets/images/login.jpg');
   // font-family: "Source Han Serif CN";
   .container {
@@ -166,7 +170,7 @@ export default {
       display: flex;
       justify-content: space-between;
       .regist {
-        font-size: 20px;
+        font-size: 16px;
       }
     }
   }
@@ -206,12 +210,16 @@ export default {
     align-items: center;
     margin-top: 20px;
     .welcome {
-      font-size: 57px;
+   
       color: #fff;
-      .introduce {
-        font-size: 16px;
-        margin-top: 20px;
+      p{
+        font-size: 54px;
+        margin-bottom: 8px;
       }
+      // .introduce {
+      //   font-size: 16px;
+      //   margin-top: 20px;
+      // }
     }
   }
   .clearfix:before,
@@ -240,8 +248,6 @@ export default {
     background: rgb(109, 103, 103);
     cursor: pointer;
   }
-  //   .el-form-item__label{
-  //  vertical-align: left;
-  //   }
+
 }
 </style>

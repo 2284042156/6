@@ -4,14 +4,17 @@
       <span class="title">
           <img  src="../../assets/images/leftbar_icon_messages_blue.png" alt="">
         内容管理</span>
+        <!-- 顶部按钮 -->
       <div>
         <el-button size="mini" @click="keepOrder()">保存排序</el-button>
         <el-button size="mini" @click="addtitle()">新增文章</el-button>
         <el-button size="mini" @click="toggleSelection()">批量删除</el-button>
       </div>
     </div>
+    <!-- 二级栏目主体内容 -->
     <el-container>
       <el-aside width="210px">
+        <!-- 二级栏目左侧导航栏 -->
         <el-menu
           :default-active="this.$route.params.id"
           unique-opened
@@ -31,6 +34,7 @@
           @selection-change="handleSelectionChange"
           align="center"
         >
+        <!-- 二级内容表格列 -->
           <el-table-column type="selection" width="55" align="center">
           </el-table-column>
           <el-table-column label="编号" width="60" align="center">
@@ -42,6 +46,7 @@
           <el-table-column label="排序值" width="100" align="center">
             <template slot-scope="scope">
               <el-input-number
+                step-strictly
                 v-model="scope.row.sort"
                 controls-position="right"
                 :min="0"
@@ -81,6 +86,7 @@
             </template>
           </el-table-column>
         </el-table>
+        <!-- 表单页 -->
         <el-pagination
       @current-change="handleCurrentChange"
       :current-page="currentPage"
@@ -89,7 +95,7 @@
       layout="prev, pager, next"
       :total="this.$store.state.total"
     >
-    </el-pagination>
+        </el-pagination>
       </el-main>
     </el-container>
   </div>
@@ -107,9 +113,9 @@ import moment from "moment";
 export default {
   data() {
     return {
-      currentPage: 1,
+      currentPage: 1,//页码
       total: 12,
-      deleteid: 0,
+      deleteid: [],
       id: 0,
       styleType: 0,
       value1: 0,
@@ -193,7 +199,7 @@ export default {
     toggleSelection() {
       this.open();
     },
-    text(row) {
+    text(row) {//获取整行数据，并更改样式，传给后台进行存储
       this.$store.state.editid = row;
       var form = { ...this.$store.state.editid };
       var date = moment(form.createTime).format("YYYY-MM-DD");
@@ -205,38 +211,38 @@ export default {
         console.log(res);
       });
     },
-    handleSelectionChange(val) {
+    handleSelectionChange(val) {//选择栏目id，并放入数组中进行存储
       this.deleteid = val.map((res) => {
         return res.id;
       });
       console.log(this.deleteid);
     },
-    handleEdit(index, row) {
+    handleEdit(index, row) {//编辑栏目
       this.$store.state.editid = row;
       localStorage.setItem('row', JSON.stringify(row) )
       console.log( this.$store.state.editid,0);
       this.$router.push("/home/editphoto");
 
     },
-    handleDelete(index, row) {
+    handleDelete(index, row) {//删除栏目
       console.log(index, row);
       this.deleteid = row.id;
     },
-    addtitle() {
+    addtitle() {//新增文章
       this.$router.push("/home/addtitle");
     },
-    open() {
+    open() {//删除文章，弹出确认框
       // const a=this;
       this.$confirm("此操作将永久删除该栏目内容, 是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
         center: true,
-      })
-        .then(() => {
-          deleteArticle(this.deleteid).then((res) => {
+      }).then(() => {
+          deleteArticle(this.deleteid).then((res) => {//确认删除
             if (res == 1) {
-              getColumnarticle(this.$store.state.columnid,this.currentPage).then((res) => {
+              //个人建议，别直接更改state，异步处理用dispatch方法，再action内用delete方法进行删除，这样就可以使用devtool进行实时检测了
+              getColumnarticle(this.$store.state.columnid,this.currentPage).then((res) => {//删除成功，更新state值
                 this.$store.state.article = res.list;
                 this.$store.state.total = res.total;
                 console.log( this.$store.state.article,'ply')
@@ -245,7 +251,7 @@ export default {
          
           });
         })
-        .catch(() => {
+        .catch(() => {//取消删除
           this.$message({
             type: "info",
             message: "已取消删除",
@@ -253,12 +259,12 @@ export default {
           });
         });
     },
-    keepOrder() {
-      editArticle(this.tablelist).then((res) => {
+    keepOrder() {//保持排序
+      editArticle(this.tablelist).then((res) => {//参数为所有栏目信息，成功返回值为排序成功
        if(res.message=="修改成功"){
-            getColumnarticle(this.$route.params.id,this.currentPage).then((res) => {
+            getColumnarticle(this.$route.params.id,this.currentPage).then((res) => {//基于排序值排序后的所有值,更改栏目内容信息
             this.$store.state.article = res.list;
-             this.$store.state.total=res.total;
+             this.$store.state.total = res.total;
             //  console.log( res,66)
       });
               this.$message({
@@ -278,24 +284,20 @@ export default {
        }
       });
     },
-    handleOpen(key,keyPath) {
-console.log(keyPath,66)
+    handleOpen(key,keyPath) {//打开二级栏目
+    console.log(keyPath,66)
 
       this.$store.state.columnid = key;
       localStorage.setItem('columnid',key)
       console.log(this.$store.state.columnid);
             this.$router.push({
-        path:
-         '/home/contentmange/' + key,
+        path:'/home/contentmange/' + key,
       });
       returnColumn(key).then((res) => {
         this.$store.state.styleType = res[0].styleType;
-         localStorage.setItem(
-                    "style",
-                    res[0].styleType
-                  );
+         localStorage.setItem("style",res[0].styleType);
       });
-      getColumnarticle(key,1).then((res) => {
+      getColumnarticle(key,1).then((res) => {//获得二级栏目信息
         // console.log(res, 1);
         this.$store.state.article = res.list;
          this.$store.state.total=res.total;
@@ -303,7 +305,7 @@ console.log(keyPath,66)
       });
       
     },
-    handleClose(key, keyPath) {
+    handleClose(key, keyPath) {//关闭二级栏目
       console.log(key, keyPath);
       this.$store.state.columnid = key;
        localStorage.setItem('columnid',key)
@@ -325,7 +327,7 @@ console.log(keyPath,66)
       });
     },
   },
-  computed: {
+  computed: {//定义的时候是方法，用起来像属性
     tablelist() {
       if (this.$store.state.article.length != 0) {
         return this.$store.state.article;
@@ -334,22 +336,23 @@ console.log(keyPath,66)
       }
     },
   },
-  created() {
-    this.$store.state.columnid =this.$route.params.id;
-        localStorage.setItem('columnid',this.$route.params.id)
-   returnColumn(this.$route.params.id).then((res) => {
+  created() {//钩子函数，页面创建后
+    this.$store.state.columnid = this.$route.params.id;
+    localStorage.setItem('columnid',this.$route.params.id)//存储栏目id，统一本地存储和state
+    returnColumn(this.$route.params.id).then((res) => {
         this.$store.state.styleType = res[0].styleType;
             localStorage.setItem(
                     "style",
                     res[0].styleType
                   );
       });
-    allColumn().then((res) => {
+    allColumn().then((res) => {//获取所有二级栏目信息
       this.listData = res;
+      
       getColumnarticle(this.$route.params.id,1).then((res) => {
-        this.$store.state.article = res.list;
-         this.$store.state.total=res.total;
-        console.log(res,66)
+        console.log("res",res)
+        this.$store.state.article = res.list;//栏目内容信息
+         this.$store.state.total=res.total; //栏目总数      
       });
     });
   },
@@ -416,6 +419,7 @@ console.log(keyPath,66)
       background: #68b6c9;
       height: 40px;
       line-height: 40px;
+      font-weight: normal;
     }
   }
   .el-menu-item * {

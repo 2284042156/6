@@ -1,8 +1,12 @@
 <template>
   <div id="home">
     <div class="top">
-      <span class="title">    
-        <img  src="../../assets/images/leftbar_icon_home_blue.png" alt="">首页管理 </span>
+      <span class="title">
+        <img
+          src="../../assets/images/leftbar_icon_home_blue.png"
+          alt=""
+        />首页管理
+      </span>
       <div>
         <el-button size="mini" type="primary" @click="fun()" v-show="!a"
           >编辑</el-button
@@ -16,13 +20,15 @@
       </div>
     </div>
     <div class="contain">
-      <div class="front" style="height:180px;width:100%" v-if="!a">
+      <div class="front" style="height: 180px; width: 100%" v-if="!a">
+        <!-- 横幅 -->
         <el-image
-          style="width: 100%; height:180px"
+          style="width: 100%; height: 180px"
           :src="homeFormfirst.bannerurl"
         >
         </el-image>
       </div>
+      <!-- 上传图片 -->
       <el-upload
         v-else
         class="avatar-uploader front"
@@ -41,9 +47,12 @@
           <p>点击我更改banner</p>
         </div>
       </el-upload>
+      <!-- 轮播图 -->
       <div class="carousel front">
+        <!-- 轮播图图片部分 -->
         <div class="left">
           <div class="input_video">
+            <!-- 视频播放器 -->
             <video-player
               v-show="isshowvideo"
               class="video-player vjs-custom-skin"
@@ -54,7 +63,8 @@
           </div>
           <img :src="homeFormfirst.tableData.url" alt="" v-show="isshowimage" />
         </div>
-        <div class="right ">
+        <!-- 轮播图文字部分 -->
+        <div class="right">
           <h3>{{ homeFormfirst.tableData.title }}</h3>
           <p class="description">
             {{ homeFormfirst.tableData.description }}
@@ -64,19 +74,24 @@
           <p>点击我更改视频图片文字描述</p>
         </div>
       </div>
+      <!-- 虚拟仿真教学 -->
       <div class="category">
         <h3 class="front">
+          <!-- 类标题 -->
           {{ homeFormfirst.titleone }}
           <div class="back" v-show="a" @click="changetitle()">
             <p>点击我更改标题</p>
           </div>
         </h3>
+        <!-- 分类前三个 -->
         <div class="box1">
+          <!-- 渲染输出数组 -->
           <div
             class="front"
             v-for="(value, index) in homeFormfirst.links"
             :key="value.id"
           >
+            <!-- 分类内容 -->
             <img :src="value.icon" alt="" />
             <p>{{ value.title }}</p>
             <p>{{ value.englishTitle }}</p>
@@ -85,8 +100,9 @@
             </div>
           </div>
         </div>
+        <!-- 分类后三个 -->
         <div class="box2">
-     <div
+          <div
             class="front"
             v-for="(value, index) in homeFormfirst.linksone"
             :key="value.id"
@@ -100,13 +116,16 @@
           </div>
         </div>
       </div>
+      <!-- 新闻公告 -->
       <div class="article">
         <h3 class="front">
+          <!-- 新闻公告标题 -->
           {{ homeFormfirst.titletwo }}
           <div class="back" v-show="a" @click="changearticle()">
             <p>点击更改标题</p>
           </div>
         </h3>
+        <!-- 栏目标题 -->
         <div class="articlelink">
           <h3 class="front">
             {{ homeFormfirst.linkcolumn }}
@@ -121,19 +140,25 @@
             </div>
           </h3>
         </div>
+        <!-- 栏目内容 -->
         <div class="articledetails">
+          <!-- 图片 -->
           <img :src="homeFormfirst.linkcolumnarticletop.bgImgUrl" alt="" />
           <div>
+            <!-- 标题 -->
             <span>{{ homeFormfirst.linkcolumnarticletop.title }}</span>
+            <!-- 文本 -->
             <p
               class="textContent"
               v-html="homeFormfirst.linkcolumnarticletop.textContent"
             ></p>
+            <!-- 时间 -->
             <span class="timebottom">{{
               homeFormfirst.linkcolumnarticletop.createTime
             }}</span>
           </div>
         </div>
+        <!-- 栏目底部走马灯 -->
         <div class="articledetailsitem">
           <div
             v-for="value in homeFormfirst.linkcolumnarticlebottom"
@@ -145,62 +170,60 @@
           </div>
         </div>
       </div>
+      <!-- 底部button -->
       <div class="bottom front">
-       <div class="link">
-      <div class="con">
-        <div class="visit">
-          <div class="visittotal">
-            <img src="../../assets/images/icon_msg_.png" alt="" /><span>
-              访问统计</span
-            >
-          </div>
-          <p>近日访问:<span>24,666</span></p>
-          <p>历史访问:<span>400万</span></p>
-        </div>
-        <div class="friendlink">
-          <div class="visittotal">
-            <img src="../../assets/images/icon.png" alt="" />
-            <span>
-              友情链接</span
-            >
-          </div>
-          <el-menu
-      
-            class="el-menu-demo"
-            mode="horizontal"
-            @select="handleSelect"
-            background-color="#f3f3f3"
-            text-color="#2d2d2d"
-          >
-            <el-submenu
-              :index="value.id"
-              v-for="value in Datachild"
-              :key="value.id"
-            >
-              <template slot="title">{{ value.classifyName }}</template>
-              <el-menu-item
-                :index="value.id"
-                v-for="value in value.friendshipLink"
-                :key="value.id"
+        <div class="link">
+          <div class="con">
+            <div class="visit">
+              <div class="visittotal">
+                <img src="../../assets/images/icon_msg_.png" alt="" /><span>
+                  访问统计</span
+                >
+              </div>
+              <p>近日访问:<span>24,666</span></p>
+              <p>历史访问:<span>400万</span></p>
+            </div>
+            <div class="friendlink">
+              <div class="visittotal">
+                <img src="../../assets/images/icon.png" alt="" />
+                <span> 友情链接</span>
+              </div>
+              <el-menu
+                class="el-menu-demo"
+                mode="horizontal"
+                @select="handleSelect"
+                background-color="#f3f3f3"
+                text-color="#2d2d2d"
               >
-                <span @click="ply(value.linkUrl)" >{{
-                  value.title
-                }}</span></el-menu-item
-              >
-            </el-submenu>
-            <el-menu-item
-              v-for="value in Data"
-              :index="value.id"
-              :key="value.id"
-            >
-              <a  @click="ply(value.linkUrl)" >{{
-                value.title
-              }}</a></el-menu-item
-            >
-          </el-menu>
+                <el-submenu
+                  :index="value.id"
+                  v-for="value in Datachild"
+                  :key="value.id"
+                >
+                  <template slot="title">{{ value.classifyName }}</template>
+                  <el-menu-item
+                    :index="value.id"
+                    v-for="value in value.friendshipLink"
+                    :key="value.id"
+                  >
+                    <span @click="ply(value.linkUrl)">{{
+                      value.title
+                    }}</span></el-menu-item
+                  >
+                </el-submenu>
+                <el-menu-item
+                  v-for="value in Data"
+                  :index="value.id"
+                  :key="value.id"
+                >
+                  <a @click="ply(value.linkUrl)">{{
+                    value.title
+                  }}</a></el-menu-item
+                >
+              </el-menu>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
         <div class="back" v-show="a" @click="changefriendlink()">
           <p>点击我更改友情链接</p>
         </div>
@@ -240,7 +263,9 @@
             </template>
           </el-table-column>
           <el-table-column label="标题" width="120" align="center">
-            <template slot-scope="scope">{{ scope.row.title }}</template>
+            <template slot-scope="scope">
+              <span :title="scope.row.title">{{ scope.row.title }}</span>
+            </template>
           </el-table-column>
           <el-table-column label="排序值" width="120" align="center">
             <template slot-scope="scope"
@@ -325,16 +350,20 @@
             autocomplete="off"
           ></el-input>
         </el-form-item>
-        <el-form-item
-          prop="description"
+        <el-form-item 
+         prop="description"
           label="内容"
           :label-width="formLabelWidth"
+          type="textarea"
         >
-          <el-input
-            v-model="homeForm.editcarousel.description"
-            autocomplete="off"
-          ></el-input>
-        </el-form-item>
+            <!-- 富文本编辑器 -->
+            <quill-editor
+              ref="text"
+               v-model="homeForm.editcarousel.description"
+              class="myQuillEditor"
+              :options="editorOption"
+            />
+          </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogeditcarousel = false">取 消</el-button>
@@ -343,21 +372,33 @@
     </el-dialog>
     <el-dialog title="添加项目" :visible.sync="dialogcarousel" width="60%">
       <el-form :model="homeForm.addcarousel" :rules="rules" ref="addcarousel">
-        <el-form-item label="文件选择" :label-width="formLabelWidth">
+        <el-form-item label="文件选择" :label-width="formLabelWidth" prop="url">
+          <!-- action：必选参数，，上传的地址 -->
+          <!-- data：上传时附带的额外参数
+          drag:是否启动拖拽上传
+          on-success:文件上传成功的钩子
+          before-upload：上传文件之前的钩子，参数为上传的文件，若返回false或者返回promise且被reject，则停止上传 
+          
+          
+          -->
           <el-upload
             class="avatar-uploader"
             :action="joggle"
-            v-bind:data="{ FoldPath: '上传目录', SecretKey: '安全验证' }"
+            :data="{ FoldPath: '上传目录', SecretKey: '安全验证' }"
             :show-file-list="false"
             :on-success="handlecarousel"
+            :on-error="error"
+            :on-progress="uploading"
             :before-upload="beforeAvatarUpload"
+            :drag="true"
           >
+          <!-- 如果文件上传成功，则显示视频封面，失败则显示出错 -->
             <img
               v-if="imageshow"
               :src="homeForm.addcarousel.url"
               class="avatar"
             />
-
+            <!-- 视频组件 -->
             <video
               class="avatar"
               controls="controls"
@@ -365,6 +406,7 @@
               :src="homeForm.addcarousel.url"
             ></video>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            <img src="" alt="">
           </el-upload>
         </el-form-item>
 
@@ -385,6 +427,7 @@
           :label-width="formLabelWidth"
         >
           <el-input
+            type="textarea"
             v-model="homeForm.addcarousel.description"
             autocomplete="off"
           ></el-input>
@@ -392,7 +435,9 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogcarousel = false">取 消</el-button>
-        <el-button type="primary" @click="Carouseltrue()">确 定</el-button>
+        <el-button type="primary" @click="Carouseltrue('addcarousel')"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
     <el-dialog title="更改标题" :visible.sync="dialogtitleone" width="60%">
@@ -830,7 +875,7 @@
           v-if="homeForm.links4.linkType == 1"
         >
           <el-input
-            v-model="homeForm.links1.linkUrl"
+            v-model="homeForm.links4.linkUrl"
             placeholder="请输入链接"
           ></el-input>
         </el-form-item>
@@ -973,7 +1018,11 @@
       </div>
     </el-dialog>
     <el-dialog title="添加种类" :visible.sync="dialogaddclassify" width="60%">
-      <el-form :model="homeFormlink.addclassify" :rules="rules" ref="addclassify">
+      <el-form
+        :model="homeFormlink.addclassify"
+        :rules="rules"
+        ref="addclassify"
+      >
         <el-form-item
           prop="classifyName"
           label="分类"
@@ -1116,10 +1165,17 @@
                   inactive-value="1"
                 >
                 </el-switch>
-                  <el-button type="danger" size="mini" class="move"  @click="linkDelete(scope.$index, scope.row)"  >删除</el-button>
+                <el-button
+                  type="danger"
+                  size="mini"
+                  class="move"
+                  @click="linkDelete(scope.$index, scope.row)"
+                  >删除</el-button
+                >
               </template>
-            </el-table-column> </el-table
-        ></el-tab-pane>
+            </el-table-column>
+          </el-table></el-tab-pane
+        >
         <el-tab-pane label="分类管理" name="second">
           <el-table
             ref="multipleTable"
@@ -1127,7 +1183,6 @@
             tooltip-effect="dark"
             style="width: 100%"
             @selection-change="handleSelectionChange"
-          
           >
             <el-table-column label="编号" width="60" align="center">
               <template slot-scope="scope">{{ scope.$index + 1 }}</template>
@@ -1137,10 +1192,20 @@
                 {{ scope.row.classifyName }}
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="620" align="center" >
-              <template slot-scope="scope" >
-                <span class="classEdit"  @click="classEdit(scope.$index, scope.row)" style="color:skyblue" >修改</span>
-                <span  class="classDelete"   @click="classDelete(scope.$index, scope.row)" style="color:red">删除</span>
+            <el-table-column label="操作" width="620" align="center">
+              <template slot-scope="scope">
+                <span
+                  class="classEdit"
+                  @click="classEdit(scope.$index, scope.row)"
+                  style="color: skyblue"
+                  >修改</span
+                >
+                <span
+                  class="classDelete"
+                  @click="classDelete(scope.$index, scope.row)"
+                  style="color: red"
+                  >删除</span
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -1158,6 +1223,7 @@
 </template>
 
 <script>
+import { quillEditor } from "vue-quill-editor";
 import { joggle } from "@/apis/request.js";
 import { getHomebanner } from "@/apis/request.js";
 import { getHomecolumn } from "@/apis/request.js";
@@ -1177,8 +1243,6 @@ import { deleteHomelink } from "@/apis/request.js";
 import { editHomelinks } from "@/apis/request.js";
 import { getHomelinks } from "@/apis/request.js";
 import { getHomelink } from "@/apis/request.js";
-// import { addHomeclassify } from "@/apis/request.js";
-// import { addHomefriendlink } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
 import { modifyHomefriendlink } from "@/apis/request.js";
 import { modifyHomeclassify } from "@/apis/request.js";
@@ -1186,9 +1250,12 @@ import { Homecarousesort } from "@/apis/request.js";
 import { addHomepage } from "@/apis/request.js";
 import { deleteHomecarouse } from "@/apis/request.js";
 export default {
+  components: {
+    quillEditor,
+  },
   data() {
     return {
-        Datachild: [],
+      Datachild: [],
       Data: [],
       joggle,
       editindex: 0,
@@ -1291,7 +1358,7 @@ export default {
         addlink: {
           title: "",
           classifyId: 0,
-          options:[],
+          options: [],
           linkUrl: "",
         },
         addcarousel: {
@@ -1312,17 +1379,17 @@ export default {
       frinedlinktableDataclone: [],
       linkcolumn: 0,
       linkcolumntwo: 0,
-      homeFormlink:{
-        frinedlinkmange:[],
-        frinedlinktableData:[],
-        editclassify:{},
-        addclassify: {classifyName:''},
-        addlink:{
-           title: "",
+      homeFormlink: {
+        frinedlinkmange: [],
+        frinedlinktableData: [],
+        editclassify: {},
+        addclassify: { classifyName: "" },
+        addlink: {
+          title: "",
           classifyId: 0,
-          isShow:'0',
+          isShow: "0",
           linkUrl: "",
-        }
+        },
       },
       homeFormfirst: {
         bannerurl: "",
@@ -1523,6 +1590,9 @@ export default {
       },
       rules: {
         title: [{ required: true, message: "请输入标题名称", trigger: "blur" }],
+        url: [
+          { required: true, message: "文件未上传或上传有误", trigger: "blur" },
+        ],
         englishTitle: [
           { required: true, message: "请输入英文标题", trigger: "blur" },
         ],
@@ -1545,8 +1615,8 @@ export default {
         addclassify: [
           { required: true, message: "请输入内容", trigger: "blur" },
         ],
-        classifyName:[
- { required: true, message: "请输入内容", trigger: "blur" },
+        classifyName: [
+          { required: true, message: "请输入内容", trigger: "blur" },
         ],
         editclassify: [
           { required: true, message: "请输入内容", trigger: "blur" },
@@ -1566,11 +1636,11 @@ export default {
     //  console.log(that.homeForm)
   },
   methods: {
-    ply(a){
-      location.href=a
+    ply(a) {
+      location.href = a;
     },
-    linkDelete(index){
-    this.homeFormlink.frinedlinktableData.splice(index,1)
+    linkDelete(index) {
+      this.homeFormlink.frinedlinktableData.splice(index, 1);
     },
     moudlelink(index) {
       if (index == 0) {
@@ -1626,7 +1696,6 @@ export default {
       }
     },
     cancelmoudlelinktwo(index) {
-   
       if (index == 0) {
         this.dialoglink3 = false;
         this.homeForm.links3 = JSON.parse(JSON.stringify(this.links3clone));
@@ -1958,18 +2027,6 @@ export default {
       editHomelinks(linkArr).then((res) => {
         console.log(res, "m");
       });
-      // modifyHomefriendlink(this.homeFormlink.frinedlinktableData).then((res) => {
-      //   console.log(res);
-      //   // deleteHomelink().then(res=>{
-      //   //   console.log(res,666)
-      //   // })
-      // });
-      // modifyHomeclassify(this.homeFormlink.frinedlinkmange).then((res) => {
-      //   // deleteHomeclassify(classify).then(res=>{
-      //   //   console.log(res)
-      //   // })
-      //   console.log(res)
-      // });
       addHomepage({
         bgImgId: this.addhomeForm.bgImgId,
         carouselIds: this.addhomeForm.carouselIds,
@@ -1979,12 +2036,12 @@ export default {
       }).then((res) => {
         console.log(res, "ply3");
         this.initRequest();
-             this.$message({
-                showClose: true,
-                message: "保存成功",
-                type: "success",
-                duration: 1000,
-              });
+        this.$message({
+          showClose: true,
+          message: "保存成功",
+          type: "success",
+          duration: 1000,
+        });
       });
     },
     changecarousel() {
@@ -2017,7 +2074,6 @@ export default {
       }
     },
     changelinktwo(index) {
-      
       if (index == 0) {
         this.dialoglink3 = true;
       }
@@ -2030,7 +2086,6 @@ export default {
     },
     changefriendlink() {
       this.dialogfriendlink = true;
-
     },
     handlecolumnChangeone(value) {
       let index = value.length - 1;
@@ -2054,6 +2109,7 @@ export default {
         this.homeForm.bgImgId = res.id;
       });
     },
+    //文件上传成功
     handlecarousel(data) {
       this.homeForm.addcarousel.url = data.data.fileUrl;
       console.log(this.homeForm.addcarousel.url, data, 0);
@@ -2062,21 +2118,29 @@ export default {
       this.homeForm.editcarousel.url = data.data.fileUrl;
       console.log(data);
     },
-    Carouseltrue() {
-      if (this.homeForm.tableData.length == 5)
-        this.$message({
-          showClose: true,
-          message: "警告！最多加五个轮播图",
-          type: "warning",
-        });
-      else {
-        addHomecarouse(this.homeForm.addcarousel).then((res) => {
-          this.homeForm.tableData.unshift(res);
-          // this.addhomeForm.carouselIds.unshift(res.id);
-          // console.log(res, 66);
-        });
-      }
-      this.dialogcarousel = false;
+    Carouseltrue(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          if (this.homeForm.tableData.length == 5)
+            this.$message({
+              showClose: true,
+              message: "警告！最多加五个轮播图",
+              type: "warning",
+            });
+          else {
+            addHomecarouse(this.homeForm.addcarousel).then((res) => {
+              this.homeForm.tableData.unshift(res);
+              // this.addhomeForm.carouselIds.unshift(res.id);
+              // console.log(res, 66);
+              this.dialogcarousel = false;
+            });
+          }
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+
       this.carouseemptyimg = false;
     },
     beforebannerAvatarUpload(file) {
@@ -2090,12 +2154,12 @@ export default {
       }
       return isJPG && isLt10M;
     },
+    // 文件上传之前的钩子，限制文件类型与大小
     beforeAvatarUpload(file) {
       console.log(file, 66);
-      const isJPG =
-        file.type.indexOf("image") > -1 || file.type.indexOf("video") > -1;
+      const isJPG = file.type.indexOf("image") > -1 || file.type.indexOf("video") > -1;
       // console.log(isJPG)
-      const isLt100M = file.size / 1024 / 1024 < 100;
+      const isLt100M = file.size / 1024 / 1024 < 50;
       if (file.type.indexOf("image") > -1) {
         this.imageshow = true;
         this.videoshow = false;
@@ -2109,7 +2173,7 @@ export default {
       if (!isJPG) {
         this.$message.error("文件格式错误!");
       } else if (!isLt100M) {
-        this.$message.error("文件大小不能超过100MB!");
+        this.$message.error("文件大小不能超过50MB!");
       }
       return isJPG && isLt100M;
     },
@@ -2148,12 +2212,12 @@ export default {
     linkmange() {
       if (this.activeName == "first") {
         this.dialogaddlink = true;
-           this.homeFormlink.addlink={
-           title: "",
+        this.homeFormlink.addlink = {
+          title: "",
           classifyId: 0,
-          isShow:'0',
+          isShow: "0",
           linkUrl: "",
-        }
+        };
         this.optionslink = JSON.parse(
           JSON.stringify(this.homeFormlink.frinedlinkmange)
         );
@@ -2163,7 +2227,7 @@ export default {
         });
       }
       if (this.activeName == "second") {
-          this.homeFormlink.addclassify.classifyName='';
+        this.homeFormlink.addclassify.classifyName = "";
         this.dialogaddclassify = true;
       }
     },
@@ -2180,12 +2244,13 @@ export default {
             // addHomeclassify({
             //   classifyName: that.homeFormlink.addclassify,
             // }).then((res) => {
-             
+
             // });
-         
-      
-             this.homeFormlink.frinedlinkmange.push(JSON.parse(JSON.stringify(this.homeFormlink.addclassify) ) );
-             console.log(   this.homeFormlink.frinedlinkmange,666)
+
+            this.homeFormlink.frinedlinkmange.push(
+              JSON.parse(JSON.stringify(this.homeFormlink.addclassify))
+            );
+            console.log(this.homeFormlink.frinedlinkmange, 666);
           }
           if (formName == "editclassify") {
             this.rowedit.classifyName = this.homeFormlink.editclassify;
@@ -2202,8 +2267,10 @@ export default {
             //   });
             //   this.homeFormlink.frinedlinktableData.push(res.data);
             // });
-               this.homeFormlink.addlink.options=  this.optionslink;
-             this.homeFormlink.frinedlinktableData.push(JSON.parse(JSON.stringify(this.homeFormlink.addlink)));
+            this.homeFormlink.addlink.options = this.optionslink;
+            this.homeFormlink.frinedlinktableData.push(
+              JSON.parse(JSON.stringify(this.homeFormlink.addlink))
+            );
           }
 
           that.dialogaddclassify = false;
@@ -2216,46 +2283,36 @@ export default {
       });
     },
     linkclassify() {
-         let linkids= this.homeFormlink.frinedlinktableData.map(res=>{
-          return res.id
-      })
-       let classify= this.homeFormlink.frinedlinkmange.map(res=>{
-         return res.id
-       })
+      let linkids = this.homeFormlink.frinedlinktableData.map((res) => {
+        return res.id;
+      });
+      let classify = this.homeFormlink.frinedlinkmange.map((res) => {
+        return res.id;
+      });
       if (this.activeName == "second") {
         this.frinedlinkmangeclone = JSON.parse(
           JSON.stringify(this.homeFormlink.frinedlinkmange)
         );
 
-            modifyHomeclassify(this.homeFormlink.frinedlinkmange).then((res) => {
-        deleteHomeclassify(classify).then(res=>{
-          console.log(res);
-                getHomelink().then((res) => {
-      console.log(res, 666);
-      this.Datachild = res[0];
-      // console.log(this.Datachild, 8);
-      this.Data = res[1];
-    });
-                 getHomeclassify().then((res) => {
-          // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
-          this.homeFormlink.frinedlinkmange = JSON.parse(JSON.stringify(res));
-          console.log(res, "ply");
-          this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
-          getHomefriendlink().then((res) => {
-            console.log(res, "ply1");
-                   this.homeFormlink.frinedlinktableData = res.map((res) => {
-              res.options = JSON.parse(
-                JSON.stringify(this.homeFormlink.frinedlinkmange)
-              );
-              res.options.push({
-                id: 0,
-                classifyName: "无",
-              });
-              return res;
+        modifyHomeclassify(this.homeFormlink.frinedlinkmange).then((res) => {
+          deleteHomeclassify(classify).then((res) => {
+            console.log(res);
+            getHomelink().then((res) => {
+              console.log(res, 666);
+              this.Datachild = res[0];
+              // console.log(this.Datachild, 8);
+              this.Data = res[1];
             });
-            this.frinedlinktableDataclone = JSON.parse(
-              JSON.stringify(
-                res.map((res) => {
+            getHomeclassify().then((res) => {
+              // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
+              this.homeFormlink.frinedlinkmange = JSON.parse(
+                JSON.stringify(res)
+              );
+              console.log(res, "ply");
+              this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
+              getHomefriendlink().then((res) => {
+                console.log(res, "ply1");
+                this.homeFormlink.frinedlinktableData = res.map((res) => {
                   res.options = JSON.parse(
                     JSON.stringify(this.homeFormlink.frinedlinkmange)
                   );
@@ -2264,65 +2321,80 @@ export default {
                     classifyName: "无",
                   });
                   return res;
-                })
-              )
-            );
+                });
+                this.frinedlinktableDataclone = JSON.parse(
+                  JSON.stringify(
+                    res.map((res) => {
+                      res.options = JSON.parse(
+                        JSON.stringify(this.homeFormlink.frinedlinkmange)
+                      );
+                      res.options.push({
+                        id: 0,
+                        classifyName: "无",
+                      });
+                      return res;
+                    })
+                  )
+                );
+              });
+            });
           });
+          console.log(res);
         });
-        })
-        console.log(res)
-      });
       }
       if (this.activeName == "first") {
         this.frinedlinktableDataclone = JSON.parse(
           JSON.stringify(this.homeFormlink.frinedlinktableData)
         );
-           modifyHomefriendlink(this.homeFormlink.frinedlinktableData).then((res) => {
-        console.log(res);
-        deleteHomelink(linkids).then(res=>{
-          console.log(res,666);
-                getHomelink().then((res) => {
-      console.log(res, 666);
-      this.Datachild = res[0];
-      // console.log(this.Datachild, 8);
-      this.Data = res[1];
-    });
-                     getHomeclassify().then((res) => {
-          // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
-          this.homeFormlink.frinedlinkmange = JSON.parse(JSON.stringify(res));
-          console.log(res, "ply");
-          this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
-          getHomefriendlink().then((res) => {
-            console.log(res, "ply1");
-                   this.homeFormlink.frinedlinktableData = res.map((res) => {
-              res.options = JSON.parse(
-                JSON.stringify(this.homeFormlink.frinedlinkmange)
-              );
-              res.options.push({
-                id: 0,
-                classifyName: "无",
+        modifyHomefriendlink(this.homeFormlink.frinedlinktableData).then(
+          (res) => {
+            console.log(res);
+            deleteHomelink(linkids).then((res) => {
+              console.log(res, 666);
+              getHomelink().then((res) => {
+                console.log(res, 666);
+                this.Datachild = res[0];
+                // console.log(this.Datachild, 8);
+                this.Data = res[1];
               });
-              return res;
-            });
-            this.frinedlinktableDataclone = JSON.parse(
-              JSON.stringify(
-                res.map((res) => {
-                  res.options = JSON.parse(
-                    JSON.stringify(this.homeFormlink.frinedlinkmange)
-                  );
-                  res.options.push({
-                    id: 0,
-                    classifyName: "无",
+              getHomeclassify().then((res) => {
+                // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
+                this.homeFormlink.frinedlinkmange = JSON.parse(
+                  JSON.stringify(res)
+                );
+                console.log(res, "ply");
+                this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
+                getHomefriendlink().then((res) => {
+                  console.log(res, "ply1");
+                  this.homeFormlink.frinedlinktableData = res.map((res) => {
+                    res.options = JSON.parse(
+                      JSON.stringify(this.homeFormlink.frinedlinkmange)
+                    );
+                    res.options.push({
+                      id: 0,
+                      classifyName: "无",
+                    });
+                    return res;
                   });
-                  return res;
-                })
-              )
-            );
-          });
-        });
-        })
-    
-      });
+                  this.frinedlinktableDataclone = JSON.parse(
+                    JSON.stringify(
+                      res.map((res) => {
+                        res.options = JSON.parse(
+                          JSON.stringify(this.homeFormlink.frinedlinkmange)
+                        );
+                        res.options.push({
+                          id: 0,
+                          classifyName: "无",
+                        });
+                        return res;
+                      })
+                    )
+                  );
+                });
+              });
+            });
+          }
+        );
       }
       this.dialogfriendlink = false;
     },
@@ -2341,6 +2413,7 @@ export default {
     },
     initRequest() {
       getHomecolumn().then((res) => {
+        console.log("数据 =>",res)
         this.homeForm.bgImgId = res[0].bgImgId;
         this.homeForm.columnIds = res[0].columnIds.split(",");
         this.homeForm.headline1Id = res[0].headline1Id;
@@ -2478,7 +2551,7 @@ export default {
           this.links4clone = JSON.parse(JSON.stringify(res[4]));
           this.homeForm.links5 = res[5];
           this.links5clone = JSON.parse(JSON.stringify(res[5]));
-          this.homeFormfirst.links = res.splice(0,3);
+          this.homeFormfirst.links = res.splice(0, 3);
           this.homeFormfirst.linksone = res;
 
           console.log(res, 0);
@@ -2509,47 +2582,46 @@ export default {
             console.log(res);
           });
         }
-
       });
-              getHomeclassify().then((res) => {
-          // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
-          this.homeFormlink.frinedlinkmange = JSON.parse(JSON.stringify(res));
-          console.log(res, "ply");
-          this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
-          getHomefriendlink().then((res) => {
-            console.log(res, "ply1");
-                   this.homeFormlink.frinedlinktableData = res.map((res) => {
-              res.options = JSON.parse(
-                JSON.stringify(this.homeFormlink.frinedlinkmange)
-              );
-              res.options.push({
-                id: 0,
-                classifyName: "无",
-              });
-              return res;
-            });
-            this.frinedlinktableDataclone = JSON.parse(
-              JSON.stringify(
-                res.map((res) => {
-                  res.options = JSON.parse(
-                    JSON.stringify(this.homeFormlink.frinedlinkmange)
-                  );
-                  res.options.push({
-                    id: 0,
-                    classifyName: "无",
-                  });
-                  return res;
-                })
-              )
+      getHomeclassify().then((res) => {
+        // this.homeForm.frinedlinkmange = JSON.parse(JSON.stringify(res));
+        this.homeFormlink.frinedlinkmange = JSON.parse(JSON.stringify(res));
+        console.log(res, "ply");
+        this.frinedlinkmangeclone = JSON.parse(JSON.stringify(res));
+        getHomefriendlink().then((res) => {
+          console.log(res, "ply1");
+          this.homeFormlink.frinedlinktableData = res.map((res) => {
+            res.options = JSON.parse(
+              JSON.stringify(this.homeFormlink.frinedlinkmange)
             );
+            res.options.push({
+              id: 0,
+              classifyName: "无",
+            });
+            return res;
           });
+          this.frinedlinktableDataclone = JSON.parse(
+            JSON.stringify(
+              res.map((res) => {
+                res.options = JSON.parse(
+                  JSON.stringify(this.homeFormlink.frinedlinkmange)
+                );
+                res.options.push({
+                  id: 0,
+                  classifyName: "无",
+                });
+                return res;
+              })
+            )
+          );
         });
-          getHomelink().then((res) => {
-      console.log(res, 666);
-      this.Datachild = res[0];
-      // console.log(this.Datachild, 8);
-      this.Data = res[1];
-    });
+      });
+      getHomelink().then((res) => {
+        console.log(res, 666);
+        this.Datachild = res[0];
+        // console.log(this.Datachild, 8);
+        this.Data = res[1];
+      });
     },
   },
 
@@ -2607,11 +2679,11 @@ export default {
   .title {
     margin-top: 18px;
     font-size: 20px;
-    img{
-   vertical-align: middle;
-   display: inline-block;
-   margin-bottom: 3px;
-   margin-right: 10px;
+    img {
+      vertical-align: middle;
+      display: inline-block;
+      margin-bottom: 3px;
+      margin-right: 10px;
     }
   }
   i {
@@ -2638,7 +2710,6 @@ export default {
         width: 400px;
         text-align: left;
         .description {
-    
           margin-top: 10px;
           font-size: 16px;
           display: -webkit-box;
@@ -2665,7 +2736,6 @@ export default {
       }
       h3 {
         width: 190px;
-  
       }
     }
     .category > div {
@@ -2730,7 +2800,6 @@ export default {
           text-align: left;
           width: 400px;
           margin-top: 10px;
-          // padding-left: 10px;
           display: -webkit-box;
           overflow: hidden;
           white-space: normal !important;
@@ -2741,11 +2810,11 @@ export default {
           color: #333;
           font-size: 16px;
           line-height: 30px;
-          img{
-           display: none;
+          img {
+            display: none;
           }
-          video{
-             display: none;
+          video {
+            display: none;
           }
         }
         .timebottom {
@@ -2769,6 +2838,14 @@ export default {
           font-size: 16px;
           color: #333;
           margin-top: 20px;
+          width: 180px;
+          display: -webkit-box;
+          overflow: hidden;
+          white-space: normal !important;
+          text-overflow: ellipsis;
+          word-wrap: break-word;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
         }
         .time {
           margin-top: 10px;
@@ -2822,7 +2899,7 @@ export default {
   }
   .el-dialog__header .el-dialog__title {
     border-bottom: 1px solid skyblue;
-    color:skyblue;
+    color: skyblue;
     display: block;
     width: 80%;
     margin: 0 auto;
@@ -2835,12 +2912,13 @@ export default {
     width: 160px;
   }
   .el-form-item {
-    width: 400px;
+    width: 100%;
     margin: 0 auto;
   }
   .dialog-footer {
     display: flex;
     justify-content: center;
+    margin-top: 30px;
   }
 
   .el-table .has-gutter th div {
@@ -2850,32 +2928,32 @@ export default {
     height: 40px;
     line-height: 40px;
   }
-    .el-table td{
+  .el-table td {
     text-align: center;
-   border: none;
+    border: none;
 
-  .cell{
-  padding-top:10px ;
-   height: 80px;
- background:#f3f0f0;
- text-align: center;
- line-height: 60px;
+    .cell {
+      padding-top: 10px;
+      height: 80px;
+      background: #f3f0f0;
+      text-align: center;
+      line-height: 60px;
+    }
+    // .el-table tr:hover{
+    //   background: red  !important;
+    // }
   }
-  // .el-table tr:hover{
-  //   background: red  !important;
-  // }
-  }
-  .el-table--enable-row-transition .el-table__body tr:hover>td{
+  .el-table--enable-row-transition .el-table__body tr:hover > td {
     background: #fff !important;
   }
-    .el-table  tr td:nth-child(1) .cell{
-      background: #fff;
-    }
-    // .el-table .el-table__body td{
-    //   display: inline-block;
-    //   width: 50px;;
-    //   margin-bottom: 10px;
-    // }
+  .el-table tr td:nth-child(1) .cell {
+    background: #fff;
+  }
+  // .el-table .el-table__body td{
+  //   display: inline-block;
+  //   width: 50px;;
+  //   margin-bottom: 10px;
+  // }
   .el-table th > .cell {
     line-height: 40px;
     vertical-align: top;
@@ -2950,14 +3028,14 @@ export default {
   .el-form-item {
     margin-top: 16px;
   }
-  .classEdit{
+  .classEdit {
     cursor: pointer;
     margin-right: 50px;
   }
-  .classDelete{
+  .classDelete {
     cursor: pointer;
   }
-   .link {
+  .link {
     width: 100%;
     height: 150px;
     background: #f3f3f3;
@@ -3019,7 +3097,7 @@ export default {
       }
     }
   }
-  .move{
+  .move {
     width: 54px;
     margin-left: 10px;
   }

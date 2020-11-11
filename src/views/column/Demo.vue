@@ -1,11 +1,8 @@
 <template>
   <div class="column">
     <div class="top">
-      <span class="title"
-        >
-         <img  src="../../assets/images/leftbar_icon_index_blue.png" alt="">
-        栏目管理</span
-      >
+      <span class="title">
+        <img src="../../assets/images/leftbar_icon_index_blue.png" alt="" />栏目管理</span>
       <div>
         <!-- <span @click="returndata()">添加栏目</span> -->
         <el-button size="mini" @click="handleAdd()">添加栏目</el-button>
@@ -20,6 +17,13 @@
         <span class="show">显示</span>
         <span class="action">操作</span>
       </div>
+      <!-- element ui树形控件 -->
+     <!-- data:展示数据
+     node-key：每个树节点用来作为唯一标识的属性，整棵树应该是唯一的
+     default-expand-all：是否默认展开所有节点
+     expand-on-click-node：是否在点击节点的时候展开或者收缩节点
+     draggable：是否开启节点拖拽功能
+     allow-drag：判断节点能否被拓展 -->
       <el-tree
         :data="tableData"
         node-key="id"
@@ -36,12 +40,25 @@
         :allow-drag="allowDrag"
       >
         <span class="custom-tree-node" slot-scope="{ node, data }">
-          
           <span class="name">
-            <img v-if="data.columnName=='首页'" src="../../assets/images/leftbar_icon_home_blue.png" alt=""> 
-                        <img v-if="data.level==1&&data.columnName!='首页'" src="../../assets/images/icon_list.png" alt=""> 
-                     <img class="pho" v-if="data.level!=1&&data.children.length==0" src="../../assets/images/icon_submenu_white.png" alt="">      
-            {{ node.label }}</span>
+            <img
+              v-if="data.columnName == '首页'"
+              src="../../assets/images/leftbar_icon_home_blue.png"
+              alt=""
+            />
+            <img
+              v-if="data.level == 1 && data.columnName != '首页'"
+              src="../../assets/images/icon_list.png"
+              alt=""
+            />
+            <img
+              class="pho"
+              v-if="data.level != 1 && data.children.length == 0"
+              src="../../assets/images/icon_submenu_white.png"
+              alt=""
+            />
+            {{ node.label }}</span
+          >
           <span class="fixed">
             <img
               v-if="data.isShow == 0"
@@ -59,9 +76,12 @@
             />
           </span>
           <span class="handle">
+            <!-- 修改栏目 -->
             <i class="el-icon-edit-outline" @click="handleEdit(data)"></i>
+            <!-- 新增栏目 -->
             <i class="el-icon-plus" @click="handleAdd(data)"></i>
-            <i class="el-icon-delete"  @click="handleDelete(data)"></i>
+            <!-- 删除栏目 -->
+            <i class="el-icon-delete" @click="handleDelete(data)"></i>
           </span>
         </span>
       </el-tree>
@@ -81,11 +101,8 @@
         >
           <el-input v-model="addform.columnName" autocomplete="off"></el-input>
         </el-form-item>
-           <el-form-item
-          label="栏目英文"
-          :label-width="formLabelWidth"
-        >
-          <el-input  autocomplete="off" v-model="addform.english"></el-input>
+        <el-form-item label="栏目英文" :label-width="formLabelWidth">
+          <el-input autocomplete="off" v-model="addform.english"></el-input>
         </el-form-item>
         <el-form-item
           label="栏目banner"
@@ -112,11 +129,11 @@
           <el-radio-group v-model="addform.showType">
             <el-radio :label="0">
               <img src="../../assets/images/btn_pic_1.png" alt="" />
-              <span>图片列表</span>
+              <span class="showtitle">图片列表</span>
             </el-radio>
             <el-radio :label="1">
               <img src="../../assets/images/btn_pic_2.png" alt="" />
-              <span>新闻列表</span>
+              <span class="showtitle">新闻列表</span>
             </el-radio>
           </el-radio-group>
         </el-form-item>
@@ -124,15 +141,15 @@
           <el-radio-group v-model="addform.styleType">
             <el-radio :label="0">
               <img src="../../assets/images/12.png" alt="" />
-              <span>视频详情</span>
+              <span class="showtitle">视频详情</span>
             </el-radio>
             <el-radio :label="1">
               <img src="../../assets/images/btn_pic_4.png" alt="" />
-              <span>富文本</span>
+              <span class="showtitle">富文本</span>
             </el-radio>
             <el-radio :label="2">
               <img src="../../assets/images/icon_link.png" alt="" />
-              <span>链接</span>
+              <span class="showtitle">链接</span>
             </el-radio>
           </el-radio-group>
         </el-form-item>
@@ -141,6 +158,7 @@
           :label-width="formLabelWidth"
           prop="parentId"
         >
+        <!-- cascader级联选择器 -->
           <el-cascader
             :change-on-select="true"
             :props="defaultParams"
@@ -167,15 +185,17 @@
       :visible.sync="dialogeditFormVisible"
       width="50%"
     >
+    <!-- lable：指定节点标签为节点对象的某个属性 -->
       <el-form :model="editform">
-        <el-form-item label="栏目名称" :label-width="formLabelWidth" v-if="this.editid!=66">
+        <el-form-item
+          label="栏目名称"
+          :label-width="formLabelWidth"
+          v-if="this.editid != 66"
+        >
           <el-input v-model="editform.columnName" autocomplete="off"></el-input>
         </el-form-item>
-            <el-form-item
-          label="栏目英文"
-          :label-width="formLabelWidth"
-        >
-          <el-input  v-model="editform.english" autocomplete="off"></el-input>
+        <el-form-item label="栏目英文" :label-width="formLabelWidth">
+          <el-input v-model="editform.english" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="栏目banner" :label-width="formLabelWidth">
           <el-upload
@@ -198,11 +218,11 @@
           <el-radio-group v-model="editform.showType">
             <el-radio :label="0">
               <img src="../../assets/images/btn_pic_1.png" alt="" />
-              <span>图片列表</span>
+              <span class="showtitle">图片列表</span>
             </el-radio>
             <el-radio :label="1">
               <img src="../../assets/images/btn_pic_2.png" alt="" />
-              <span>新闻列表</span>
+              <span class="showtitle">新闻列表</span>
             </el-radio>
           </el-radio-group>
         </el-form-item>
@@ -210,15 +230,15 @@
           <el-radio-group v-model="editform.styleType">
             <el-radio :label="0">
               <img src="../../assets/images/12.png" alt="" />
-              <span>视频详情</span>
+              <span class="showtitle">视频详情</span>
             </el-radio>
             <el-radio :label="1">
               <img src="../../assets/images/btn_pic_4.png" alt="" />
-              <span>富文本</span>
+              <span class="showtitle">富文本</span>
             </el-radio>
             <el-radio :label="2">
               <img src="../../assets/images/icon_link.png" alt="" />
-              <span>链接</span>
+              <span class="showtitle">链接</span>
             </el-radio>
           </el-radio-group>
         </el-form-item>
@@ -255,8 +275,6 @@ import { deleteColumn } from "@/apis/request.js";
 import { returnColumn } from "@/apis/request.js";
 import { joggle } from "@/apis/request.js";
 import { sortColumn } from "@/apis/request.js";
-// import Sortable from "sortablejs";
-// import vuedraggable from 'vuedraggable';
 
 export default {
   data() {
@@ -396,7 +414,7 @@ export default {
       value: [],
       addform: {
         columnName: "",
-        english:null,
+        english: null,
         bgImgUrl: null,
         showType: 0,
         styleType: 0,
@@ -405,13 +423,14 @@ export default {
       },
       editform: {
         columnName: "",
-        english:'',
+        english: "",
         bgImgUrl: null,
         showType: 0,
         styleType: 0,
         openMethod: 0,
         parentId: [0],
       },
+      //编辑与新增框是否可见
       dialogaddFormVisible: false,
       dialogeditFormVisible: false,
       formLabelWidth: "110px",
@@ -427,15 +446,14 @@ export default {
     };
   },
   methods: {
-     allowDrag(res) {
-       console.log(res)
-      if(res.data.columnName=='首页') {
-         return false
+    allowDrag(res) {
+      console.log(res);
+      if (res.data.columnName == "首页") {
+        return false;
+      } else {
+        return true;
       }
-      else{
-        return true
-      }
-      },
+    },
     handleAvatarSuccess(res) {
       this.editform.bgImgUrl = res.data.fileUrl;
       console.log(this.editform.bgImgUrl);
@@ -445,31 +463,17 @@ export default {
       this.addform.bgImgUrl = res.data.fileUrl;
       console.log(res);
     },
-
-    // beforeAvatarUpload(file) {
-    //   const isJPG = file.type === "image/jpeg";
-    //   const isLt2M = file.size / 1024 / 1024 < 2;
-    //   console.log(file,"ply")
-
-    //   if (!isJPG) {
-    //     this.$message.error("上传头像图片只能是 JPG 格式!");
-    //   }
-    //   if (!isLt2M) {
-    //     this.$message.error("上传头像图片大小不能超过 2MB!");
-    //   }
-    //   return isJPG && isLt2M;
-    // },
     handleChange(value) {
       console.log(value, 0);
     },
+    //通过isshow控制栏目的显示与隐藏
     handlehidden(row) {
       if (row.isShow == 0) {
-        console.log(row.isShow);
         editColumn({
           id: row.id,
           isShow: 1,
         }).then((res) => {
-          console.log(res,666);
+          console.log(res, 666);
           allColumn().then((res) => {
             console.log(res);
             this.tableData = res;
@@ -479,7 +483,6 @@ export default {
         editColumn({
           id: row.id,
           isShow: 0,
-    
         }).then((res) => {
           console.log(res);
           allColumn().then((res) => {
@@ -493,43 +496,55 @@ export default {
     handleEdit(row) {
       this.dialogeditFormVisible = true;
       this.editid = row.id;
-      console.log(row,0)
+      console.log(row, 0);
       returnColumn(row.id).then((res) => {
-        var a=[]
-        a.push(res[0].parentId)
+        var a = [];
+        a.push(res[0].parentId);
         this.editform.columnName = res[0].columnName;
         this.editform.english = res[0].english;
         this.editform.bgImgUrl = res[0].bgImgUrl;
         this.editform.showType = res[0].showType;
         this.editform.styleType = res[0].styleType;
-        this.editform.parentId =a;
+        this.editform.parentId = a;
         this.editform.openMethod = res[0].openMethod;
-        console.log(res,6);
+        console.log(res, 6);
       });
       console.log(row);
     },
     handleAdd(row) {
-      console.log(row);
+      console.log(row, 66);
       this.dialogaddFormVisible = true;
-      this.addform = {
-        columnName: null,
-        english:null,
-        bgImgUrl: null,
-        showType: 0,
-        styleType: 0,
-        openMethod: 0,
-        parentId: [],
-      };
+      if (row) {
+        this.addform = {
+          columnName: null,
+          english: null,
+          bgImgUrl: null,
+          showType: 0,
+          styleType: 0,
+          openMethod: 0,
+          parentId: row.id,
+        };
+      } else {
+        this.addform = {
+          columnName: null,
+          english: null,
+          bgImgUrl: null,
+          showType: 0,
+          styleType: 0,
+          openMethod: 0,
+          parentId: [],
+        };
+      }
     },
     handleDelete(row) {
       console.log(row);
-      if(row.columnName=="首页"){
+      if (row.columnName == "首页") {
         this.$message({
-          message: '警告!首页不可删掉',
-          type: 'warning',
+          message: "警告!首页不可删掉",
+          type: "warning",
           duration: 1000,
         });
-        return false
+        return false;
       }
       this.deleteid = row.id;
       this.open();
@@ -538,8 +553,12 @@ export default {
       this.$refs["addform"].validate((valid) => {
         if (valid) {
           this.addform.id = this.editid;
-          var index = this.addform.parentId.length - 1;
-          this.addform.parentId = this.addform.parentId[index];
+
+          if (typeof this.addform.parentId == "object") {
+            var index = this.addform.parentId.length - 1;
+            this.addform.parentId = this.addform.parentId[index];
+          }
+
           addColumn(this.addform).then((res) => {
             if (res == 0) {
               this.$message.error("请完善栏目必填信息");
@@ -549,7 +568,7 @@ export default {
             }
             console.log(res);
           });
-          console.log(this.addform,666)
+          console.log(this.addform, 666);
         } else {
           return false;
         }
@@ -618,11 +637,6 @@ export default {
       }, 1000);
     },
     append(data) {
-      // const newChild = { id: id++, label: 'testtest', children: [] };
-      // if (!data.children) {
-      //   this.$set(data, 'children', []);
-      // }
-      // data.children.push(newChild);
       console.log(data, "ply");
     },
 
@@ -647,21 +661,22 @@ export default {
     },
     common() {
       allColumn().then((res) => {
-        console.log(res, 666);
+        console.log(res, "呸");
+        //JSON.stringify() 方法用于将 JavaScript 值转换为 JSON 字符串。
+        //JSON.parse() 方法用于将一个 JSON 字符串转换为对象。
         this.tableData = JSON.parse(JSON.stringify(res));
         this.options = this.getTreeData(JSON.parse(JSON.stringify(res)));
         this.options.push({
           id: 0,
           columnName: "无",
-          children:[]
+          children: [],
         });
-        console.log(this.options,1);
+        console.log(this.options, 1);
       });
     },
- 
+
     handleDragEnd(draggingNode, dropNode, dropType) {
       console.log("tree drag end: ", dropNode && dropNode.label, dropType, 6);
-
     },
     TreeData(data) {
       // 循环遍历json数据
@@ -682,21 +697,19 @@ export default {
       return data;
     },
     handleDrop(draggingNode, dropNode, dropType) {
-      if(dropType=="after"){
-        draggingNode.data.level=dropNode.data.level
+      if (dropType == "after") {
+        draggingNode.data.level = dropNode.data.level;
       }
-       if(dropType=="before"){
-        draggingNode.data.level=dropNode.data.level
+      if (dropType == "before") {
+        draggingNode.data.level = dropNode.data.level;
       }
-      if(dropType=="inner"){
-         draggingNode.data.level=dropNode.data.level+1;
+      if (dropType == "inner") {
+        draggingNode.data.level = dropNode.data.level + 1;
       }
-      console.log("tree drop: ", draggingNode, dropNode,dropType);
+      console.log("tree drop: ", draggingNode, dropNode, dropType);
 
-      sortColumn(this.tableData).then()
-    
+      sortColumn(this.tableData).then();
     },
-
   },
   mounted() {
     this.common();
@@ -718,10 +731,9 @@ export default {
     }
   }
   .title {
-   
     margin-top: 18px;
     font-size: 20px;
-    img{
+    img {
       margin-right: 10px;
     }
   }
@@ -771,9 +783,7 @@ export default {
     line-height: 40px;
     vertical-align: top;
   }
-  // .el-icon-view{
-  //   color: rgb(209, 202, 202);
-  // }
+
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
@@ -814,11 +824,13 @@ export default {
     position: relative;
     height: 36px;
   }
+
   .fixed {
     position: absolute;
     left: 546px;
   }
   .titlehead {
+    color: white;
     font-size: 18px;
     position: relative;
     width: 100%;
@@ -843,8 +855,11 @@ export default {
     display: flex;
     justify-content: space-between;
   }
-  .pho{
+  .pho {
     margin-left: -13px;
+  }
+  .showtitle {
+    margin-left: 10px;
   }
 }
 </style>

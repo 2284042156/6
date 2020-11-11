@@ -1,15 +1,18 @@
 <template>
   <div class="menu-tree">
     <label v-for="list in dataList" :key="list.id">
+      <!-- 如果栏目深度不等于零，则迭代组件child进行显示，否则只显示一项 -->
       <el-submenu :index="list.id" v-if="list.children.length != 0">
         <template slot="title">
            <img src="../assets/images/icon_submenu_blue.png" v-if="$route.params.id==list.id" alt="">
-           <img src="../assets/images/icon_submenu_black.png" v-else alt="" >  <span :class="{acitive:$route.params.id==list.id}">{{ list.columnName }}</span>
+           <img src="../assets/images/icon_submenu_black.png" v-else alt="" >  
+           <span :class="{acitive:$route.params.id==list.id}">{{ list.columnName }}</span>
         </template>
         <label>
           <Child :dataList="list.children"></Child>
         </label>
       </el-submenu>
+      <!-- 最深的栏目项目 -->
       <el-menu-item v-else :index="list.id" @click="getColumnmessage(list.id)">
        <img src="../assets/images/icon_submenu_blue.png" v-if="$route.params.id==list.id" alt="">
        <img src="../assets/images/icon_submenu_black.png" v-else alt="" ><span slot="title">{{ list.columnName }}</span>
@@ -24,7 +27,7 @@ import { returnColumn } from "@/apis/request.js";
 
 export default {
   name: "Child",
-  props: ["dataList"],
+  props: ["dataList"],//父传子获取
 
   data() {
     return {

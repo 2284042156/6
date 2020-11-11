@@ -7,7 +7,6 @@
         >
         <div>
           <span @click="back()">&lt;&emsp;返回</span>
-             
         </div>
       </div>
       <div class="contentbottom">
@@ -28,9 +27,6 @@
               />
               <i v-else class="el-icon-plus avatar-uploader-icon"></i>
             </el-upload>
-            <!-- <img id="preview" :src="imageUrl" width="250px" height="60px"/>
-          <a href="javascript:;" class="file gradient">
-          <input id="pop_file" type="file" accept=".jpg,.jpeg,.png" v-on:change="uploadFile($event)" name="fileTrans" ref="file" value="" />选择文件</a> -->
           </el-form-item>
           <el-form-item label="文章标题" :label-width="formLabelWidth">
             <el-input v-model="photoForm.title" autocomplete="off"></el-input>
@@ -41,7 +37,7 @@
                 type="date"
                 placeholder="选择日期"
                 v-model="photoForm.createTime"
-                style="width: 100%;"
+                style="width: 100%"
               ></el-date-picker>
             </el-col>
           </el-form-item>
@@ -51,10 +47,8 @@
               autocomplete="off"
             ></el-input>
           </el-form-item>
-          <!-- <quill-editor v-model="form.content" ref="myQuillEditor" style="height: 300px;" :options="editorOption">
-      </quill-editor> -->
-          <!-- <editor-bar v-model="detail" :isClear="isClear" @change="change"></editor-bar>  -->
           <el-form-item label="文章内容" :label-width="formLabelWidth">
+            <!-- 富文本编辑器 -->
             <quill-editor
               ref="text"
               v-model="photoForm.textContent"
@@ -70,14 +64,14 @@
         </el-form>
       </div>
     </div>
-    <div class="photocontent" v-else-if="show== 0">
+    <div class="photocontent" v-else-if="show == 0">
       <div class="top">
         <span class="title"
           ><i class="el-icon-tickets"></i>视频样式内容编辑</span
         >
         <div>
           <span @click="back()">&lt;&emsp;返回</span>
-              <!-- <a href="" >&lt;&emsp;返回1</a>  -->
+          <!-- <a href="" >&lt;&emsp;返回1</a>  -->
         </div>
       </div>
       <div class="contentbottom">
@@ -108,7 +102,7 @@
                 type="date"
                 placeholder="选择日期"
                 v-model="videoForm.createTime"
-                style="width: 100%;"
+                style="width: 100%"
               ></el-date-picker>
             </el-col>
           </el-form-item>
@@ -144,7 +138,7 @@
                 v-if="videoFlag == true"
                 type="circle"
                 v-bind:percentage="videoUploadPercent"
-                style="margin-top:7px;"
+                style="margin-top: 7px"
               ></el-progress>
             </el-upload>
           </el-form-item>
@@ -168,7 +162,6 @@
         <span class="title"><i class="el-icon-tickets"></i>链接内容编辑</span>
         <div>
           <span @click="back()">&lt;&emsp;返回</span>
-        
         </div>
       </div>
       <div class="contentbottom">
@@ -196,7 +189,7 @@
                 type="date"
                 placeholder="选择日期"
                 v-model="linkForm.createTime"
-                style="width: 100%;"
+                style="width: 100%"
               ></el-date-picker>
             </el-col>
           </el-form-item>
@@ -407,8 +400,8 @@ export default {
     handleChange(value) {
       let index = value.length - 1;
       let id = value[index];
-      this.linkForm.linkColumnId= value[index];
-      console.log(id,value,1)
+      this.linkForm.linkColumnId = value[index];
+      console.log(id, value, 1);
       getColumnallarticle(id).then((res) => {
         this.option = res.map((res) => {
           return {
@@ -418,7 +411,6 @@ export default {
         });
         console.log(res, 666);
       });
-   
     },
     common() {
       allColumn().then((res) => {
@@ -501,13 +493,13 @@ export default {
       this.linkForm.bgImgUrl = res.data.fileUrl;
     },
     back() {
-        let a=localStorage.getItem('columnid')
-      this.$router.push("/home/contentmange/"+a);
+      let a = localStorage.getItem("columnid");
+      this.$router.push("/home/contentmange/" + a);
       return false;
     },
     photoEdit() {
-        let a=localStorage.getItem('columnid');
-         let editid=  JSON.parse( localStorage.getItem('row'));
+      let a = localStorage.getItem("columnid");
+      let editid = JSON.parse(localStorage.getItem("row"));
       var form = { ...editid, ...this.photoForm };
       var date = moment(form.createTime).format("YYYY-MM-DD");
       form.createTime = date;
@@ -516,16 +508,16 @@ export default {
       console.log(arr);
       editArticle(arr).then((res) => {
         console.log(res);
-        getColumnarticle(a,1).then((res) => {
+        getColumnarticle(a, 1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange/"+a);
+          this.$router.push("/home/contentmange/" + a);
         });
       });
     },
     videoEdit() {
-        let a=localStorage.getItem('columnid');
-         let editid=  JSON.parse( localStorage.getItem('row'));
-      var form = {editid, ...this.videoForm };
+      let a = localStorage.getItem("columnid");
+      let editid = JSON.parse(localStorage.getItem("row"));
+      var form = { editid, ...this.videoForm };
       var date = moment(form.createTime).format("YYYY-MM-DD");
       form.createTime = date;
       var arr = [];
@@ -533,16 +525,16 @@ export default {
       console.log(arr);
       editArticle(arr).then((res) => {
         console.log(res);
-        getColumnarticle(a,1).then((res) => {
+        getColumnarticle(a, 1).then((res) => {
           this.$store.state.article = res;
-         this.$router.push("/home/contentmange/"+a);
+          this.$router.push("/home/contentmange/" + a);
         });
       });
     },
     linkEdit() {
-    let a=localStorage.getItem('columnid');
-     let editid=  JSON.parse( localStorage.getItem('row'));
-      var form = { ...editid, ...this.linkForm};
+      let a = localStorage.getItem("columnid");
+      let editid = JSON.parse(localStorage.getItem("row"));
+      var form = { ...editid, ...this.linkForm };
       var date = moment(form.createTime).format("YYYY-MM-DD");
       form.createTime = date;
       var arr = [];
@@ -550,37 +542,36 @@ export default {
       console.log(arr, 9);
       editArticle(arr).then((res) => {
         console.log(res);
-        getColumnarticle(a,1).then((res) => {
+        getColumnarticle(a, 1).then((res) => {
           this.$store.state.article = res;
-          this.$router.push("/home/contentmange/"+a);
+          this.$router.push("/home/contentmange/" + a);
         });
       });
     },
     cancel() {
-        let a=localStorage.getItem('columnid')
-      this.$router.push("/home/contentmange/"+a);
+      let a = localStorage.getItem("columnid");
+      this.$router.push("/home/contentmange/" + a);
     },
   },
   computed: {
     show() {
       if (localStorage.getItem("style")) {
         return localStorage.getItem("style");
-      }
-      else{
-        return ''
+      } else {
+        return "";
       }
     },
   },
   mounted() {
-     let editid=  JSON.parse( localStorage.getItem('row'));
-    if (localStorage.getItem("style")== 1) {
+    let editid = JSON.parse(localStorage.getItem("row"));
+    if (localStorage.getItem("style") == 1) {
       this.photoForm.bgImgUrl = editid.bgImgUrl;
       this.photoForm.title = editid.title;
       this.photoForm.createTime = editid.createTime;
       this.photoForm.description = editid.description;
       this.photoForm.textContent = editid.textContent;
     }
-    if (localStorage.getItem("style")== 0) {
+    if (localStorage.getItem("style") == 0) {
       this.videoForm.bgImgUrl = editid.bgImgUrl;
       this.videoForm.title = editid.title;
       this.videoForm.videoUrl = editid.videoUrl;
@@ -589,15 +580,14 @@ export default {
       this.videoForm.textContent = editid.textContent;
     }
     if (localStorage.getItem("style") == 2) {
-      this.linkForm.bgImgUrl =editid.bgImgUrl;
+      this.linkForm.bgImgUrl = editid.bgImgUrl;
       this.linkForm.title = editid.title;
       this.linkForm.createTime = editid.createTime;
       this.linkForm.description = editid.description;
-      this.linkForm.linkType =editid.linkType;
-      this.linkForm.linkUrl =editid.linkUrl;
-      this.linkForm.linkColumnId =  editid.linkColumnId;
+      this.linkForm.linkType = editid.linkType;
+      this.linkForm.linkUrl = editid.linkUrl;
+      this.linkForm.linkColumnId = editid.linkColumnId;
       this.linkForm.linkArticleId = editid.linkArticleId;
-   
     }
     this.common();
   },
@@ -613,11 +603,11 @@ export default {
     border-bottom: 1px solid #ccc;
     height: 50px;
     line-height: 50px;
-    div{
-      span{
-        color:  skyblue;
+    div {
+      span {
+        color: skyblue;
       }
-      span:hover{
+      span:hover {
         cursor: pointer;
       }
     }

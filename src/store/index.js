@@ -6,7 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     article:[],
-    editid:{ bgImgUrl:"",title: "", createTime: "", description: "", textContent: null },
+    editid:{ bgImgUrl:"",title: "", createTime: "", description: "", textContent: null },//栏目所要编辑的行id
     columnid:0,
     total:0,
     flag:1

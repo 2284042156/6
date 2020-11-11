@@ -13,6 +13,7 @@
     "drag-tree-table": "^2.1.0",
     "element-ui": "^2.13.2",
     "global": "^4.4.0",
+    "lib-flexible": "^0.3.2",
     "moment": "^2.27.0",
     "normalize.css": "^8.0.1",
     "sortable.js": "^0.3.0",
@@ -35,6 +36,8 @@
     "eslint-plugin-vue": "^6.2.2",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
+    "postcss-loader": "^4.0.4",
+    "postcss-px2rem": "^0.3.0",
     "vue-template-compiler": "^2.6.11"
   }
 }

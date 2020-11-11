@@ -16,7 +16,7 @@ const routes = [
     path: "/login",
     name: "login",
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Login.vue"),
+      import( "../views/Login.vue"),
   },
   {
     path: "/home",
@@ -32,7 +32,7 @@ const routes = [
         path: "columnmange", // 相对地址,自定带上父级地址
         name: "columnmange",
         component: () =>
-      import(/* webpackChunkName: "column" */ "../views/column/Demo.vue"),
+      import( "../views/column/Demo.vue"),
         meta: { ispass: true },
       },
       {
@@ -40,7 +40,7 @@ const routes = [
         name: "homemange",
         component: () =>
           import(
-            /* webpackChunkName: "homemange" */ "../views/home/Homemange.vue"
+            "../views/home/Homemange.vue"
           ),
         meta: { ispass: true },
       },
@@ -49,7 +49,7 @@ const routes = [
         name: "contentmange",
         component: () =>
           import(
-            /* webpackChunkName: "about" */ "../views/content/Contentmange.vue"
+             "../views/content/Contentmange.vue"
           ),
         meta: { ispass: true },
       },
@@ -57,7 +57,7 @@ const routes = [
         path: "addtitle", // 相对地址,自定带上父级地址
         name: "addtitle",
         component: () =>
-          import(/* webpackChunkName: "about" */ "../views/title/Addtitle.vue"),
+          import("../views/title/Addtitle.vue"),
         meta: { ispass: true },
       },
       {
@@ -65,7 +65,7 @@ const routes = [
         name: "editphoto",
         component: () =>
           import(
-            /* webpackChunkName: "about" */ "../views/title/Editphoto.vue"
+            "../views/title/Editphoto.vue"
           ),
         meta: { ispass: true },
       },
@@ -78,8 +78,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode:"history",
-  base:'/distt/',
+  // mode:"history",
   routes,
 });
 router.beforeEach((to, from, next) => {

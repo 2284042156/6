@@ -38,9 +38,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-// .home,.el-container,.el-menu,.el-header{
-//   height: 100%;
-// }
+
 #ply{
   background: #f8f8f8;
 }
